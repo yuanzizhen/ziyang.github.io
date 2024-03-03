@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Nova组件详解nova-apinova-api 是 nova 组件的门户，所有对 nova 的请求都首先由 nova-api 处理，nova 对外暴露几个接口，也就是 endpoint，查看 endpoint： 1openstack endpoint show nova  nova-api 对接收到的请求会做如下操作：  检查传递的参数是否合法 调用 nova 的其他子服务来处理请求 格式化其他">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【学习】五、Nova 组件详解">
+<meta property="og:url" content="http://iziyang.github.io/2017/09/12/LearningOpenStack-5-nova/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="Nova组件详解nova-apinova-api 是 nova 组件的门户，所有对 nova 的请求都首先由 nova-api 处理，nova 对外暴露几个接口，也就是 endpoint，查看 endpoint： 1openstack endpoint show nova  nova-api 对接收到的请求会做如下操作：  检查传递的参数是否合法 调用 nova 的其他子服务来处理请求 格式化其他">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://iziyang.github.io/images/nova-4.png">
+<meta property="og:image" content="http://iziyang.github.io/images/nova-5.png">
+<meta property="og:image" content="http://iziyang.github.io/images/nova-6.png">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqHfDp3xocW9A8pmGO7lSjGEruoobfuj7ib4puicFr8UiaAWVYzf3WmI4PicrOPOWxoM5XQYqLiboEajvoA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HOIic9qUBjiawxfMhd9Uu6iaHA/0?wx_lazy=1">
+<meta property="og:image" content="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HEvkgnaPF0j6JpZhkhic3FSA/0?wx_lazy=1">
+<meta property="og:image" content="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HVQzKbULzbJ36Lk63COsOgw/0?wx_lazy=1">
+<meta property="og:image" content="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HyvKUuR3MJKTrRtEiaqCUuGA/0?wx_lazy=1">
+<meta property="og:image" content="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HM75tW5vXVlN2bazicRvd1lA/0?wx_lazy=1">
+<meta property="og:image" content="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HNAxlaVXZswZhEfUKMfHlYg/0?wx_lazy=1">
+<meta property="og:image" content="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HTq97sJz331iboFhVFpcVgIg/0?wx_lazy=1">
+<meta property="og:image" content="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HdBCibgTzShNK4wxWvEGPKIw/0?wx_lazy=1">
+<meta property="og:image" content="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HtmIzRM8MjZuK6j3RvQhlqA/0?wx_lazy=1">
+<meta property="article:published_time" content="2017-09-12T12:21:55.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.849Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="OpenStack学习">
+<meta property="article:tag" content="Nova">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://iziyang.github.io/images/nova-4.png">
+
+<link rel="canonical" href="http://iziyang.github.io/2017/09/12/LearningOpenStack-5-nova/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【学习】五、Nova 组件详解 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2017/09/12/LearningOpenStack-5-nova/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【学习】五、Nova 组件详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-12 20:21:55" itemprop="dateCreated datePublished" datetime="2017-09-12T20:21:55+08:00">2017-09-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/09/12/LearningOpenStack-5-nova/" class="post-meta-item leancloud_visitors" data-flag-title="【学习】五、Nova 组件详解" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/09/12/LearningOpenStack-5-nova/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/09/12/LearningOpenStack-5-nova/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Nova组件详解"><a href="#Nova组件详解" class="headerlink" title="Nova组件详解"></a>Nova组件详解</h1><h2 id="nova-api"><a href="#nova-api" class="headerlink" title="nova-api"></a>nova-api</h2><p>nova-api 是 nova 组件的门户，所有对 nova 的请求都首先由 nova-api 处理，nova 对外暴露几个接口，也就是 endpoint，查看 endpoint：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openstack endpoint show nova</span><br></pre></td></tr></table></figure>
+
+<p>nova-api 对接收到的请求会做如下操作：</p>
+<ol>
+<li>检查传递的参数是否合法</li>
+<li>调用 nova 的其他子服务来处理请求</li>
+<li>格式化其他子服务返回的结果并返回给客户端</li>
+</ol>
+<p><strong>nova-api 可以接受哪些请求？</strong><br>简单来说，只要是与虚拟机生命周期管理相关的操作，nova-api 都可以相应，大部分的操作在 dashboard 上面都可以找到，如图所示：</p>
+<p><img src="/images/nova-4.png" alt="nova-4"></p>
+<h2 id="nova-conductor"><a href="#nova-conductor" class="headerlink" title="nova-conductor"></a>nova-conductor</h2><p>nova-compute 需要访问数据库获取 instance 的信息，但是 nova-compute 不会直接访问数据库，需要通过 nova-conductor 实现数据的访问。</p>
+<p><img src="/images/nova-5.png" alt="nova-5"></p>
+<p>这样做有两个好处：</p>
+<ol>
+<li>更好的系统安全性</li>
+<li>更好的系统伸缩性</li>
+</ol>
+<ul>
+<li><strong>更好的系统安全性</strong></li>
+</ul>
+<p>在 OpenStack 的早期版本中，nova-compute 可以直接访问数据库，但这样存在非常大的安全隐患。 因为 nova-compute 这个服务是部署在计算节点上的，为了能够访问控制节点上的数据库，就必须在计算节点的 /etc/nova/nova.conf 中配置访问数据库的连接信息，比如</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[database]</span><br><span class="line">connection = mysql+pymysql://root:secret@controller/nova?charset=utf8</span><br></pre></td></tr></table></figure>
+
+<p>试想任意一个计算节点被黑客入侵，都会导致部署在控制节点上的数据库面临极大风险。为了解决这个问题，从 G 版本开始，Nova 引入了一个新服务 nova-conductor，将 nova-compute 访问数据库的全部操作都放到 nova-conductor 中，而且 nova-conductor 是部署在控制节点上的。 这样就避免了 nova-compute 直接访问数据库，增加了系统的安全性。</p>
+<ul>
+<li><strong>更好的伸缩性</strong></li>
+</ul>
+<p>nova-conductor 将 nova-compute 与数据库解耦之后还带来另一个好处：提高了 nova 的伸缩性。nova-compute 与 conductor 是通过消息中间件交互的。</p>
+<p>这种松散的架构允许配置多个 nova-conductor 实例。 在一个大规模的 OpenStack 部署环境里，管理员可以通过增加 nova-conductor 的数量来应对日益增长的计算节点对数据库的访问。</p>
+<h2 id="nova-scheduler"><a href="#nova-scheduler" class="headerlink" title="nova-scheduler"></a>nova-scheduler</h2><p>在 /etc/nova/nova.conf 中，nova 通过 scheduler_driver、scheduler_available_filters、scheduler_default_filters 来配置 nova-scheduler。</p>
+<h3 id="filter-scheduler"><a href="#filter-scheduler" class="headerlink" title="filter_scheduler"></a>filter_scheduler</h3><p>filter_scheduler 是 nova-scheduler 默认的调度器，调度过程分为两步：</p>
+<ol>
+<li>通过 filter 选择满足条件的计算节点（运行 nova-compute）</li>
+<li>通过权重计算（weighting）选择在最优的计算节点上创建 instance</li>
+</ol>
+<p><img src="/images/nova-6.png" alt="img"></p>
+<p>调度过程</p>
+<h3 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h3><p>当 filter-scheduler 需要执行调度操作时，会让 filter 对计算节点进行判断，filter 返回 True 或 False。Nova.conf 中的 scheduler_available_filters 选项用于配置 scheduler 可用的 filter，默认是所有 nova 自带的 filter 都可以用于滤操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scheduler_available_filters = nova.scheduler.filters.all_filters</span><br></pre></td></tr></table></figure>
+
+<p>另外还有一个选项 scheduler_default_filters，用于指定 scheduler 真正使用的 filter，默认值如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scheduler_default_filters = RetryFilter, AvailabilityZoneFilter, RamFilter, DiskFilter, ComputeFilter, ComputeCapabilitiesFilter, ImagePropertiesFilter, ServerGroupAntiAffinityFilter, ServerGroupAffinityFilter</span><br></pre></td></tr></table></figure>
+
+<p><strong>RetryFilter</strong></p>
+<p>RetryFilter 的作用是过滤掉已经调度过的节点，比如上次选择部署在计算节点 A 上面，但是由于某种原因失败了，那么这次就不会再部署。</p>
+<p><strong>AvailabilityZoneFilter</strong></p>
+<p>为提高容灾性和提供隔离服务，可以将计算节点划分到不同的Availability Zone中。例如把一个机架上的机器划分在一个 Availability Zone 中。 OpenStack 默认有一个命名为 “Nova” 的 Availability Zone，所有的计算节点初始都是放在 “Nova” 中。 用户可根据需要创建自己的 Availability Zone。nova-scheduler 会将不属于指定 AvailableZone 的计算节点过滤掉。</p>
+<p><strong>RamFilter</strong></p>
+<p>RamFilter 将不能满足 flavor 内存需求的计算节点过滤掉。</p>
+<p>对于内存有一点需要注意： 为了提高系统的资源使用率，OpenStack 在计算节点可用内存时允许 overcommit，也就是可以超过实际内存大小。 超过的程度是通过 nova.conf 中 ram_allocation_ratio 这个参数来控制的，默认值为 1.5</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ram_allocation_ratio = 1.5</span><br></pre></td></tr></table></figure>
+
+<p>其含义是：如果计算节点的内容为 10GB，OpenStack 则会认为它有 15GB（10*1.5）内存。</p>
+<p><strong>DiskFilter</strong></p>
+<p>DiskFilter 将不能满足 flavor 磁盘需求的计算节点过滤掉。Disk 同样允许 overcommit，通过 nova.conf 中 disk_allocation_ratio 控制，默认值为 1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">disk_allocation_ratio = 1.0</span><br></pre></td></tr></table></figure>
+
+<p><strong>CoreFilter</strong></p>
+<p>CoreFilter 将不能满足 flavor vCPU 需求的计算节点过滤掉。vCPU 同样允许 overcommit，通过 nova.conf 中 cpu_allocation_ratio 控制，默认值为 16</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cpu_allocation_ratio = 16.0</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>ComputeFilter</strong></p>
+<p>ComputeFilter 保证只有 nova-compute 服务正常工作的计算节点才能够被 nova-scheduler调度。ComputeFilter 显然是必选的 filter。</p>
+<p><strong>ComputeCapabilitiesFilter</strong></p>
+<p>ComputeCapabilitiesFilter 根据计算节点的特性来筛选。这个比较高级，我们举例说明。<br>例如我们的节点有 x86_64 和 ARM 架构的，如果想将 Instance 指定部署到 x86_64 架构的节点上，就可以利用 ComputeCapabilitiesFilter。还记得 flavor 中有个 Metadata 吗，Compute 的 Capabilitie s就在 Metadata中 指定。</p>
+<p><strong>ImagePropertiesFilter</strong></p>
+<p>ImagePropertiesFilter 根据所选 image 的属性来筛选匹配的计算节点。 跟 flavor 类似，image 也有 metadata，用于指定其属性。</p>
+<p>例如希望某个 image 只能运行在 kvm 的 hypervisor 上，可以通过 “Hypervisor Type” 属性来指定。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqHfDp3xocW9A8pmGO7lSjGEruoobfuj7ib4puicFr8UiaAWVYzf3WmI4PicrOPOWxoM5XQYqLiboEajvoA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p><strong>ServerGroupAntiAffinityFilter</strong></p>
+<p>ServerGroupAntiAffinityFilter 可以尽量将 Instance 分散部署到不同的节点上。</p>
+<p>例如有 inst1，inst2 和 inst3 三个 instance，计算节点有 A,B 和 C。 为保证分散部署，进行如下操作：</p>
+<ol>
+<li>创建一个 anti-affinity 策略的 server group “group-1”</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nova server-group-create --policy anti-affinity group-1</span><br></pre></td></tr></table></figure>
+
+<p>请注意，这里的 server group 其实是 instance group，并不是计算节点的 group。</p>
+<ol start="2">
+<li>依次创建 Instance inst1, inst2和inst3并放到group-1中</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-1 inst1</span><br><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-1 inst2</span><br><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-1 inst3</span><br></pre></td></tr></table></figure>
+
+<p>因为 group-1 的策略是 AntiAffinity，调度时 ServerGroupAntiAffinityFilter 会将 inst1, inst2 和 inst3 部署到不同计算节点 A, B 和 C。目前只能在 CLI 中指定 server group 来创建 instance。</p>
+<p>创建 instance 时如果没有指定 server group，ServerGroupAntiAffinityFilter 会直接通过，不做任何过滤。</p>
+<p><strong>ServerGroupAffinityFilter</strong></p>
+<p>与 ServerGroupAntiAffinityFilter 的作用相反，ServerGroupAffinityFilter 会尽量将 instance 部署到同一个计算节点上。 方法类似</p>
+<ol>
+<li>创建一个 affinity 策略的 server group “group-2”</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nova server-group-create --policy affinity group-2</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>依次创建 instance inst1, inst2 和 inst3 并放到 group-2 中</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-2 inst1</span><br><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-2 inst2</span><br><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-2 inst3</span><br></pre></td></tr></table></figure>
+
+<p>因为 group-2 的策略是 Affinity，调度时 ServerGroupAffinityFilter 会将 inst1, inst2 和 inst3 部署到同一个计算节点。创建 instance 时如果没有指定 server group，ServerGroupAffinityFilter 会直接通过，不做任何过滤。</p>
+<h3 id="weight"><a href="#weight" class="headerlink" title="weight"></a>weight</h3><p>通过过滤之后会计算权重值，根据计算节点空闲内存来计算权重值，内存越多，权重值越大。</p>
+<h3 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/var/log/nova/scheduler.log</span><br></pre></td></tr></table></figure>
+
+<p>注：要显示 DEBUG 日志，需要在 /etc/nova/nova.conf 中打开 debug 选项</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[DEFAULT]</span><br><span class="line">debug = True</span><br></pre></td></tr></table></figure>
+
+<h2 id="nova-compute"><a href="#nova-compute" class="headerlink" title="nova-compute"></a>nova-compute</h2><p>nova-compute 通过 Driver架构支持多种 Hypervisor。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HOIic9qUBjiawxfMhd9Uu6iaHA/0?wx_lazy=1"></p>
+<p>我们可以在 /opt/stack/nova/nova/virt/ 目录下查看到 OpenStack 源代码中已经自带了上面这几个 Hypervisor 的 Driver：</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HEvkgnaPF0j6JpZhkhic3FSA/0?wx_lazy=1"></p>
+<p>某个特定的计算节点上只会运行一种 Hypervisor，只需在该节点 nova-compute 的配置文件 /etc/nova/nova.conf 中配置所对应的 compute_driver 就可以了。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HVQzKbULzbJ36Lk63COsOgw/0?wx_lazy=1"></p>
+<p>nova-compute 的功能可以分为两类：</p>
+<ol>
+<li>定时向 OpenStack 报告计算节点的状态</li>
+<li>实现 instance 生命周期的管理</li>
+</ol>
+<h3 id="定时向-OpenStack-报告计算节点的状态"><a href="#定时向-OpenStack-报告计算节点的状态" class="headerlink" title="定时向 OpenStack 报告计算节点的状态"></a>定时向 OpenStack 报告计算节点的状态</h3><p>前面我们看到 nova-scheduler 的很多 Filter 是根据算节点的资源使用情况进行过滤的。比如 RamFilter 要检查计算节点当前可以的内存量；CoreFilter 检查可用的 vCPU 数量；DiskFilter 则会检查可用的磁盘空间。</p>
+<p>那这里有个问题：OpenStack 是如何得知每个计算节点的这些信息呢？答案是 nova-compute 会定期向 OpenStack 报告。</p>
+<p>nova-compute 是如何获得当前计算节点的资源使用信息的？nova-compute 可以通过 Hypervisor 的 driver 拿到这些信息。</p>
+<h3 id="实现-instance-生命周期的管理"><a href="#实现-instance-生命周期的管理" class="headerlink" title="实现 instance 生命周期的管理"></a>实现 instance 生命周期的管理</h3><p>OpenStack 对 instance 最主要的操作都是通过 nova-compute 实现的，包括 instance 的 launch、shutdown、reboot、suspend、resume、terminate、resize、migration、snapshot 等。</p>
+<p><em>本节讨论实例的创建操作。</em></p>
+<p>nova-compute 创建 instance 的过程可以分为 4 步：</p>
+<ol>
+<li>为 instance 准备资源</li>
+<li>创建 instance 的镜像文件</li>
+<li>创建 instance 的 XML 定义文件</li>
+<li>创建虚拟网络并启动虚拟机</li>
+</ol>
+<h4 id="为-instance-准备资源"><a href="#为-instance-准备资源" class="headerlink" title="为 instance 准备资源"></a>为 instance 准备资源</h4><p>nova-compute 首先会根据指定的 flavor 依次为 instance 分配内存、磁盘空间和 vCPU。可以在日志中看到这些细节。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HyvKUuR3MJKTrRtEiaqCUuGA/0?wx_lazy=1"></p>
+<p>网络资源也会提前分配。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HM75tW5vXVlN2bazicRvd1lA/0?wx_lazy=1"></p>
+<h4 id="创建-instance-的镜像文件"><a href="#创建-instance-的镜像文件" class="headerlink" title="创建 instance 的镜像文件"></a>创建 instance 的镜像文件</h4><p>OpenStack 启动一个 instance 时，会选择一个 image，这个 image 由 Glance 管理。 nova-compute会：</p>
+<ol>
+<li>首先将该 image 下载到计算节点</li>
+<li>然后将其作为 backing file 创建 instance 的镜像文件</li>
+</ol>
+<p><strong>从 Glance 下载 image</strong></p>
+<p>nova-compute 首先会检查 image 是否已经下载（比如之前已经创建过基于相同 image 的 instance）。如果没有，就从 Glance 下载 image 到本地。由此可知，如果计算节点上要运行多个相同 image 的 instance，只会在启动第一个 instance 的时候从 Glance 下载 image，后面的 instance 启动速度就大大加快了。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HNAxlaVXZswZhEfUKMfHlYg/0?wx_lazy=1"></p>
+<p>可以看到：</p>
+<ol>
+<li>image（ID为 917d60ef-f663-4e2d-b85b-e4511bb56bc2）是 qcow2 格式，nova-compute 将其下载。Nova 默认会通过 qemu-img 转换成 raw 格式，以提高 IO 性能。</li>
+<li>image 的存放目录是 <code>/opt/stack/data/nova/instances/_base</code>，这是由 <code>/etc/nova/nova.conf</code> 的下面两个配置选项决定的。 </li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">instances_path = /opt/stack/data/nova/instances</span><br><span class="line">base_dir_name = _base</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>下载的 image 文件被命名为 60bba5916c6c90ed2ef7d3263de8f653111dd35f，这是 image id 的 SHA1 哈希值。</li>
+</ol>
+<h4 id="为-instance-创建镜像文件"><a href="#为-instance-创建镜像文件" class="headerlink" title="为 instance 创建镜像文件"></a>为 instance 创建镜像文件</h4><p>有了 image 之后，instance 的镜像文件直接通过 qemu-img 命令创建，backing file 就是下载的 image。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HTq97sJz331iboFhVFpcVgIg/0?wx_lazy=1" alt="http://7xo6kd.com1.z0.glb.clouddn.com/upload-ueditor-image-20160501-1462109263590069817.png"></p>
+<p>可以通过 qume-info 查看 disk 文件的属性：</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HdBCibgTzShNK4wxWvEGPKIw/0?wx_lazy=1" alt="http://7xo6kd.com1.z0.glb.clouddn.com/upload-ueditor-image-20160501-1462109267370087342.png"></p>
+<p>这里有两个容易搞混淆的术语，在此特别说明一下：</p>
+<ol>
+<li>image，指的是 Glance 上保存的镜像，作为 instance 运行的模板。 计算节点将下载的 image 存放在 /opt/stack/data/nova/instances/_base 目录下。</li>
+<li>镜像文件，指的是 instance 启动盘所对应的文件</li>
+<li>二者的关系是：image 是镜像文件 的 backing file。image 不会变，而镜像文件会发生变化。比如安装新的软件后，镜像文件会变大。</li>
+</ol>
+<h4 id="创建-instance-的-XML-定义文件"><a href="#创建-instance-的-XML-定义文件" class="headerlink" title="创建 instance 的 XML 定义文件"></a>创建 instance 的 XML 定义文件</h4><p>创建的 XML 文件会保存到该 instance 目录 /opt/stack/data/nova/instances/f1e22596-6844-4d7a-84a3-e41e6d7618ef，命名为 libvirt.xml</p>
+<h4 id="创建虚拟网络并启动-instance"><a href="#创建虚拟网络并启动-instance" class="headerlink" title="创建虚拟网络并启动 instance"></a>创建虚拟网络并启动 instance</h4><p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HtmIzRM8MjZuK6j3RvQhlqA/0?wx_lazy=1" alt="http://7xo6kd.com1.z0.glb.clouddn.com/upload-ueditor-image-20160501-1462109268755029101.png"></p>
+<p>本环境用的是 linux-bridge 实现的虚拟网络。</p>
+<p>CLI 查看实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virsh list</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/OpenStack%E5%AD%A6%E4%B9%A0/" rel="tag"># OpenStack学习</a>
+              <a href="/tags/Nova/" rel="tag"># Nova</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/09/12/LearningOpenStack-4-nova/" rel="prev" title="【学习】四、Nova 综述及 OpenStack 通用设计思路">
+      <i class="fa fa-chevron-left"></i> 【学习】四、Nova 综述及 OpenStack 通用设计思路
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/09/14/LearningOpenStack-6-log/" rel="next" title="【学习】六、OpenStack 日志">
+      【学习】六、OpenStack 日志 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Nova%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3"><span class="nav-text">Nova组件详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nova-api"><span class="nav-text">nova-api</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nova-conductor"><span class="nav-text">nova-conductor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nova-scheduler"><span class="nav-text">nova-scheduler</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#filter-scheduler"><span class="nav-text">filter_scheduler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Filter"><span class="nav-text">Filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#weight"><span class="nav-text">weight</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97"><span class="nav-text">日志</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nova-compute"><span class="nav-text">nova-compute</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%90%91-OpenStack-%E6%8A%A5%E5%91%8A%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E7%9A%84%E7%8A%B6%E6%80%81"><span class="nav-text">定时向 OpenStack 报告计算节点的状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0-instance-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%9A%84%E7%AE%A1%E7%90%86"><span class="nav-text">实现 instance 生命周期的管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA-instance-%E5%87%86%E5%A4%87%E8%B5%84%E6%BA%90"><span class="nav-text">为 instance 准备资源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-instance-%E7%9A%84%E9%95%9C%E5%83%8F%E6%96%87%E4%BB%B6"><span class="nav-text">创建 instance 的镜像文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA-instance-%E5%88%9B%E5%BB%BA%E9%95%9C%E5%83%8F%E6%96%87%E4%BB%B6"><span class="nav-text">为 instance 创建镜像文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-instance-%E7%9A%84-XML-%E5%AE%9A%E4%B9%89%E6%96%87%E4%BB%B6"><span class="nav-text">创建 instance 的 XML 定义文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E5%B9%B6%E5%90%AF%E5%8A%A8-instance"><span class="nav-text">创建虚拟网络并启动 instance</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

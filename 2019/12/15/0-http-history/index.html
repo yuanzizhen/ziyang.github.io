@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="HTTP 协议全称是超文本传输协议（Hypertext Transfer Protocol），这里面需要理解三个地方：超文本、传输、协议，下面就从 HTTP 协议的历史讲起。 20 世纪 60 年代，美国国防部高等研究计划署（ARPA）建立了 ARPA 网，它有四个分布在世界各地的节点，被认为是互联网的始祖。 到了 70 年代，基于对 ARPA 网络的实践和思考，研究人员发明出了著名的 TCP&#x2F;I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="除了 HTTP1.1 你还应该知道 HTTP&#x2F;2 和 HTTP&#x2F;3">
+<meta property="og:url" content="http://iziyang.github.io/2019/12/15/0-http-history/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="HTTP 协议全称是超文本传输协议（Hypertext Transfer Protocol），这里面需要理解三个地方：超文本、传输、协议，下面就从 HTTP 协议的历史讲起。 20 世纪 60 年代，美国国防部高等研究计划署（ARPA）建立了 ARPA 网，它有四个分布在世界各地的节点，被认为是互联网的始祖。 到了 70 年代，基于对 ARPA 网络的实践和思考，研究人员发明出了著名的 TCP&#x2F;I">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/a2/9a/a2960d0e44ef6a8fedd4e9bb836e049a.jpg">
+<meta property="og:image" content="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20191216083215">
+<meta property="og:image" content="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20191218223127">
+<meta property="article:published_time" content="2019-12-15T22:38:19.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.825Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="HTTP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static001.geekbang.org/resource/image/a2/9a/a2960d0e44ef6a8fedd4e9bb836e049a.jpg">
+
+<link rel="canonical" href="http://iziyang.github.io/2019/12/15/0-http-history/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>除了 HTTP1.1 你还应该知道 HTTP/2 和 HTTP/3 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2019/12/15/0-http-history/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          除了 HTTP1.1 你还应该知道 HTTP/2 和 HTTP/3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-16 06:38:19" itemprop="dateCreated datePublished" datetime="2019-12-16T06:38:19+08:00">2019-12-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/12/15/0-http-history/" class="post-meta-item leancloud_visitors" data-flag-title="除了 HTTP1.1 你还应该知道 HTTP/2 和 HTTP/3" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/12/15/0-http-history/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/12/15/0-http-history/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>HTTP 协议全称是超文本传输协议（Hypertext Transfer Protocol），这里面需要理解三个地方：超文本、传输、协议，下面就从 HTTP 协议的历史讲起。</p>
+<p>20 世纪 60 年代，美国国防部高等研究计划署（ARPA）建立了 ARPA 网，它有四个分布在世界各地的节点，被认为是互联网的始祖。</p>
+<p>到了 70 年代，基于对 ARPA 网络的实践和思考，研究人员发明出了著名的 TCP/IP 协议，并在 80 年代中期进入了 UNIX 内核，使更多计算机接入了互联网。</p>
+<span id="more"></span>
+
+<h1 id="HTTP-诞生"><a href="#HTTP-诞生" class="headerlink" title="HTTP 诞生"></a>HTTP 诞生</h1><p><img src="https://static001.geekbang.org/resource/image/a2/9a/a2960d0e44ef6a8fedd4e9bb836e049a.jpg"></p>
+<p>这位大师叫蒂姆·伯纳斯·李（Tim Berners-Lee），是万维网的创始人，简单点说，是当代互联网的创始人。</p>
+<p>在 1989 年，他发表了一篇论文，提出了在互联网上构建超链接文档系统的构想，在这篇论文里他确立了三项关键技术：</p>
+<ul>
+<li>URI：统一资源标识符，作为互联网上资源的唯一标识</li>
+<li>HTML：超文本标记语言，描述超文本文档</li>
+<li>HTTP：超文本传输协议，用来传输超文本</li>
+</ul>
+<p>这三项技术直接奠定了我们当今 Web 世界的技术，蒂姆把它称为万维网（World Wide Web）。</p>
+<p>所以，1989 年，HTTP 诞生了。</p>
+<h1 id="HTTP-0-9"><a href="#HTTP-0-9" class="headerlink" title="HTTP/0.9"></a>HTTP/0.9</h1><p>在 20 世纪 90 年代初，互联网世界还是一片荒漠，计算机处理能力低下，存储容量小，网速很慢。网络上的绝大多数资源都是纯文本资源，所以 HTTP 协议也是纯文本格式的。</p>
+<p>为了便于服务器和客户端处理，蒂姆最初设想的系统里的文档都是只读的，所以只允许用户通过 GET 请求从服务器上获取 HTML 文档，并且在响应之后立即关闭连接，功能非常有限。</p>
+<p>这一版 HTTP 协议虽然很简单，但是作为一个原型，充分验证了 Web 服务的可行性。</p>
+<h1 id="HTTP-1-0"><a href="#HTTP-1-0" class="headerlink" title="HTTP/1.0"></a>HTTP/1.0</h1><p>1993 年，美国国家超级计算应用中心（NCSA）开发出了 Mosaic，是第一个可以图文混排的浏览器，随后又在 1995 年开发出了服务器软件 Apache，简化了 HTTP 服务的搭建工作。</p>
+<p>同一时期，在 1992 年发明了 JPEG 图像格式，1995 年发明了 MP3 音乐格式。</p>
+<p>这些新技术的出现，促使 HTTP 协议开始添加各种特性，从用户需求的角度促进了 HTTP 协议的发展。</p>
+<p>在已有实践的基础上，经过一系列的草案，HTTP/1.0 在 1996 年正式发布。主要增加了以下几部分内容：</p>
+<ul>
+<li>增加了 HEAD/POST 等新方法</li>
+<li>增加了响应状态码</li>
+<li>增加了版本号</li>
+<li>增加了 Header 头部的概念</li>
+<li>增加了 <code>Content-Type</code>，传输数据不再仅限于文本</li>
+</ul>
+<p>但是 HTTP/1.0 并不是一个标准，只是记录已有实践和模式的一份参考文档，不具有实际的约束力，相当于一个备忘录。</p>
+<h1 id="HTTP-1-1"><a href="#HTTP-1-1" class="headerlink" title="HTTP/1.1"></a>HTTP/1.1</h1><p>1999 年，HTTP/1.1 发布了 RFC 文档，编号为  <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc2616">2616</a>，从版本号我们就可以看到，HTTP/1.1 是对 HTTP/1.0 的小幅度修正。但是一个重要区别是，它是一个正式的标准，而不是一份参考文档。但是 HTTP/1.1 说是小幅度修正也不太确切，这里面主要变更点有：</p>
+<ul>
+<li>增加了 PUT/DELETE/OPITIONS  等新方法</li>
+<li>增加了缓存控制和管理 <code>Cache Control</code></li>
+<li>明确了连接管理，允许持久连接 <code>Keepalive</code></li>
+<li>允许响应数据分块，利于传输大文件（Chunked）</li>
+<li>强制要求 Host 头</li>
+</ul>
+<p>我们当今世界的所有知名网站，都是在这个时间点左右创立的，可以说有了 HTTP/1.1，才开创了 Web 1.0、Web 2.0 时代。</p>
+<p>不过，由于 HTTP/1.1 太过庞大和复杂，因此在 2014 年又进行了一次修订，拆分为六份较小的文档，<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7230">7230</a> /<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7231">7231</a>/<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7232">7232</a>/<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7233">7233</a>/<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7234">7234</a>/<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7235">7235</a></p>
+<p>这六份文档增加了两个大的需求：</p>
+<ul>
+<li>加大了 HTTP 的安全性，比如使用 TLS 协议</li>
+<li>让 HTTP 可以支持更多的应用，目前已经支持四种网络协议：<ul>
+<li>传统的短连接</li>
+<li>可重用 TCP 的长连接模型</li>
+<li>服务端 PUSH 模型</li>
+<li>WebSocket 模型</li>
+</ul>
+</li>
+</ul>
+<h1 id="HTTP-2"><a href="#HTTP-2" class="headerlink" title="HTTP/2"></a>HTTP/2</h1><p>HTTP/1.1 存在两个问题：</p>
+<ol>
+<li>连接慢，请求是串行的，需要保证顺序，例如一个网页中可能会有多个资源</li>
+<li>性能差，HTTP/1.1 是以文本的方式，借助 CPU 的 zip 压缩方式减少网络带宽，但是耗费了 前端和后端的 CPU</li>
+</ol>
+<p>2010 年，Google 推出了新的 SPDY 协议，并应用于自家的服务器，HTTP/2 就是以 SPDY 为基础的，它的特点主要是：</p>
+<ul>
+<li>使用二进制传输，不再是纯文本</li>
+<li>可以在一个 TCP 连接中并发多个 HTTP 请求，移除了 HTTP/1.1 中的串行请求</li>
+<li>使用 HPACK 算法来压缩头部</li>
+<li>允许服务器主动向客户端推送数据</li>
+<li>增强了安全性，基于 TLS 协议</li>
+</ul>
+<h1 id="HTTP-3"><a href="#HTTP-3" class="headerlink" title="HTTP/3"></a>HTTP/3</h1><p>HTTP/2 的主要问题有队头阻塞问题，也就是说，若干个 HTTP 请求在复用一个 TCP 的连接，那么一旦发生丢包，造成的问题就是所有的请求都必须等待这个丢了的包重传回来，哪怕这个包不是我这个 HTTP 请求的。</p>
+<p>基于此，Google 发明了 QUIC（Quick UDP Internet Connections）协议，它是基于 UDP 的。因此，它就解决了以下几个问题：</p>
+<ul>
+<li>UDP 是无序的，因此不存在队头阻塞问题</li>
+<li>QUIC 有一套自己的丢包重传和拥塞控制的协议</li>
+<li>HTTPS 握手通常需要六次网络交互，QUIC 直接将 TLS 和 TCP 合并成了三次握手</li>
+</ul>
+<p><img src="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20191216083215"></p>
+<p>所以，QUIC 是一个在 UDP 之上的伪 TCP + TLS + HTTP/2 的多路复用协议。在未来，QUIC 协议成熟了的话，是有可能取代 TCP 协议的。</p>
+<blockquote>
+<p>关注公众号领取二十套技术图谱</p>
+</blockquote>
+<p><img src="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20191218223127" alt="关注公众号领取二十套技术图谱"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/HTTP/" rel="tag"># HTTP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/04/19/pythonperformance/" rel="prev" title="如何降低 Python 程序的时间复杂度">
+      <i class="fa fa-chevron-left"></i> 如何降低 Python 程序的时间复杂度
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/30/1-http-overview/" rel="next" title="HTTP 协议概览——HTTP 协议是什么">
+      HTTP 协议概览——HTTP 协议是什么 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-%E8%AF%9E%E7%94%9F"><span class="nav-text">HTTP 诞生</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-0-9"><span class="nav-text">HTTP&#x2F;0.9</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-1-0"><span class="nav-text">HTTP&#x2F;1.0</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-1-1"><span class="nav-text">HTTP&#x2F;1.1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-2"><span class="nav-text">HTTP&#x2F;2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-3"><span class="nav-text">HTTP&#x2F;3</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

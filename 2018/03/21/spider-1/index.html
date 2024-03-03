@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="BeautifulSoup 库123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566# coding:utf-8from urllib.request import urlopenfrom bs4 impor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一、BeautifulSoup、爬虫异常及浏览器伪装">
+<meta property="og:url" content="http://iziyang.github.io/2018/03/21/spider-1/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="BeautifulSoup 库123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566# coding:utf-8from urllib.request import urlopenfrom bs4 impor">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-03-21T06:55:49.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.823Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="爬虫">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://iziyang.github.io/2018/03/21/spider-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>一、BeautifulSoup、爬虫异常及浏览器伪装 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/03/21/spider-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一、BeautifulSoup、爬虫异常及浏览器伪装
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-21 14:55:49" itemprop="dateCreated datePublished" datetime="2018-03-21T14:55:49+08:00">2018-03-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/03/21/spider-1/" class="post-meta-item leancloud_visitors" data-flag-title="一、BeautifulSoup、爬虫异常及浏览器伪装" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/03/21/spider-1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/03/21/spider-1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="BeautifulSoup-库"><a href="#BeautifulSoup-库" class="headerlink" title="BeautifulSoup 库"></a>BeautifulSoup 库</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> urllib.request <span class="keyword">import</span> urlopen</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> urllib.error <span class="keyword">import</span> HTTPError</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基本用法，创建 BeautifulSoup 对象</span></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/page1.html&quot;</span>)</span><br><span class="line">bsObj = BeautifulSoup(html.read(), <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(bsObj.h1)  <span class="comment"># 打印标题</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 一个异常处理</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_title</span>(<span class="params">url</span>):</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        html = urlopen(url)</span><br><span class="line">    <span class="keyword">except</span> HTTPError <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        bs_obj = BeautifulSoup(html.read())</span><br><span class="line">        title = bs_obj.body.h1  <span class="comment"># 同样可以打印标题</span></span><br><span class="line">    <span class="keyword">except</span> AttributeError <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    <span class="keyword">return</span> title</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">title = get_title(<span class="string">&quot;http://www.pythonscraping.com/pages/page1.html&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> title <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Title could not be found&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(title)</span><br><span class="line"></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/warandpeace.html&quot;</span>)</span><br><span class="line">bsObj = BeautifulSoup(html.read(), <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(bsObj.h1)</span><br><span class="line">nameList = bsObj.findAll(<span class="string">&quot;span&quot;</span>, &#123;<span class="string">&quot;class&quot;</span>: <span class="string">&quot;green&quot;</span>&#125;)  <span class="comment"># 找到 span 标签，属性为 class=green 的内容</span></span><br><span class="line"><span class="keyword">for</span> name <span class="keyword">in</span> nameList:</span><br><span class="line">    <span class="built_in">print</span>(name)</span><br><span class="line">    <span class="built_in">print</span>(name.get_text())  <span class="comment"># 获取到文本内容</span></span><br><span class="line"></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/page3.html&quot;</span>)  <span class="comment"># 处理子标签</span></span><br><span class="line">bsObj = BeautifulSoup(html, <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> child <span class="keyword">in</span> bsObj.find(<span class="string">&quot;table&quot;</span>, &#123;<span class="string">&quot;id&quot;</span>: <span class="string">&quot;giftList&quot;</span>&#125;).children:  <span class="comment"># 子标签</span></span><br><span class="line">    <span class="built_in">print</span>(child)</span><br><span class="line"></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/page3.html&quot;</span>)  <span class="comment"># 处理兄弟标签</span></span><br><span class="line">bsObj = BeautifulSoup(html)</span><br><span class="line"><span class="keyword">for</span> sibling <span class="keyword">in</span> bsObj.find(<span class="string">&quot;table&quot;</span>, &#123;<span class="string">&quot;id&quot;</span>: <span class="string">&quot;giftList&quot;</span>&#125;).tr.next_siblings: <span class="comment"># 下面的兄弟标签</span></span><br><span class="line">    <span class="built_in">print</span>(sibling)</span><br><span class="line"></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/page3.html&quot;</span>)  <span class="comment"># 处理父标签</span></span><br><span class="line">bsObj = BeautifulSoup(html, <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(bsObj.find(<span class="string">&quot;img&quot;</span>, &#123;<span class="string">&quot;src&quot;</span>: <span class="string">&quot;../img/gifts/img1.jpg&quot;</span></span><br><span class="line">                         &#125;).parent.previous_sibling.get_text())  <span class="comment"># 父标签的前一个标签</span></span><br><span class="line"></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/page3.html&quot;</span>)</span><br><span class="line">bsObj = BeautifulSoup(html, <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line">images = bsObj.findAll(<span class="string">&quot;img&quot;</span>, &#123;<span class="string">&quot;src&quot;</span>: re.<span class="built_in">compile</span>(<span class="string">&quot;\.\.\/img\/gifts/img.*\.jpg&quot;</span>)&#125;)  <span class="comment"># 可以同时使用正则表达式</span></span><br><span class="line"><span class="keyword">for</span> image <span class="keyword">in</span> images:</span><br><span class="line">    <span class="built_in">print</span>(image[<span class="string">&quot;src&quot;</span>])  <span class="comment"># 获取属性</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"></span><br><span class="line">images = bsObj.findAll(<span class="string">&quot;img&quot;</span>)  <span class="comment"># 取属性</span></span><br><span class="line"><span class="keyword">for</span> image <span class="keyword">in</span> images:</span><br><span class="line">    <span class="built_in">print</span>(image.attrs[<span class="string">&#x27;src&#x27;</span>])  <span class="comment"># 同样可以获取属性</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="爬虫的异常处理"><a href="#爬虫的异常处理" class="headerlink" title="爬虫的异常处理"></a>爬虫的异常处理</h1><h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><p>爬虫中的异常分为两种，一种是 HTTPError，另一种是 URLError，URLError 是 HTTPError 的父类，URLError不包括异常的状态码及原因而 HTTPError 包括，因此使用以下的方法来输出异常状态码和原因：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.error</span><br><span class="line"><span class="keyword">import</span> urllib.request</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    urllib.request.urlopen(<span class="string">&quot;http://blog.csdn.net&quot;</span>)</span><br><span class="line"><span class="keyword">except</span> urllib.error.URLError  <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">hasattr</span>(e,<span class="string">&quot;code&quot;</span>):</span><br><span class="line">        <span class="built_in">print</span>(e.code)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">hasattr</span>(e,<span class="string">&quot;reason&quot;</span>):</span><br><span class="line">        <span class="built_in">print</span>(e.reason)</span><br></pre></td></tr></table></figure>
+
+<h2 id="异常原因"><a href="#异常原因" class="headerlink" title="异常原因"></a>异常原因</h2><p>产生 URLError 的原因有以下几种：</p>
+<ol>
+<li>连不上服务器</li>
+<li>远程 URL 不存在</li>
+<li>本地没有网络</li>
+<li>触发 HTTPError 子类</li>
+</ol>
+<h2 id="常见异常"><a href="#常见异常" class="headerlink" title="常见异常"></a>常见异常</h2><p>301：重定向到新的 URL，永久性</p>
+<p>302：非永久性的重定向</p>
+<p>304：请求资源未更新</p>
+<p>400：非法请求</p>
+<p>401：请求未授权</p>
+<p>403：禁止访问</p>
+<p>404：找不到页面</p>
+<p>500：服务器内部出错</p>
+<p>501：服务器不支持实现请求所需要的功能</p>
+<h1 id="浏览器伪装技术"><a href="#浏览器伪装技术" class="headerlink" title="浏览器伪装技术"></a>浏览器伪装技术</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.request</span><br><span class="line"></span><br><span class="line">url=<span class="string">&quot;http://blog.csdn.net/weiwei_pig/article/details/52123738&quot;</span></span><br><span class="line"><span class="comment"># 添加浏览器的 User-Agent</span></span><br><span class="line">headers=(<span class="string">&quot;User-Agent&quot;</span>,<span class="string">&quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.22 Safari/537.36 SE 2.X MetaSr 1.0&quot;</span>)</span><br><span class="line">opener=urllib.request.build_opener()  <span class="comment"># 创建对象</span></span><br><span class="line">opener.addheaders=[headers]  <span class="comment"># 添加浏览器头</span></span><br><span class="line"></span><br><span class="line">data=opener.<span class="built_in">open</span>(url).read()</span><br><span class="line">fh=<span class="built_in">open</span>(<span class="string">&quot;F:/天善-Python数据分析与挖掘课程/result/22/4.html&quot;</span>,<span class="string">&quot;wb&quot;</span>)</span><br><span class="line">fh.write(data)</span><br><span class="line">fh.close()</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/%E7%88%AC%E8%99%AB/" rel="tag"># 爬虫</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/02/03/LearningOpenStack-11-neutron-dhcp/" rel="prev" title="【学习】十一、Linux Bridge 实现 Neutron 网络">
+      <i class="fa fa-chevron-left"></i> 【学习】十一、Linux Bridge 实现 Neutron 网络
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/03/28/xscproject/" rel="next" title="项目结构">
+      项目结构 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#BeautifulSoup-%E5%BA%93"><span class="nav-text">BeautifulSoup 库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%88%AC%E8%99%AB%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="nav-text">爬虫的异常处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="nav-text">异常处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8%E5%8E%9F%E5%9B%A0"><span class="nav-text">异常原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8"><span class="nav-text">常见异常</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E4%BC%AA%E8%A3%85%E6%8A%80%E6%9C%AF"><span class="nav-text">浏览器伪装技术</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

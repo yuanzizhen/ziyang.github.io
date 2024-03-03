@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、环境安装 安装 Node.js https:&#x2F;&#x2F;nodejs.org&#x2F;en&#x2F; 安装 Git https:&#x2F;&#x2F;github.com&#x2F;waylau&#x2F;git-for-win   安装完成后，在开始菜单里找到“Git”-&gt;“Git Bash”，名称和邮箱是Github上的。git config --global user.name &quot;***&quot;git config --glob">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 Hexo 在 Github 上面部署博客">
+<meta property="og:url" content="http://iziyang.github.io/2017/03/11/%E7%94%A8Hexo%E5%9C%A8Github%E4%B8%8A%E9%9D%A2%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="一、环境安装 安装 Node.js https:&#x2F;&#x2F;nodejs.org&#x2F;en&#x2F; 安装 Git https:&#x2F;&#x2F;github.com&#x2F;waylau&#x2F;git-for-win   安装完成后，在开始菜单里找到“Git”-&gt;“Git Bash”，名称和邮箱是Github上的。git config --global user.name &quot;***&quot;git config --glob">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://iziyang.github.io/images/1.png">
+<meta property="og:image" content="http://iziyang.github.io/images/2.png">
+<meta property="article:published_time" content="2017-03-11T07:28:30.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.821Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://iziyang.github.io/images/1.png">
+
+<link rel="canonical" href="http://iziyang.github.io/2017/03/11/%E7%94%A8Hexo%E5%9C%A8Github%E4%B8%8A%E9%9D%A2%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>用 Hexo 在 Github 上面部署博客 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2017/03/11/%E7%94%A8Hexo%E5%9C%A8Github%E4%B8%8A%E9%9D%A2%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用 Hexo 在 Github 上面部署博客
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-11 15:28:30" itemprop="dateCreated datePublished" datetime="2017-03-11T15:28:30+08:00">2017-03-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/03/11/%E7%94%A8Hexo%E5%9C%A8Github%E4%B8%8A%E9%9D%A2%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/" class="post-meta-item leancloud_visitors" data-flag-title="用 Hexo 在 Github 上面部署博客" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/03/11/%E7%94%A8Hexo%E5%9C%A8Github%E4%B8%8A%E9%9D%A2%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/03/11/%E7%94%A8Hexo%E5%9C%A8Github%E4%B8%8A%E9%9D%A2%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、环境安装"><a href="#一、环境安装" class="headerlink" title="一、环境安装"></a>一、环境安装</h1><ol>
+<li>安装 Node.js <a target="_blank" rel="noopener" href="https://nodejs.org/en/">https://nodejs.org/en/</a></li>
+<li>安装 Git <a target="_blank" rel="noopener" href="https://github.com/waylau/git-for-win">https://github.com/waylau/git-for-win</a></li>
+</ol>
+<ol start="3">
+<li><p>安装完成后，在开始菜单里找到“Git”-&gt;“Git Bash”，名称和邮箱是Github上的。<br><code>git config --global user.name &quot;***&quot;</code><br><code>git config --global user.email &quot;i**@**.com&quot;</code></p>
+</li>
+<li><p>安装 Hexo。所有必备的应用程序安装完成后，即可使用 npm 安装 Hexo。在命令提示符中：<code>npm install -g hexo-cli</code>好了到这一步我们环境全部安装好了。</p>
+</li>
+</ol>
+<h1 id="二、设置"><a href="#二、设置" class="headerlink" title="二、设置"></a>二、设置</h1><ol>
+<li>在命令行提示符中进入要设置blog的目录<code>hexo init blog</code>这条命令会创建一个blog的文件夹。提示<code>INFO  Start blogging with Hexo!</code></li>
+<li>初始化hexo 之后source目录下自带一篇hello world文章, 所以直接执行下方命令：<br><code>$ hexo generate #启动本地服务器</code><br><code>$ hexo server #在浏览器输入 http://localhost:4000/就可以看见网页和模板了</code><br><code>INFO  Start processing</code><br><code>INFO  Hexo is running at http://localhost:4000/. Press Ctrl+C to stop.</code><br>这里发现网页一直无响应，应该是4000端口被占用了，所以这里换成5000<br><code>hexo server -p 5000</code><br>成功！<br><img src="/images/1.png" alt="alt text"></li>
+</ol>
+<p>3.将ssh-keygen.ext添加到环境变量，一般在git安装文件夹下bin下面。重新打开<strong>git bash</strong>，输入：<code>ssh-keygen -t rsa -C &quot;Github的注册邮箱地址&quot;</code></p>
+<blockquote>
+<p>之前一直在命令行提示符中执行命令，结果提示找不到<code>ssh-keygen</code></p>
+</blockquote>
+<p>一路Enter过来就好，得到信息：<br>​<br>    Your public key has been saved in /c/Users/user/.ssh/id_rsa.pub.</p>
+<p>找到该文件，打开（sublime text），<code>Ctrl+a</code>复制里面的所有内容，然后进入GitHub：<a target="_blank" rel="noopener" href="https://github.com/settings/ssh">https://github.com/settings/ssh</a></p>
+<blockquote>
+<p>New SSH key ——Title：blog —— Key：输入刚才复制的—— Add SSH key</p>
+</blockquote>
+<h1 id="三、配置博客"><a href="#三、配置博客" class="headerlink" title="三、配置博客"></a>三、配置博客</h1><p>在blog目录下，用sublime（为了防止乱码，yml是utf-8编码）打开_config.yml文件，修改参数信息</p>
+<p>特别提醒，在每个参数的：后都要加一个空格</p>
+<p>修改网站相关信息</p>
+<pre><code>title: 北子说
+subtitle: Some essays
+description: 我还是喜欢你，像风走了八万里，不问归期。
+author: 北子
+language: zh-Hans
+timezone: Asia/Shanghai
+</code></pre>
+<p>配置部署</p>
+<pre><code>deploy: 
+  type: git
+  repo: https://github.com/yuanzizhen/yuanzizhen.github.io.git
+  branch: master
+</code></pre>
+<h1 id="四、发表文章"><a href="#四、发表文章" class="headerlink" title="四、发表文章"></a>四、发表文章</h1><p>在命令行提示符中输入</p>
+<pre><code>$ hexo new &quot;北子测试文章&quot;
+INFO  Created: F:\test\blog\source\_posts\北子测试文章.md
+</code></pre>
+<p>找到该文章，打开，使用Markdown语法</p>
+<pre><code>---
+title: 北子测试文章
+date: 2017-02-28 13:03:44
+tags:
+---
+这是一篇测试文章，欢迎关注作者博客: https://yuanzizhen.github.io/
+</code></pre>
+<p>保存，然后执行下列步骤：</p>
+<pre><code>$ hexo clean
+$ hexo generate
+$ hexo server -p 5000
+</code></pre>
+<p>这个时候，打开<a target="_blank" rel="noopener" href="http://localhost:5000/%EF%BC%8C%E5%8F%91%E7%8E%B0%E7%9C%8B%E4%B8%8D%E5%88%B0%E5%88%9A%E5%88%9A%E7%BC%96%E8%BE%91%E7%9A%84%E6%96%87%E7%AB%A0%E3%80%82%E5%8E%9F%E5%9B%A0%EF%BC%9A%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%8F%90%E7%A4%BA%E7%AC%A6%E4%B8%AD%E6%89%A7%E8%A1%8C">http://localhost:5000/，发现看不到刚刚编辑的文章。原因：命令行提示符中执行</a></p>
+<pre><code>npm install hexo-deployer-git --save
+</code></pre>
+<p>成功！</p>
+<p><img src="/images/2.png" alt="alt text"></p>
+<blockquote>
+<p>这里乱码的原因是，配置文件中的中文没有用utf-8编码，因此，在配置的时候一定要注意编码。</p>
+</blockquote>
+<p>最后一步，发布到网上，执行：</p>
+<pre><code>$ hexo deploy
+</code></pre>
+<p>其中会跳出Github登录，直接登录，如果没有问题输入yuanzizhen（换成你的）.github.io/,然后就可以看到已经发布了</p>
+<h1 id="五、修改主题"><a href="#五、修改主题" class="headerlink" title="五、修改主题"></a>五、修改主题</h1><p>我这里使用next主题，GitHub上面star数最多的主题。<br><a target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">https://github.com/iissnan/hexo-theme-next</a> 而且还有详细的安装文档。<br>这里不再赘述。另外，我还添加了第三方服务多说评论，多说分享等。</p>
+<p>在修改菜单项的时候遇到了不少错误，最终的配置如下：</p>
+<p>在<code>主题配置文件</code>中</p>
+<pre><code>menu:
+  home: /
+  #categories: /categories
+  #about: /about
+  archives: /archives
+  tags: /tags
+  #sitemap: /sitemap.xml
+  #commonweal: /404.html
+  openstack: /categories/云计算
+  code&amp;tech: /categories/code-tech
+  book: /categories/颜如玉
+  essay: /categories/杂谈
+</code></pre>
+<p>同时修改图标：</p>
+<pre><code>menu_icons:
+  enable: true
+  #KeyMapsToMenuItemKey: NameOfTheIconFromFontAwesome
+  home: home
+  about: user
+  categories: th
+  schedule: calendar
+  tags: tags
+  archives: archive
+  sitemap: sitemap
+  commonweal: heartbeat
+  openstack: cloud
+  code&amp;tech: code
+  book: book
+  essay: file-o
+</code></pre>
+<p>在主题文件夹下有一个language文件夹，下面找到自己设置的语言配置文件，我这里是zh-Hans:</p>
+<pre><code>menu:
+  home: 首页
+  archives: 归档
+  categories: 分类
+  tags: 标签
+  about: 关于
+  search: 搜索
+  schedule: 日程表
+  sitemap: 站点地图
+  commonweal: 公益404
+  openstack: 云计算
+  code&amp;tech: code-tech
+  book: 颜如玉
+  essay: 杂谈
+</code></pre>
+<p>在站点配置文件中还要修改：<br>​<br>    # URL<br>    ## If your site is put in a subdirectory, set url as ‘<a target="_blank" rel="noopener" href="http://yoursite.com/child&#39;">http://yoursite.com/child&#39;</a> and root as ‘/child/‘<br>    url: <a target="_blank" rel="noopener" href="http://yuanzizhen.github.io/">http://yuanzizhen.github.io</a><br>    root: /<br>    permalink: :year/:month/:day/:title/<br>    permalink_defaults:<br>url要设置为自己的url。</p>
+<p>到这里我的第一个博客就全部搭建完成了。</p>
+<p><strong>注意：</strong></p>
+<p>如果要修改了之前发布的文章，最好将对应的public文件夹下的静态网页删除掉，然后再<code>hexo g</code>生成，才能产生效果。</p>
+<p>如果要设置阅读全文，最好是在文中合适的位置添加``</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+              <a href="/tags/blog/" rel="tag"># blog</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/03/11/%E5%B0%8F%E7%8B%97%E9%92%B1%E9%92%B1/" rel="prev" title="小狗钱钱">
+      <i class="fa fa-chevron-left"></i> 小狗钱钱
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/03/14/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85OpenStack-Ocata%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97/" rel="next" title="手把手教你安装 OpenStack-Ocata 安装指南">
+      手把手教你安装 OpenStack-Ocata 安装指南 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="nav-text">一、环境安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E8%AE%BE%E7%BD%AE"><span class="nav-text">二、设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E9%85%8D%E7%BD%AE%E5%8D%9A%E5%AE%A2"><span class="nav-text">三、配置博客</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%8F%91%E8%A1%A8%E6%96%87%E7%AB%A0"><span class="nav-text">四、发表文章</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E4%BF%AE%E6%94%B9%E4%B8%BB%E9%A2%98"><span class="nav-text">五、修改主题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

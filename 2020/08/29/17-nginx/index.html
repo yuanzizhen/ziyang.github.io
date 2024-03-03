@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="之前详细讲了讲了 HTTP 的反向代理是如何实现的。这一篇文章来对比一下其他的应用层协议，看一下 Nginx 的指令。有这么四类协议，分别是 uwsgi、fastcgi、scgi。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="七层反向代理对照">
+<meta property="og:url" content="http://iziyang.github.io/2020/08/29/17-nginx/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="之前详细讲了讲了 HTTP 的反向代理是如何实现的。这一篇文章来对比一下其他的应用层协议，看一下 Nginx 的指令。有这么四类协议，分别是 uwsgi、fastcgi、scgi。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200623064631">
+<meta property="article:published_time" content="2020-08-29T04:47:49.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.822Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200623064631">
+
+<link rel="canonical" href="http://iziyang.github.io/2020/08/29/17-nginx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>七层反向代理对照 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2020/08/29/17-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          七层反向代理对照
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-29 12:47:49" itemprop="dateCreated datePublished" datetime="2020-08-29T12:47:49+08:00">2020-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/29/17-nginx/" class="post-meta-item leancloud_visitors" data-flag-title="七层反向代理对照" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/29/17-nginx/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/29/17-nginx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>之前详细讲了讲了 HTTP 的反向代理是如何实现的。这一篇文章来对比一下其他的应用层协议，看一下 Nginx 的指令。有这么四类协议，分别是 uwsgi、fastcgi、scgi。</p>
+<span id="more"></span>
+
+<h2 id="七层反向代理对照"><a href="#七层反向代理对照" class="headerlink" title="七层反向代理对照"></a>七层反向代理对照</h2><p>这个对照我们按照前面讲过的 HTTP 反向代理流程来做一一对比，实际上这些指令都是和 HTTP 反向代理的指令类似的，区别在于开头不同。有些指令没有是因为协议本身不支持。先来看构造请求内容。</p>
+<h3 id="构造请求内容"><a href="#构造请求内容" class="headerlink" title="构造请求内容"></a>构造请求内容</h3><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th>uwsgi 反向代理</th>
+<th>fastcgi 反向代理</th>
+<th>scgi 反向代理</th>
+<th>http 反向代理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">指定上游</td>
+<td>uwsgi_pass</td>
+<td>fastcgi_pass</td>
+<td>scgi_pass</td>
+<td>proxy_pass</td>
+</tr>
+<tr>
+<td align="left">是否传递请求头部</td>
+<td>uwsgi_pass_request_headers</td>
+<td>fastcgi_pass_request_headers</td>
+<td>scgi_pass_request_headers</td>
+<td>proxy_pass_request_headers</td>
+</tr>
+<tr>
+<td align="left">是否传递请求包体</td>
+<td>uwsgi_pass_request_body</td>
+<td>fastcgi_pass_request_body</td>
+<td>scgi_pass_request_body</td>
+<td>proxy_pass_request_body</td>
+</tr>
+<tr>
+<td align="left">指定请求方法名</td>
+<td></td>
+<td></td>
+<td></td>
+<td>proxy_method</td>
+</tr>
+<tr>
+<td align="left">指定请求协议</td>
+<td></td>
+<td></td>
+<td></td>
+<td>proxy_http_version</td>
+</tr>
+<tr>
+<td align="left">增、改请求头部</td>
+<td></td>
+<td></td>
+<td></td>
+<td>proxy_set_header</td>
+</tr>
+<tr>
+<td align="left">设置请求包体</td>
+<td></td>
+<td></td>
+<td></td>
+<td>proxy_set_body</td>
+</tr>
+<tr>
+<td align="left">是否缓存请求包体</td>
+<td>uwsgi_request_buffering</td>
+<td>fastcgi_request_buffering</td>
+<td>scgi_request_buffering</td>
+<td>proxy_request_buffering</td>
+</tr>
+</tbody></table>
+<p>这里面可以看到，指定请求方法名、指定请求协议、增改请求头部、设置请求包体这四类 uwsgi、fastcgi、scgi 是不需要这样的应用的，HTTP 则支持修改方法名、协议、头部和包体设置。</p>
+<h3 id="建立连接并发送请求"><a href="#建立连接并发送请求" class="headerlink" title="建立连接并发送请求"></a>建立连接并发送请求</h3><p>对于设置头部大小来说，uwsgi、fastcgi、scgi 没有此功能。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th>uwsgi 反向代理</th>
+<th>fastcgi 反向代理</th>
+<th>scgi 反向代理</th>
+<th>http 反向代理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">连接上游超时时间</td>
+<td>uwsgi_connect_timeout</td>
+<td>fastcgi_connect_timeout</td>
+<td>scgi_connect_timeout</td>
+<td>proxy_connect_timeout</td>
+</tr>
+<tr>
+<td align="left">连接绑定地址</td>
+<td>uwsgi_bind</td>
+<td>fastcgi_bind</td>
+<td>scgi_bind</td>
+<td>proxy_bind</td>
+</tr>
+<tr>
+<td align="left">使用 TCP keepalive</td>
+<td>uwsgi_socket_keepalive</td>
+<td>fastcgi_socket_keepalive</td>
+<td>scgi_socket_keepalive</td>
+<td>proxy_socket_keepalive</td>
+</tr>
+<tr>
+<td align="left">忽略客户端关连接</td>
+<td>uwsgi_ignore_client_abort</td>
+<td>fastcgi_ignore_client_abort</td>
+<td>scgi_ignore_client_abort</td>
+<td>proxy_ignore_client_abort</td>
+</tr>
+<tr>
+<td align="left">设置 HTTP 头部用到的哈希表大小</td>
+<td></td>
+<td></td>
+<td></td>
+<td>proxy_headers_hash_bucket_size</td>
+</tr>
+<tr>
+<td align="left">设置 HTTP 头部哈希表最大值</td>
+<td></td>
+<td></td>
+<td></td>
+<td>proxy_headers_hash_max_size</td>
+</tr>
+<tr>
+<td align="left">发送请求超时时间</td>
+<td>uwsgi_send_timeout</td>
+<td>fastcgi_send_timeout</td>
+<td>scgi_send_timeout</td>
+<td>proxy_send_timeout</td>
+</tr>
+</tbody></table>
+<h3 id="接收上游响应"><a href="#接收上游响应" class="headerlink" title="接收上游响应"></a>接收上游响应</h3><p>再来看接收上游响应的部分，这一部分基本没有什么特别的。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th>uwsgi 反向代理</th>
+<th>fastcgi 反向代理</th>
+<th>scgi 反向代理</th>
+<th>http 反向代理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">是否缓存上游响应</td>
+<td>uwsgi_buffering</td>
+<td>fastcgi_buffering</td>
+<td>scgi_buffering</td>
+<td>proxy_buffering</td>
+</tr>
+<tr>
+<td align="left">存放上游响应的目录</td>
+<td>uwsgi_temp_path</td>
+<td>fastcgi_temp_path</td>
+<td>scgi_temp_path</td>
+<td>proxy_temp_path</td>
+</tr>
+<tr>
+<td align="left">写文件缓存大小</td>
+<td>uwsgi_temp_file_write_size</td>
+<td>fastcgi_temp_file_write_size</td>
+<td>scgi_temp_file_write_size</td>
+<td>proxy_temp_file_write_size</td>
+</tr>
+<tr>
+<td align="left">临时文件最大大小</td>
+<td>uwsgi_max_temp_file_size</td>
+<td>fastcgi_max_temp_file_size</td>
+<td>scgi_max_temp_file_size</td>
+<td>proxy_max_temp_file_size</td>
+</tr>
+<tr>
+<td align="left">接收响应头部缓存</td>
+<td>uwsgi_buffer_size</td>
+<td>fastcgi_buffer_size</td>
+<td>scgi_buffer_size</td>
+<td>proxy_buffer_size</td>
+</tr>
+<tr>
+<td align="left">接收响应包体缓存</td>
+<td>uwsgi_buffers</td>
+<td>fastcgi_buffers</td>
+<td>scgi_buffers</td>
+<td>proxy_buffers</td>
+</tr>
+<tr>
+<td align="left">缓存完成前转发包体</td>
+<td>uwsgi_busy_buffers_size</td>
+<td>fastcgi_busy_buffers_size</td>
+<td>scgi_busy_buffers_size</td>
+<td>proxy_busy_buffers_size</td>
+</tr>
+<tr>
+<td align="left">持久化包体文件</td>
+<td>uwsgi_store</td>
+<td>fastcgi_store</td>
+<td>scgi_store</td>
+<td>proxy_store</td>
+</tr>
+<tr>
+<td align="left">设定包体文件权限</td>
+<td>uwsgi_store_access</td>
+<td>fastcgi_store_access</td>
+<td>scgi_store_access</td>
+<td>proxy_store_access</td>
+</tr>
+<tr>
+<td align="left">读取响应超时时间</td>
+<td>uwsgi_read_timeout</td>
+<td>fastcgi_read_timeout</td>
+<td>scgi_read_timeout</td>
+<td>proxy_read_timeout</td>
+</tr>
+<tr>
+<td align="left">读取响应限速</td>
+<td>uwsgi_limit_rate</td>
+<td>fastcgi_limit_rate</td>
+<td>scgi_limit_rate</td>
+<td>proxy_limit_rate</td>
+</tr>
+</tbody></table>
+<h3 id="转发响应"><a href="#转发响应" class="headerlink" title="转发响应"></a>转发响应</h3><p>这一部分里面对于 Cookie 和修改 302 跳转来说，uwsgi、fastcgi、scgi 没有此功能。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th>uwsgi 反向代理</th>
+<th>fastcgi 反向代理</th>
+<th>scgi 反向代理</th>
+<th>http 反向代理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">减少发向客户端的响应头部</td>
+<td>uwsgi_hide_header</td>
+<td>fastcgi_hide_header</td>
+<td>scgi_hide_header</td>
+<td>proxy_hide_header</td>
+</tr>
+<tr>
+<td align="left">禁用响应头部功能</td>
+<td>uwsgi_ignore_headers</td>
+<td>fastcgi_ignore_headers</td>
+<td>scgi_ignore_headers</td>
+<td>proxy_ignore_headers</td>
+</tr>
+<tr>
+<td align="left">替换 Set-Cookie 头部中的域名</td>
+<td></td>
+<td></td>
+<td></td>
+<td>proxy_cookie_domain</td>
+</tr>
+<tr>
+<td align="left">替换 Set-Cookie 头部中的 URL</td>
+<td></td>
+<td></td>
+<td></td>
+<td>proxy_cookie_path</td>
+</tr>
+<tr>
+<td align="left">修改重定向响应 Location 的值</td>
+<td></td>
+<td></td>
+<td></td>
+<td>proxy_redirect</td>
+</tr>
+<tr>
+<td align="left">传递头部到客户端</td>
+<td>uwsgi_pass_header</td>
+<td>fastcgi_pass_header</td>
+<td>scgi_pass_header</td>
+<td>proxy_pass_header</td>
+</tr>
+<tr>
+<td align="left">出错时更换上游</td>
+<td>uwsgi_next_upstream</td>
+<td>fastcgi_next_upstream</td>
+<td>scgi_next_upstream</td>
+<td>proxy_next_upstream</td>
+</tr>
+<tr>
+<td align="left">更换上游超时</td>
+<td>uwsgi_next_upstream_timeout</td>
+<td>fastcgi_next_upstream_timeout</td>
+<td>scgi_next_upstream_timeout</td>
+<td>proxy_next_upstream_timeout</td>
+</tr>
+<tr>
+<td align="left">更换上游重试次数</td>
+<td>uwsgi_next_upstream_tries</td>
+<td>fastcgi_next_upstream_tries</td>
+<td>scgi_next_upstream_tries</td>
+<td>proxy_next_upstream_tries</td>
+</tr>
+<tr>
+<td align="left">拦截上游错误响应</td>
+<td>uwsgi_intercept_errors</td>
+<td>fastcgi_intercept_errors</td>
+<td>scgi_intercept_errors</td>
+<td>proxy_intercept_errors</td>
+</tr>
+</tbody></table>
+<h3 id="SSL"><a href="#SSL" class="headerlink" title="SSL"></a>SSL</h3><p>对于上游服务使用 SSL，fastcgi 和 scgi 是不支持的。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th>uwsgi 反向代理</th>
+<th>fastcgi 反向代理</th>
+<th>scgi 反向代理</th>
+<th>http 反向代理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">配置用于上游通讯的证书</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">配置用于上游通讯的私钥</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">指定安全套件</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">指定吊销证书链 CRL 文件验证上游的证书</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">指定域名验证上游证书中的域名</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">当私钥有密码时指定密码文件</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">指定具体某个版本的协议</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">传递 SNI 信息至上游</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">是否重用 SSL 连接</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">验证上游服务的证书</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">是否验证上游服务的证书</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+<tr>
+<td align="left">设置验证证书链的深度</td>
+<td>uwsgi_ssl_certificate</td>
+<td></td>
+<td></td>
+<td>proxy_ssl_certificate</td>
+</tr>
+</tbody></table>
+<h3 id="缓存类指令"><a href="#缓存类指令" class="headerlink" title="缓存类指令"></a>缓存类指令</h3><p>这里只有将 HEAD 方法转化为 GET 方法是不适用的。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th>uwsgi 反向代理</th>
+<th>fastcgi 反向代理</th>
+<th>scgi 反向代理</th>
+<th>http 反向代理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">指定共享内存</td>
+<td>uwsgi_cache</td>
+<td>fastcgi_cache</td>
+<td>scgi_cache</td>
+<td>proxy_cache</td>
+</tr>
+<tr>
+<td align="left">缓存文件存放位置</td>
+<td>uwsgi_cache_path</td>
+<td>fastcgi_cache_path</td>
+<td>scgi_cache_path</td>
+<td>proxy_cache_path</td>
+</tr>
+<tr>
+<td align="left">指定哪些请求不使用缓存</td>
+<td>uwsgi_cache_bypass</td>
+<td>fastcgi_cache_bypass</td>
+<td>scgi_cache_bypass</td>
+<td>proxy_cache_bypass</td>
+</tr>
+<tr>
+<td align="left">开启子请求更新陈旧缓存</td>
+<td>uwsgi_cache_background_update</td>
+<td>fastcgi_cache_background_update</td>
+<td>scgi_cache_background_update</td>
+<td>proxy_cache_background_update</td>
+</tr>
+<tr>
+<td align="left">定义缓存关键字</td>
+<td>uwsgi_cache_key</td>
+<td>fastcgi_cache_key</td>
+<td>scgi_cache_key</td>
+<td>proxy_cache_key</td>
+</tr>
+<tr>
+<td align="left">使用 range 协议的偏移</td>
+<td>uwsgi_cache_max_range_offset</td>
+<td>fastcgi_cache_max_range_offset</td>
+<td>scgi_cache_max_range_offset</td>
+<td>proxy_cache_max_range_offset</td>
+</tr>
+<tr>
+<td align="left">缓存哪些请求方法</td>
+<td>uwsgi_cache_methods</td>
+<td>fastcgi_cache_methods</td>
+<td>scgi_cache_methods</td>
+<td>proxy_cache_methods</td>
+</tr>
+<tr>
+<td align="left">多少请求后再缓存</td>
+<td>uwsgi_cache_min_uses</td>
+<td>fastcgi_cache_min_uses</td>
+<td>scgi_cache_min_uses</td>
+<td>proxy_cache_min_uses</td>
+</tr>
+<tr>
+<td align="left">缓存哪些响应及时长</td>
+<td>uwsgi_cache_valid</td>
+<td>fastcgi_cache_valid</td>
+<td>scgi_cache_valid</td>
+<td>proxy_cache_valid</td>
+</tr>
+<tr>
+<td align="left">强制使用 range 协议</td>
+<td>uwsgi_force_ranges</td>
+<td>fastcgi_force_ranges</td>
+<td>scgi_force_ranges</td>
+<td>proxy_force_ranges</td>
+</tr>
+<tr>
+<td align="left">有陈旧内容使用 304</td>
+<td>uwsgi_cache_revalidate</td>
+<td>fastcgi_cache_revalidate</td>
+<td>scgi_cache_revalidate</td>
+<td>proxy_cache_revalidate</td>
+</tr>
+<tr>
+<td align="left">返回陈旧的缓存内容</td>
+<td>uwsgi_cache_use_stale</td>
+<td>fastcgi_cache_use_stale</td>
+<td>scgi_cache_use_stale</td>
+<td>proxy_cache_use_stale</td>
+</tr>
+<tr>
+<td align="left">指定哪些响应不会写入缓存</td>
+<td>uwsgi_no_cache</td>
+<td>fastcgi_no_cache</td>
+<td>scgi_no_cache</td>
+<td>proxy_no_cache</td>
+</tr>
+<tr>
+<td align="left">将 HEAD 方法转换为 GET 方法</td>
+<td>uwsgi_</td>
+<td>fastcgi_</td>
+<td>scgi_</td>
+<td>proxy_</td>
+</tr>
+<tr>
+<td align="left">加锁减少回源请求</td>
+<td>uwsgi_cache_lock</td>
+<td>fastcgi_cache_lock</td>
+<td>scgi_cache_lock</td>
+<td>proxy_cache_lock</td>
+</tr>
+<tr>
+<td align="left">回源请求到达该超时时间后再放行</td>
+<td>uwsgi_cache_lock_age</td>
+<td>fastcgi_cache_lock_age</td>
+<td>scgi_cache_lock_age</td>
+<td>proxy_cache_lock_age</td>
+</tr>
+<tr>
+<td align="left">等待请求的最长等待时间</td>
+<td>uwsgi_cache_lock_timeout</td>
+<td>fastcgi_cache_lock_timeout</td>
+<td>scgi_cache_lock_timeout</td>
+<td>proxy_cache_lock_timeout</td>
+</tr>
+</tbody></table>
+<h3 id="特殊的独有配置"><a href="#特殊的独有配置" class="headerlink" title="特殊的独有配置"></a>特殊的独有配置</h3><p>这部分是这三个协议相对 HTTP 多出来的一些功能，这些功能也是很简单的。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th>uwsgi 反向代理</th>
+<th>fastcgi 反向代理</th>
+<th>scgi 反向代理</th>
+<th>http 反向代理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td>uwsgi_modifier1</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td>uwsgi_modifier2</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td>uwsgi_param</td>
+<td>fastcgi_param</td>
+<td>uwsgi_param</td>
+<td></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td></td>
+<td>fastcgi_index</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td></td>
+<td>fastcgi_catch_stderr</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="memcached-反向代理"><a href="#memcached-反向代理" class="headerlink" title="memcached 反向代理"></a>memcached 反向代理</h2><ul>
+<li>功能：相对简单，只能转换 get 请求<ul>
+<li>将 HTTP 请求转换为 memcached 协议中的 get 请求，转发请求至上游 memcached 服务</li>
+<li>get 命令：get &lt;key&gt;*\r\n</li>
+<li>控制命令：&lt;command name&gt; &lt;key&gt; &lt;flags&gt; &lt;exptime&gt; &lt;bytes&gt; [noreply]\r\n</li>
+<li>通过设置 memcached_key 变量构造 key 键</li>
+</ul>
+</li>
+<li>模块：默认编译进 Nginx，ngx_http_memcached_module，通过 –without-http_memcached_module 禁用模块功能</li>
+</ul>
+<h3 id="memcached-指令"><a href="#memcached-指令" class="headerlink" title="memcached 指令"></a>memcached 指令</h3><p>memecached 是一个简化版的 HTTP 反向代理。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th>memcached 反向代理</th>
+<th>http 反向代理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">指定上游</td>
+<td>memcached_pass</td>
+<td>proxy_pass</td>
+</tr>
+<tr>
+<td align="left">连接绑定地址</td>
+<td>memcached_bind</td>
+<td>proxy_bind</td>
+</tr>
+<tr>
+<td align="left">接收响应头部缓存</td>
+<td>memcached_buffer_size</td>
+<td>proxy_buffer_size</td>
+</tr>
+<tr>
+<td align="left">连接上游超时时间</td>
+<td>memcached_connect_timeout</td>
+<td>proxy_connect_timeout</td>
+</tr>
+<tr>
+<td align="left">强制使用 range 请求</td>
+<td>memcached_force_ranges</td>
+<td>proxy_force_ranges</td>
+</tr>
+<tr>
+<td align="left">针对设置 key 时的 flag，对相应 flag 添加 gzip 响应头部</td>
+<td>memcached_gzip_flag</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">出错时更换上游</td>
+<td>memcached_next_upstream</td>
+<td>proxy_next_upstream</td>
+</tr>
+<tr>
+<td align="left">更换上游超时</td>
+<td>memcached_next_upstream_timeout</td>
+<td>proxy_next_upstream_timeout</td>
+</tr>
+<tr>
+<td align="left">更换上游重试次数</td>
+<td>memcached_next_upstream_tries</td>
+<td>proxy_next_upstream_tries</td>
+</tr>
+<tr>
+<td align="left">读取响应超时时间</td>
+<td>memcached_read_timeout</td>
+<td>proxy_read_timeout</td>
+</tr>
+<tr>
+<td align="left">发送请求超时时间</td>
+<td>memcached_send_timeout</td>
+<td>proxy_send_timeout</td>
+</tr>
+<tr>
+<td align="left">使用 TCP keepalive</td>
+<td>memcached_socket_keepalive</td>
+<td>proxy_socket_keepalive</td>
+</tr>
+</tbody></table>
+<h2 id="WebSocket-反向代理"><a href="#WebSocket-反向代理" class="headerlink" title="WebSocket 反向代理"></a>WebSocket 反向代理</h2><p>WebSocket 协议相对于 HTTP/1.1 协议而言，它可以从服务端向浏览器推送请求。另外，由于使用长连接、二进制的格式，因此 WebSocket 的通信效率比 HTTP/1.1 也要高一些。</p>
+<ul>
+<li>功能：由 ngx_http_proxy_module 模块实现</li>
+<li>配置：<ul>
+<li>proxy_http_version 1.1;</li>
+<li>proxy_set_header Upgrade $http_upgrade;</li>
+<li>proxy_set_header Connection “upgrade”;</li>
+</ul>
+</li>
+</ul>
+<h3 id="协议升级过程"><a href="#协议升级过程" class="headerlink" title="协议升级过程"></a>协议升级过程</h3><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200623064631"></p>
+<ul>
+<li>客户端发送 HTTP 请求到服务器</li>
+</ul>
+<p>在请求头里面需要标明：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Connection: keep-alive, Upgrade</span><br><span class="line">Upgrade: websocket</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>服务器返回给客户端 101，表示支持 WebSocket</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 101 Web Socket Protocol Handshake</span><br></pre></td></tr></table></figure>
+
+<h3 id="WebSocket-协议帧"><a href="#WebSocket-协议帧" class="headerlink" title="WebSocket 协议帧"></a>WebSocket 协议帧</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-------+-+-------------+-------------------------------+</span><br><span class="line">|F|R|R|R| opcode|M| Payload len |    Extended payload length    |</span><br><span class="line">|I|S|S|S|  (4)  |A|     (7)     |             (16/64)           |</span><br><span class="line">|N|V|V|V|       |S|             |   (if payload len==126/127)   |</span><br><span class="line">| |1|2|3|       |K|             |                               |</span><br><span class="line">+-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +</span><br><span class="line">|     Extended payload length continued, if payload len == 127  |</span><br><span class="line">+ - - - - - - - - - - - - - - - +-------------------------------+</span><br><span class="line">|                               |Masking-key, if MASK set to 1  |</span><br><span class="line">+-------------------------------+-------------------------------+</span><br><span class="line">| Masking-key (continued)       |          Payload Data         |</span><br><span class="line">+-------------------------------- - - - - - - - - - - - - - - - +</span><br><span class="line">:                     Payload Data continued ...                :</span><br><span class="line">+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +</span><br><span class="line">|                     Payload Data continued ...                |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>FIN：共 1 位，标记消息是否是最后 1 帧，1 个消息由 1 个或多个数据帧构成，若消息由 1 帧构成，起始帧就是结束帧</li>
+<li>RSV1/RSV2/RSV3：各 1 位，预留位，用于自定义扩展。如果没有扩展，各位值为 0；如果定义了扩展，即为非 0 值；如果接收的帧中此处为 0，但是扩展中却没有该值的定义就关闭连接</li>
+<li>Payload len：7 位或 7+16 位或 7+64 位，如果值为：<ul>
+<li>0-125：则 Payload Data 的长度即为该值</li>
+<li>126：那么接下来的 2 个字节才是 Payload Data 的长度（unsigned）</li>
+<li>127：那么接下来的 8 个字节才是 Payload Data 的长度（unsigned）</li>
+</ul>
+</li>
+<li>opcode：4 位<ul>
+<li>解释 Payload Data，如果接收到位置的 opcode，接收端必须关闭连接</li>
+<li>0x0 表示附加数据帧</li>
+<li>0x1 表示文本数据帧</li>
+<li>0x2 表示二进制数据帧</li>
+<li>0x3-7 暂时无定义，为以后的非控制帧保留</li>
+<li>0x8 表示连接关闭</li>
+<li>0x9 表示 ping，心跳请求</li>
+<li>0xA 表示 pong，心跳响应</li>
+<li>0xB-F 暂时无定义，为以后的控制帧保留</li>
+</ul>
+</li>
+<li>MASK，共 1 位，掩码位，表示帧中的数据是否经过加密，客户端发出的数据帧需要经过掩码处理，这个值都是 1。如果值是 1，那么 Masking-key 域的数据就是掩码秘钥</li>
+</ul>
+<h3 id="WebSocket-协议特点和扩展头部"><a href="#WebSocket-协议特点和扩展头部" class="headerlink" title="WebSocket 协议特点和扩展头部"></a>WebSocket 协议特点和扩展头部</h3><ul>
+<li>数据分片有序。前一个 Frame 和后一个 Frame 之间存在依赖关系</li>
+<li>不支持多路复用。由于有序，所以不支持多路复用</li>
+<li>不支持压缩</li>
+</ul>
+<h4 id="扩展头部"><a href="#扩展头部" class="headerlink" title="扩展头部"></a>扩展头部</h4><ul>
+<li>Sec-WebSocket-Version：客户端发送，表示它想使用的 WebSocket 协议版本，如果服务器不支持发送的版本，就必须回应自己支持哪些版本</li>
+<li>Sec-WebSocket-Key：客户端发送，自动生成的一个键，作为一个对服务器的挑战，以验证服务器支持请求的协议版本</li>
+<li>Sec-WebSocket-Accept：服务器响应，包含 Sec-WebSocket-Accept 的签名值，证明它支持请求的协议版本</li>
+<li>Sec-WebSocket-Protocol：用于协商应用子协议，客户端发送支持的协议列表，服务器必须只回应一个协议名</li>
+<li>Sec-WebSocket-Extensions：用于协商本次连接要使用的 WebSocket 扩展，客户端发送支持的扩展，服务器通过返回相同的首部确认自己支持一个或多个扩展</li>
+</ul>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><p>由于 WebSocket 的搭建比较麻烦，我们可以直接使用第三方搭建好的 WebSocket 服务来进行测试。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/29/16-nginx/" rel="prev" title="如何减轻缓存失效时上游服务的压力">
+      <i class="fa fa-chevron-left"></i> 如何减轻缓存失效时上游服务的压力
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/29/18-nginx/" rel="next" title="使用分片提高缓存效率">
+      使用分片提高缓存效率 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E5%B1%82%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%AF%B9%E7%85%A7"><span class="nav-text">七层反向代理对照</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E8%AF%B7%E6%B1%82%E5%86%85%E5%AE%B9"><span class="nav-text">构造请求内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E5%B9%B6%E5%8F%91%E9%80%81%E8%AF%B7%E6%B1%82"><span class="nav-text">建立连接并发送请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E6%94%B6%E4%B8%8A%E6%B8%B8%E5%93%8D%E5%BA%94"><span class="nav-text">接收上游响应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E5%93%8D%E5%BA%94"><span class="nav-text">转发响应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSL"><span class="nav-text">SSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%B1%BB%E6%8C%87%E4%BB%A4"><span class="nav-text">缓存类指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E7%9A%84%E7%8B%AC%E6%9C%89%E9%85%8D%E7%BD%AE"><span class="nav-text">特殊的独有配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#memcached-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="nav-text">memcached 反向代理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#memcached-%E6%8C%87%E4%BB%A4"><span class="nav-text">memcached 指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WebSocket-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="nav-text">WebSocket 反向代理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E5%8D%87%E7%BA%A7%E8%BF%87%E7%A8%8B"><span class="nav-text">协议升级过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WebSocket-%E5%8D%8F%E8%AE%AE%E5%B8%A7"><span class="nav-text">WebSocket 协议帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WebSocket-%E5%8D%8F%E8%AE%AE%E7%89%B9%E7%82%B9%E5%92%8C%E6%89%A9%E5%B1%95%E5%A4%B4%E9%83%A8"><span class="nav-text">WebSocket 协议特点和扩展头部</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%A4%B4%E9%83%A8"><span class="nav-text">扩展头部</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-text">实战</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

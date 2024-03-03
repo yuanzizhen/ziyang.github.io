@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Ubuntu server 安装及配置安装注意事项使用 ubuntu-16.04.3-server-amd64 来进行安装，如果是虚拟化环境，需要启用嵌套虚拟化的选项。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="虚拟机中 Devstack 单节点安装 OpenStack">
+<meta property="og:url" content="http://iziyang.github.io/post_bak/single_node_devstack.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="Ubuntu server 安装及配置安装注意事项使用 ubuntu-16.04.3-server-amd64 来进行安装，如果是虚拟化环境，需要启用嵌套虚拟化的选项。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fjuh1hnre7j20aw04awec.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhgsn4jnj20tg074gm2.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhn41d65j20rk09x75f.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhnhgv14j20hd05ajrg.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhx4p05tj20on03h3yj.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fjuia6tqmwj20rr09ydgb.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fjuoc2ejf4j20sl0a40t9.jpg">
+<meta property="article:published_time" content="2017-09-24T02:44:04.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.863Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="OpenStack">
+<meta property="article:tag" content="devstack">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fjuh1hnre7j20aw04awec.jpg">
+
+<link rel="canonical" href="http://iziyang.github.io/post_bak/single_node_devstack">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>虚拟机中 Devstack 单节点安装 OpenStack | 原少子杨
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">虚拟机中 Devstack 单节点安装 OpenStack
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h2 id="Ubuntu-server-安装及配置"><a href="#Ubuntu-server-安装及配置" class="headerlink" title="Ubuntu server 安装及配置"></a>Ubuntu server 安装及配置</h2><h3 id="安装注意事项"><a href="#安装注意事项" class="headerlink" title="安装注意事项"></a><strong>安装注意事项</strong></h3><p>使用 ubuntu-16.04.3-server-amd64 来进行安装，如果是虚拟化环境，需要启用嵌套虚拟化的选项。</p>
+<span id="more"></span>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuh1hnre7j20aw04awec.jpg"></p>
+<p>安装语言最好选择英文，不然会报错，提示说“无法安装busybox-initramfs”。</p>
+<p>因为在虚拟机中安装，组件安装要勾选上 Virtual Machine host、OpenSSH server 两个选项。</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a><strong>配置</strong></h3><p>系统中自带了 vim、screen 等，不必重新安装。</p>
+<ol>
+<li>修改 IP 地址</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/network/interfaces</span></span><br><span class="line"></span><br><span class="line">auto ens33</span><br><span class="line">iface ens33 inet static</span><br><span class="line">address 192.168.0.141</span><br><span class="line">netmask 255.255.255.0</span><br><span class="line">gateway 192.168.0.1</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>修改 DNS 配置</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/resolvconf/resolv.conf.d/base</span></span><br><span class="line"></span><br><span class="line">nameserver 210.41.224.33</span><br><span class="line">nameserver 192.168.5.1</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>修改安装源</li>
+</ol>
+<blockquote>
+<p>此步骤是为了提高安装速度，非必要。</p>
+</blockquote>
+<p>多次安装不成功，均网速的问题。安装的过程，需要考虑从三类位置下载软件：</p>
+<ul>
+<li>OpenStack</li>
+<li>Ubuntu</li>
+<li>Python </li>
+</ul>
+<p>OpenStack：一直没有找到合适稳定的镜像站点。 </p>
+<p>Ubuntu：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line">在文件头部添加</span><br><span class="line">deb mirror://mirrors.ubuntu.com/mirrors.txt xenial main restricted universe multiverse</span><br><span class="line">deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-updates main restricted universe multiverse</span><br><span class="line">deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-backports main restricted universe multiverse</span><br><span class="line">deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-security main restricted universe multiverse</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhgsn4jnj20tg074gm2.jpg"></p>
+<p>Python：测试了一下豆瓣 pip 镜像站点速度比较快。 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo mkdir /root/.pip/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /root/.pip/pip.conf</span></span><br><span class="line"></span><br><span class="line">添加如下内容</span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.douban.com/simple </span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>执行更新</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get upgrade</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhn41d65j20rk09x75f.jpg"></p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhnhgv14j20hd05ajrg.jpg"></p>
+<h2 id="安装-OpenStack"><a href="#安装-OpenStack" class="headerlink" title="安装 OpenStack"></a>安装 OpenStack</h2><h3 id="添加-stack-用户"><a href="#添加-stack-用户" class="headerlink" title="添加 stack 用户"></a>添加 stack 用户</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo useradd -s /bin/bash -d /opt/stack -m stack <span class="comment"># -s：指定shell -d：指定家目录 -m：创建目录</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">&quot;stack ALL=(ALL) NOPASSWD: ALL&quot;</span> | sudo tee /etc/sudoers.d/stack</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo su - stack <span class="comment"># 切换到 stack 用户</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhx4p05tj20on03h3yj.jpg"></p>
+<h3 id="下载-devstack-脚本"><a href="#下载-devstack-脚本" class="headerlink" title="下载 devstack 脚本"></a>下载 devstack 脚本</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo <span class="built_in">pwd</span></span></span><br><span class="line">/opt/stack</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> time git <span class="built_in">clone</span> https://git.openstack.org/openstack-dev/devstack -b stable/ocata</span></span><br><span class="line">备份脚本</span><br><span class="line"><span class="meta">$</span><span class="bash"> tar zcf devstack20170531.tar.gz devstack</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuia6tqmwj20rr09ydgb.jpg"></p>
+<h3 id="创建配置文件-local-conf"><a href="#创建配置文件-local-conf" class="headerlink" title="创建配置文件 local.conf"></a>创建配置文件 local.conf</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> id</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> devstack</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vi local.conf</span></span><br><span class="line"></span><br><span class="line">[[local|localrc]]</span><br><span class="line">ADMIN_PASSWORD=root</span><br><span class="line">DATABASE_PASSWORD=$ADMIN_PASSWORD</span><br><span class="line">RABBIT_PASSWORD=$ADMIN_PASSWORD</span><br><span class="line">SERVICE_PASSWORD=$ADMIN_PASSWORD</span><br><span class="line">secret 是初始密码，可以根据需要设置自已的密码。</span><br></pre></td></tr></table></figure>
+
+<h3 id="开始安装"><a href="#开始安装" class="headerlink" title="开始安装"></a>开始安装</h3><p>以 stack 的身份执行以下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> time ./stack.sh</span> </span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuoc2ejf4j20sl0a40t9.jpg"></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ubuntu-server-%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE"><span class="nav-text">Ubuntu server 安装及配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-text">安装注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-OpenStack"><span class="nav-text">安装 OpenStack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-stack-%E7%94%A8%E6%88%B7"><span class="nav-text">添加 stack 用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD-devstack-%E8%84%9A%E6%9C%AC"><span class="nav-text">下载 devstack 脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-local-conf"><span class="nav-text">创建配置文件 local.conf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%AE%89%E8%A3%85"><span class="nav-text">开始安装</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

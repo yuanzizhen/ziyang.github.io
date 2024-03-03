@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="nova架构 nova组件可分为以下几类 apinova-api 接收和响应客户的 API 调用。 除了提供 OpenStack 自己的API，nova-api 还支持 Amazon EC2 API。 compute corenova-scheduler 虚机调度服务，负责决定在哪个计算节点上运行虚机 nova-compute 管理虚机的核心服务，通过调用 Hypervisor API 实现虚机生">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【学习】四、Nova 综述及 OpenStack 通用设计思路">
+<meta property="og:url" content="http://iziyang.github.io/2017/09/12/LearningOpenStack-4-nova/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="nova架构 nova组件可分为以下几类 apinova-api 接收和响应客户的 API 调用。 除了提供 OpenStack 自己的API，nova-api 还支持 Amazon EC2 API。 compute corenova-scheduler 虚机调度服务，负责决定在哪个计算节点上运行虚机 nova-compute 管理虚机的核心服务，通过调用 Hypervisor API 实现虚机生">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://iziyang.github.io/images/nova-f9ad05cc-94a8-408b-90dd-4863227bd681.png">
+<meta property="og:image" content="http://iziyang.github.io/images/nova-2.png">
+<meta property="og:image" content="http://iziyang.github.io/images/nova-3.png">
+<meta property="article:published_time" content="2017-09-12T11:39:54.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.828Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="OpenStack学习">
+<meta property="article:tag" content="Nova">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://iziyang.github.io/images/nova-f9ad05cc-94a8-408b-90dd-4863227bd681.png">
+
+<link rel="canonical" href="http://iziyang.github.io/2017/09/12/LearningOpenStack-4-nova/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【学习】四、Nova 综述及 OpenStack 通用设计思路 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2017/09/12/LearningOpenStack-4-nova/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【学习】四、Nova 综述及 OpenStack 通用设计思路
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-12 19:39:54" itemprop="dateCreated datePublished" datetime="2017-09-12T19:39:54+08:00">2017-09-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/09/12/LearningOpenStack-4-nova/" class="post-meta-item leancloud_visitors" data-flag-title="【学习】四、Nova 综述及 OpenStack 通用设计思路" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/09/12/LearningOpenStack-4-nova/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/09/12/LearningOpenStack-4-nova/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="nova架构"><a href="#nova架构" class="headerlink" title="nova架构"></a>nova架构</h1><p><img src="/images/nova-f9ad05cc-94a8-408b-90dd-4863227bd681.png" alt="nova-f9ad05cc-94a8-408b-90dd-4863227bd681"></p>
+<h2 id="nova组件"><a href="#nova组件" class="headerlink" title="nova组件"></a>nova组件</h2><p>可分为以下几类</p>
+<h3 id="api"><a href="#api" class="headerlink" title="api"></a>api</h3><p><strong><em>nova-api</em></strong></p>
+<p>接收和响应客户的 API 调用。 除了提供 OpenStack 自己的API，nova-api 还支持 Amazon EC2 API。</p>
+<h3 id="compute-core"><a href="#compute-core" class="headerlink" title="compute core"></a>compute core</h3><p><strong><em>nova-scheduler</em></strong></p>
+<p>虚机调度服务，负责决定在哪个计算节点上运行虚机</p>
+<p><strong><em>nova-compute</em></strong></p>
+<p>管理虚机的核心服务，通过调用 Hypervisor API 实现虚机生命周期管理</p>
+<p><strong><em>Hypervisor</em></strong></p>
+<p>计算节点上跑的虚拟化管理程序，虚机管理最底层的程序。 不同虚拟化技术提供自己的 Hypervisor。 常用的 Hypervisor 有 KVM，Xen， VMWare 等</p>
+<p><strong><em>nova-conductor</em></strong></p>
+<p>nova-compute 经常需要更新数据库，比如更新虚机的状态。 出于安全性和伸缩性的考虑，nova-compute 并不会直接访问数据库，而是将这个任务委托给 nova-conductor，这个我们后面详细讨论。</p>
+<h3 id="Console-Interface"><a href="#Console-Interface" class="headerlink" title="Console Interface"></a>Console Interface</h3><p><strong><em>nova-console</em></strong></p>
+<p>用户可以通过多种方式访问虚机的控制台： nova-novncproxy，基于 Web 浏览器的 VNC 访问 nova-spicehtml5proxy，基于 HTML5 浏览器的 SPICE 访问 nova-xvpnvncproxy，基于 Java 客户端的 VNC 访问</p>
+<p><strong><em>nova-consoleauth</em></strong></p>
+<p>负责对访问虚机控制台请亲提供 Token 认证</p>
+<p><strong><em>nova-cert</em></strong></p>
+<p>提供 x509 证书支持</p>
+<h3 id="Database"><a href="#Database" class="headerlink" title="Database"></a>Database</h3><p>Nova 会有一些数据需要存放到数据库中，一般使用 MySQL。</p>
+<p>数据库安装在控制节点上。 Nova 使用命名为 “nova” 的数据库。</p>
+<h3 id="Message-Queue"><a href="#Message-Queue" class="headerlink" title="Message Queue"></a>Message Queue</h3><p>在前面我们了解到 Nova 包含众多的子服务，这些子服务之间需要相互协调和通信。</p>
+<p>为解耦各个子服务，Nova 通过 Message Queue 作为子服务的信息中转站。所以在架构图上我们看到了子服务之间没有直接的连线，是通过 Message Queue 联系的。</p>
+<h1 id="Nova组件如何协同工作"><a href="#Nova组件如何协同工作" class="headerlink" title="Nova组件如何协同工作"></a>Nova组件如何协同工作</h1><p>1、只有nova-compute组件需要安装在计算节点上</p>
+<p>2、可以使用命令查看nova组件分别安装在哪些节点上</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nova service-list</span><br></pre></td></tr></table></figure>
+
+<p>3、虚拟机创建流程：</p>
+<p>客户向 api 发送请求，api 传递给消息队列，消息队列通知 scheduler，scheduler 通过调度算法确定在哪一台虚拟机上面创建，发消息给消息队列，消息队列通知该计算节点的 compute 组件，compute 创建虚拟机，发送消息给消息队列，消息队列传递给 conductor 组件，conductor 组件写入更新数据库。</p>
+<p><img src="/images/nova-2.png" alt="nova-2"></p>
+<h1 id="OpenStack通用设计思路"><a href="#OpenStack通用设计思路" class="headerlink" title="OpenStack通用设计思路"></a>OpenStack通用设计思路</h1><ol>
+<li><p> 每一个 OpenStack 组件都通过 api 对外提供服务，还可以运行多个 api 实现高可用。</p>
+</li>
+<li><p> 对于某项操作，如果有多个实体能够完成任务，那么一般都会有 scheduler 调度服务，如 nova、cinder。</p>
+</li>
+<li><p> worker 工作服务：如 nova 的nova-compute服务，如果调度不过来那么可以增加scheduler服务，如果计算资源不够可以增加计算节点。</p>
+</li>
+<li><p>采用基于 driver 的框架。 以 nova 为例，OpenStack 的计算节点支持多种 Hypervisor。 包括 KVM, Hyper-V, VMWare, Xen, Docker, LXC 等。 nova-compute 为这些 Hypervisor 定义了统一的接口，Hypervisor 只需要实现这些接口，就可以 driver 的形式即插即用到 OpenStack 中。</p>
+<p> <img src="/images/nova-3.png" alt="nova-3"></p>
+<p> 配置文件 /etc/nova/nova.conf 中由 compute_driver 配置项指定该计算节点使用哪种 Hypervisor 的 driver。glance 支持多种存储后端，也是一种 driver 架构，cinder、neutron 都是。</p>
+</li>
+<li><p> 消息队列服务。将每一个服务解耦，实现异步调用。</p>
+</li>
+<li><p> database。每一个服务的状态信息都在数据库中维护。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/OpenStack%E5%AD%A6%E4%B9%A0/" rel="tag"># OpenStack学习</a>
+              <a href="/tags/Nova/" rel="tag"># Nova</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/09/07/LearningOpenStack-3-glance/" rel="prev" title="【学习】三、Glance 以及如何使用 CLI">
+      <i class="fa fa-chevron-left"></i> 【学习】三、Glance 以及如何使用 CLI
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/09/12/LearningOpenStack-5-nova/" rel="next" title="【学习】五、Nova 组件详解">
+      【学习】五、Nova 组件详解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#nova%E6%9E%B6%E6%9E%84"><span class="nav-text">nova架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nova%E7%BB%84%E4%BB%B6"><span class="nav-text">nova组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#api"><span class="nav-text">api</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#compute-core"><span class="nav-text">compute core</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Console-Interface"><span class="nav-text">Console Interface</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Database"><span class="nav-text">Database</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Message-Queue"><span class="nav-text">Message Queue</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nova%E7%BB%84%E4%BB%B6%E5%A6%82%E4%BD%95%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C"><span class="nav-text">Nova组件如何协同工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenStack%E9%80%9A%E7%94%A8%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="nav-text">OpenStack通用设计思路</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

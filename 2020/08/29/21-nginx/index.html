@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="stream 模块处理请求的 7 个阶段   阶段 模块    POST_ACCEPT realip   PREACCESS limt_conn   ACCESS access   SSL ssl   PREREAD ssl_preread   CONTENT return, stream_proxy   LOG access_log">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stream 四层反向代理的七个阶段和变量">
+<meta property="og:url" content="http://iziyang.github.io/2020/08/29/21-nginx/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="stream 模块处理请求的 7 个阶段   阶段 模块    POST_ACCEPT realip   PREACCESS limt_conn   ACCESS access   SSL ssl   PREREAD ssl_preread   CONTENT return, stream_proxy   LOG access_log">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200623160209">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200623160320">
+<meta property="article:published_time" content="2020-08-29T05:09:57.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.856Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200623160209">
+
+<link rel="canonical" href="http://iziyang.github.io/2020/08/29/21-nginx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>stream 四层反向代理的七个阶段和变量 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2020/08/29/21-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          stream 四层反向代理的七个阶段和变量
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-29 13:09:57" itemprop="dateCreated datePublished" datetime="2020-08-29T13:09:57+08:00">2020-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/29/21-nginx/" class="post-meta-item leancloud_visitors" data-flag-title="stream 四层反向代理的七个阶段和变量" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/29/21-nginx/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/29/21-nginx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="stream-模块处理请求的-7-个阶段"><a href="#stream-模块处理请求的-7-个阶段" class="headerlink" title="stream 模块处理请求的 7 个阶段"></a>stream 模块处理请求的 7 个阶段</h2><table>
+<thead>
+<tr>
+<th align="left">阶段</th>
+<th>模块</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">POST_ACCEPT</td>
+<td>realip</td>
+</tr>
+<tr>
+<td align="left">PREACCESS</td>
+<td>limt_conn</td>
+</tr>
+<tr>
+<td align="left">ACCESS</td>
+<td>access</td>
+</tr>
+<tr>
+<td align="left">SSL</td>
+<td>ssl</td>
+</tr>
+<tr>
+<td align="left">PREREAD</td>
+<td>ssl_preread</td>
+</tr>
+<tr>
+<td align="left">CONTENT</td>
+<td>return, stream_proxy</td>
+</tr>
+<tr>
+<td align="left">LOG</td>
+<td>access_log</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<h2 id="stream-中的-ssl"><a href="#stream-中的-ssl" class="headerlink" title="stream 中的 ssl"></a>stream 中的 ssl</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="section">stream</span> &#123; ... &#125;</span><br><span class="line">Default: —</span><br><span class="line">Context: <span class="attribute">main</span></span><br><span class="line"></span><br><span class="line">Syntax: server &#123; ... &#125;</span><br><span class="line">Default: —</span><br><span class="line">Context: <span class="attribute">stream</span></span><br><span class="line"></span><br><span class="line">Syntax: listen address:port [ssl] [udp] [proxy_protocol] [backlog=number] [rcvbuf=size] [sndbuf=size] [bind] [ipv6only=<span class="literal">on</span>|<span class="literal">off</span>] [reuseport] [so_keepalive=<span class="literal">on</span>|<span class="literal">off</span>|[keepidle]:[keepintvl]:[keepcnt]];</span><br><span class="line">Default: —</span><br><span class="line">Context: server</span><br></pre></td></tr></table></figure>
+
+<h2 id="传输层相关的变量"><a href="#传输层相关的变量" class="headerlink" title="传输层相关的变量"></a>传输层相关的变量</h2><ul>
+<li>binary_remote_addr：客户端地址的整型格式，对于 IPv4 是 4 字节，对于 IPv6 是 16 字节</li>
+<li>connection：递增的连接序号</li>
+<li>remote_addr：客户端地址</li>
+<li>remote_port：客户端端口</li>
+<li>proxy_protocol_addr：若使用了 proxy_protocol 协议则返回协议中的地址，否则返回空</li>
+<li>proxy_protocol_port：若使用了 proxy_protocol 协议则返回协议中的端口，否则返回空</li>
+<li>protocol：传输层协议，值为 TCP 或者 UDP</li>
+<li>server_addr：服务器端地址</li>
+<li>server_port：服务器端端口</li>
+<li>bytes_received：从客户端接收到的字节数</li>
+<li>bytes_sent：已经发送到客户端的字节数</li>
+<li>status<ul>
+<li>200：session 成功结束</li>
+<li>400：客户端数据无法解析，例如 proxy_protocol 协议的格式不正确</li>
+<li>403：访问权限不足被拒绝，例如 access 模块限制了客户端 IP 地址</li>
+<li>500：服务器内部代码错误</li>
+<li>502：无法找到或者连接上游服务</li>
+<li>503：上游服务不可用</li>
+</ul>
+</li>
+</ul>
+<h2 id="content-阶段：return-模块"><a href="#content-阶段：return-模块" class="headerlink" title="content 阶段：return 模块"></a>content 阶段：return 模块</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">return</span> value;</span><br><span class="line">Default: —</span><br><span class="line">Context: server</span><br></pre></td></tr></table></figure>
+
+<h3 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h3><h2 id="proxy-protocol-协议-与-realip-模块"><a href="#proxy-protocol-协议-与-realip-模块" class="headerlink" title="proxy protocol 协议 与 realip 模块"></a>proxy protocol 协议 与 realip 模块</h2><p>v1 协议</p>
+<ul>
+<li><p>PROXY TCP4 202.112.144.236 10.210.12.10 5678 80\r\n </p>
+</li>
+<li><p>PROXY TCP6 2001:da8:205::100 2400:89c0:2110:1::21 6324 80\r\n </p>
+</li>
+<li><p>PROXY UKNOWN\r\n </p>
+</li>
+</ul>
+<p>v2 协议</p>
+<ul>
+<li>12 字节签名：\r\n\r\n\0\r\nQUIT\n</li>
+<li>4 位协议版本号：2</li>
+<li>4 位命令：0 表示 LOCAL，1 表示 PROXY，Nginx 仅支持 PROXY</li>
+<li>4 位地址族：1 表示 IPv4，2 表示 IPv6</li>
+<li>4 位传输层协议：1 表示 TCP，2 表示 UDP，Nginx 仅支持 TCP 协议</li>
+<li>2 字节地址长度</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200623160209"></p>
+<h3 id="读取-proxy-protocol-协议的超时控制"><a href="#读取-proxy-protocol-协议的超时控制" class="headerlink" title="读取 proxy_protocol 协议的超时控制"></a>读取 proxy_protocol 协议的超时控制</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_protocol_timeout</span> timeout;</span><br><span class="line">Default: <span class="attribute">proxy_protocol_timeout</span> <span class="number">30s</span>; </span><br><span class="line">Context: stream, server</span><br></pre></td></tr></table></figure>
+
+<p>stream 处理 proxy_protocol 的流程：</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200623160320"></p>
+<h2 id="post-accept-阶段：realip-模块"><a href="#post-accept-阶段：realip-模块" class="headerlink" title="post_accept 阶段：realip 模块"></a>post_accept 阶段：realip 模块</h2><ul>
+<li>功能：通过 proxy_protocol 协议取出客户端真实地址，并写入 remote_addr 及 remote_port 变量。同时使用 realip_remote_addr 和 realip_remote_port 保留 TCP 连接中获得的原始地址</li>
+<li>模块：<code>ngx_stream_realip_module</code>，通过 <code>--with-stream_realip_module</code> 启用功能</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">set_real_ip_from</span> address | CIDR | unix:;</span><br><span class="line">Default: —</span><br><span class="line">Context: stream, server</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/29/20-nginx/" rel="prev" title="HTTP2 协议">
+      <i class="fa fa-chevron-left"></i> HTTP2 协议
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/29/22-nginx/" rel="next" title="限并发连接、限 IP、记日志">
+      限并发连接、限 IP、记日志 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#stream-%E6%A8%A1%E5%9D%97%E5%A4%84%E7%90%86%E8%AF%B7%E6%B1%82%E7%9A%84-7-%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="nav-text">stream 模块处理请求的 7 个阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stream-%E4%B8%AD%E7%9A%84-ssl"><span class="nav-text">stream 中的 ssl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82%E7%9B%B8%E5%85%B3%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-text">传输层相关的变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#content-%E9%98%B6%E6%AE%B5%EF%BC%9Areturn-%E6%A8%A1%E5%9D%97"><span class="nav-text">content 阶段：return 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proxy-protocol-%E5%8D%8F%E8%AE%AE-%E4%B8%8E-realip-%E6%A8%A1%E5%9D%97"><span class="nav-text">proxy protocol 协议 与 realip 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96-proxy-protocol-%E5%8D%8F%E8%AE%AE%E7%9A%84%E8%B6%85%E6%97%B6%E6%8E%A7%E5%88%B6"><span class="nav-text">读取 proxy_protocol 协议的超时控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#post-accept-%E9%98%B6%E6%AE%B5%EF%BC%9Arealip-%E6%A8%A1%E5%9D%97"><span class="nav-text">post_accept 阶段：realip 模块</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

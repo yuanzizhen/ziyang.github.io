@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="目前是一名 SRE，爱好 Go 和 Python">
+<meta property="og:type" content="website">
+<meta property="og:title" content="原少子杨">
+<meta property="og:url" content="http://iziyang.github.io/page/24/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="目前是一名 SRE，爱好 Go 和 Python">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="原少子杨">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://iziyang.github.io/page/24/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>原少子杨 - 聊聊技术、产品和商业</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2017/09/26/install-multi-inode-with-devstack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/09/26/install-multi-inode-with-devstack/" class="post-title-link" itemprop="url">物理机中 Devstack 双节点安装 OpenStck</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-26 11:22:11" itemprop="dateCreated datePublished" datetime="2017-09-26T11:22:11+08:00">2017-09-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/09/26/install-multi-inode-with-devstack/" class="post-meta-item leancloud_visitors" data-flag-title="物理机中 Devstack 双节点安装 OpenStck" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/09/26/install-multi-inode-with-devstack/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/09/26/install-multi-inode-with-devstack/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><p>最小化安装一个操作系统，这里选择 CentOS 7。</p>
+<p>安装 git：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y git</span><br></pre></td></tr></table></figure>
+
+<h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><p>controller：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> vim /etc/sysconfig/network-scripts/ifcfg-enp4s0</span></span><br><span class="line"></span><br><span class="line">TYPE=&quot;Ethernet&quot;</span><br><span class="line">PROXY_METHOD=&quot;none&quot;</span><br><span class="line">BROWSER_ONLY=&quot;no&quot;</span><br><span class="line">BOOTPROTO=&quot;none&quot;</span><br><span class="line">DEFROUTE=&quot;yes&quot;</span><br><span class="line">IPV4_FAILURE_FATAL=&quot;no&quot;</span><br><span class="line">IPV6INIT=&quot;yes&quot;</span><br><span class="line">IPV6_AUTOCONF=&quot;yes&quot;</span><br><span class="line">IPV6_DEFROUTE=&quot;yes&quot;</span><br><span class="line">IPV6_FAILURE_FATAL=&quot;no&quot;</span><br><span class="line">IPV6_ADDR_GEN_MODE=&quot;stable-privacy&quot;</span><br><span class="line">NAME=&quot;enp4s0&quot;</span><br><span class="line">UUID=&quot;ccf32c18-b4a6-40b8-ae09-06dc4148d42f&quot;</span><br><span class="line">DEVICE=&quot;enp4s0&quot;</span><br><span class="line">ONBOOT=&quot;yes&quot;</span><br><span class="line">IPADDR=&quot;192.168.0.201&quot;</span><br><span class="line">PREFIX=&quot;24&quot;</span><br><span class="line">GATEWAY=&quot;192.168.0.1&quot;</span><br><span class="line">DNS1=&quot;210.41.224.33&quot;</span><br><span class="line">DNS2=&quot;192.168.5.1&quot;</span><br><span class="line">IPV6_PRIVACY=&quot;no&quot;</span><br></pre></td></tr></table></figure>
+
+<p>compute01：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPADDR=&quot;192.168.0.202&quot;</span><br></pre></td></tr></table></figure>
+
+<p>compute02：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPADDR=&quot;192.168.0.202&quot;</span><br></pre></td></tr></table></figure>
+
+<h1 id="安装-shake-和-bake"><a href="#安装-shake-和-bake" class="headerlink" title="安装 shake 和 bake"></a>安装 shake 和 bake</h1><h2 id="添加-DevStack-用户"><a href="#添加-DevStack-用户" class="headerlink" title="添加 DevStack 用户"></a>添加 DevStack 用户</h2><p>每个节点都要使用同样的名字。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">useradd -s /bin/bash -d /opt/stack -m stack</span><br></pre></td></tr></table></figure>
+
+<p>stack 用户会对系统造成很大的改变，需要无密码的 sudo 权限：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;stack ALL=(ALL) NOPASSWD: ALL&quot; &gt;&gt; /etc/sudoers</span><br></pre></td></tr></table></figure>
+
+<p><strong>现在开始使用 stack 用户，退出并以 stack 登录：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su - stack</span><br></pre></td></tr></table></figure>
+
+<h2 id="设置-SSH"><a href="#设置-SSH" class="headerlink" title="设置 SSH"></a>设置 SSH</h2><p>在每个节点上设置 stack 用户具有 ssh 权限：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/.ssh; chmod 700 ~/.ssh</span><br><span class="line">echo &quot;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyYjfgyPazTvGpd8OaAvtU2utL8W6gWC4JdRS1J95GhNNfQd657yO6s1AH5KYQWktcE6FO/xNUC2reEXSGC7ezy+sGO1kj9Limv5vrvNHvF1+wts0Cmyx61D2nQw35/Qz8BvpdJANL7VwP/cFI/p3yhvx2lsnjFE3hN8xRB2LtLUopUSVdBwACOVUmH2G+2BWMJDjVINd2DPqRIA4Zhy09KJ3O1Joabr0XpQL0yt/I9x8BVHdAx6l9U0tMg9dj5+tAjZvMAFfye3PJcYwwsfJoFxC8w/SLtqlFX7Ehw++8RtvomvuipLdmWCy+T9hIkl+gHYE4cS3OIqXH7f49jdJf jesse@spacey.local&quot; &gt; ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<h2 id="下载-devstack-脚本"><a href="#下载-devstack-脚本" class="headerlink" title="下载 devstack 脚本"></a>下载 devstack 脚本</h2><p>下载最新版本的 devstack：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://git.openstack.org/openstack-dev/devstack</span><br><span class="line">cd devstack</span><br></pre></td></tr></table></figure>
+
+<p>到目前为止，所有的步骤都适用于所有节点。从现在开始，控制节点和计算节点之间会有一些不同。</p>
+<h2 id="配置控制节点"><a href="#配置控制节点" class="headerlink" title="配置控制节点"></a>配置控制节点</h2><p>控制节点运行 OpenStack 所有的服务，在 devstack 下创建 local.conf：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[stack@contorller devstack]$ vim local.conf</span><br><span class="line"></span><br><span class="line">[[local|localrc]]</span><br><span class="line">HOST_IP=192.168.0.211</span><br><span class="line">FLAT_INTERFACE=ens33</span><br><span class="line">FIXED_RANGE=10.4.128.0/20</span><br><span class="line">FIXED_NETWORK_SIZE=4096</span><br><span class="line">FLOATING_RANGE=192.168.0.220/29</span><br><span class="line">MULTI_HOST=1</span><br><span class="line">LOGFILE=/opt/stack/logs/stack.sh.log</span><br><span class="line">ADMIN_PASSWORD=root</span><br><span class="line">DATABASE_PASSWORD=root</span><br><span class="line">RABBIT_PASSWORD=root</span><br><span class="line">SERVICE_PASSWORD=root</span><br></pre></td></tr></table></figure>
+
+<p>在多节点配置中，私有子网的前十个 IP 通常保留，<strong>运行完 stack.sh 脚本之后</strong>运行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for i in `seq 2 10`; do /opt/stack/nova/bin/nova-manage fixed reserve 10.4.128.$i; done</span><br></pre></td></tr></table></figure>
+
+<p>开始安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./stack.sh</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置计算节点"><a href="#配置计算节点" class="headerlink" title="配置计算节点"></a>配置计算节点</h2><p>计算节点只运行工作服务，对其他的机器，创建 local.conf：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[[local|localrc]]</span><br><span class="line">HOST_IP=192.168.0.212 # change this per compute node</span><br><span class="line">FLAT_INTERFACE=ens33</span><br><span class="line">FIXED_RANGE=10.4.128.0/20</span><br><span class="line">FIXED_NETWORK_SIZE=4096</span><br><span class="line">FLOATING_RANGE=192.168.0.220/29</span><br><span class="line">MULTI_HOST=1</span><br><span class="line">LOGFILE=/opt/stack/logs/stack.sh.log</span><br><span class="line">ADMIN_PASSWORD=root</span><br><span class="line">DATABASE_PASSWORD=root</span><br><span class="line">RABBIT_PASSWORD=root</span><br><span class="line">SERVICE_PASSWORD=root</span><br><span class="line">DATABASE_TYPE=mysql</span><br><span class="line">SERVICE_HOST=192.168.0.211</span><br><span class="line">MYSQL_HOST=$SERVICE_HOST</span><br><span class="line">RABBIT_HOST=$SERVICE_HOST</span><br><span class="line">GLANCE_HOSTPORT=$SERVICE_HOST:9292</span><br><span class="line">ENABLED_SERVICES=n-cpu,q-agt,n-api-meta,c-vol,placement-client</span><br><span class="line">NOVA_VNC_ENABLED=True</span><br><span class="line">NOVNCPROXY_URL=&quot;http://$SERVICE_HOST:6080/vnc_auto.html&quot;</span><br><span class="line">VNCSERVER_LISTEN=$HOST_IP</span><br><span class="line">VNCSERVER_PROXYCLIENT_ADDRESS=$VNCSERVER_LISTEN</span><br></pre></td></tr></table></figure>
+
+<p>开始安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./stack.sh</span><br></pre></td></tr></table></figure>
+
+<p>当每个计算节点都安装完毕之后，验证它的输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nova service-list --binary nova-compute</span><br></pre></td></tr></table></figure>
+
+<p>当计算节点的服务出现之后，控制节点上运行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./tools/discover_hosts.sh</span><br></pre></td></tr></table></figure>
+
+<p>来发现服务。</p>
+<p>最终安装失败。</p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fke5nqi54cj20p602dt8q.jpg"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2017/09/24/single_node_devstack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/09/24/single_node_devstack/" class="post-title-link" itemprop="url">虚拟机中 Devstack 单节点安装 OpenStack</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-24 10:44:04" itemprop="dateCreated datePublished" datetime="2017-09-24T10:44:04+08:00">2017-09-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/09/24/single_node_devstack/" class="post-meta-item leancloud_visitors" data-flag-title="虚拟机中 Devstack 单节点安装 OpenStack" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/09/24/single_node_devstack/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/09/24/single_node_devstack/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Ubuntu-server-安装及配置"><a href="#Ubuntu-server-安装及配置" class="headerlink" title="Ubuntu server 安装及配置"></a>Ubuntu server 安装及配置</h2><h3 id="安装注意事项"><a href="#安装注意事项" class="headerlink" title="安装注意事项"></a><strong>安装注意事项</strong></h3><p>使用 ubuntu-16.04.3-server-amd64 来进行安装，如果是虚拟化环境，需要启用嵌套虚拟化的选项。</p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuh1hnre7j20aw04awec.jpg"></p>
+<p>安装语言最好选择英文，不然会报错，提示说“无法安装busybox-initramfs”。</p>
+<p>因为在虚拟机中安装，组件安装要勾选上 Virtual Machine host、OpenSSH server 两个选项。</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a><strong>配置</strong></h3><p>系统中自带了 vim、screen 等，不必重新安装。</p>
+<ol>
+<li>修改 IP 地址</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/network/interfaces</span></span><br><span class="line"></span><br><span class="line">auto ens33</span><br><span class="line">iface ens33 inet static</span><br><span class="line">address 192.168.0.141</span><br><span class="line">netmask 255.255.255.0</span><br><span class="line">gateway 192.168.0.1</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>修改 DNS 配置</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/resolvconf/resolv.conf.d/base</span></span><br><span class="line"></span><br><span class="line">nameserver 210.41.224.33</span><br><span class="line">nameserver 192.168.5.1</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>修改安装源</li>
+</ol>
+<blockquote>
+<p>此步骤是为了提高安装速度，非必要。</p>
+</blockquote>
+<p>多次安装不成功，均网速的问题。安装的过程，需要考虑从三类位置下载软件：</p>
+<ul>
+<li>OpenStack</li>
+<li>Ubuntu</li>
+<li>Python </li>
+</ul>
+<p>OpenStack：一直没有找到合适稳定的镜像站点。 </p>
+<p>Ubuntu：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line">在文件头部添加</span><br><span class="line">deb mirror://mirrors.ubuntu.com/mirrors.txt xenial main restricted universe multiverse</span><br><span class="line">deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-updates main restricted universe multiverse</span><br><span class="line">deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-backports main restricted universe multiverse</span><br><span class="line">deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-security main restricted universe multiverse</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhgsn4jnj20tg074gm2.jpg"></p>
+<p>Python：测试了一下豆瓣 pip 镜像站点速度比较快。 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo mkdir /root/.pip/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /root/.pip/pip.conf</span></span><br><span class="line"></span><br><span class="line">添加如下内容</span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.douban.com/simple </span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>执行更新</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get upgrade</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhn41d65j20rk09x75f.jpg"></p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhnhgv14j20hd05ajrg.jpg"></p>
+<h2 id="安装-OpenStack"><a href="#安装-OpenStack" class="headerlink" title="安装 OpenStack"></a>安装 OpenStack</h2><h3 id="添加-stack-用户"><a href="#添加-stack-用户" class="headerlink" title="添加 stack 用户"></a>添加 stack 用户</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo useradd -s /bin/bash -d /opt/stack -m stack <span class="comment"># -s：指定shell -d：指定家目录 -m：创建目录</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">&quot;stack ALL=(ALL) NOPASSWD: ALL&quot;</span> | sudo tee /etc/sudoers.d/stack</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo su - stack <span class="comment"># 切换到 stack 用户</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuhx4p05tj20on03h3yj.jpg"></p>
+<h3 id="下载-devstack-脚本"><a href="#下载-devstack-脚本" class="headerlink" title="下载 devstack 脚本"></a>下载 devstack 脚本</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo <span class="built_in">pwd</span></span></span><br><span class="line">/opt/stack</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> time git <span class="built_in">clone</span> https://git.openstack.org/openstack-dev/devstack -b stable/ocata</span></span><br><span class="line">备份脚本</span><br><span class="line"><span class="meta">$</span><span class="bash"> tar zcf devstack20170531.tar.gz devstack</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuia6tqmwj20rr09ydgb.jpg"></p>
+<h3 id="创建配置文件-local-conf"><a href="#创建配置文件-local-conf" class="headerlink" title="创建配置文件 local.conf"></a>创建配置文件 local.conf</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> id</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> devstack</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vi local.conf</span></span><br><span class="line"></span><br><span class="line">[[local|localrc]]</span><br><span class="line">ADMIN_PASSWORD=root</span><br><span class="line">DATABASE_PASSWORD=$ADMIN_PASSWORD</span><br><span class="line">RABBIT_PASSWORD=$ADMIN_PASSWORD</span><br><span class="line">SERVICE_PASSWORD=$ADMIN_PASSWORD</span><br><span class="line">secret 是初始密码，可以根据需要设置自已的密码。</span><br></pre></td></tr></table></figure>
+
+<h3 id="开始安装"><a href="#开始安装" class="headerlink" title="开始安装"></a>开始安装</h3><p>以 stack 的身份执行以下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> time ./stack.sh</span> </span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fjuoc2ejf4j20sl0a40t9.jpg"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2017/09/14/LearningOpenStack-6-log/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/09/14/LearningOpenStack-6-log/" class="post-title-link" itemprop="url">【学习】六、OpenStack 日志</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-14 11:25:51" itemprop="dateCreated datePublished" datetime="2017-09-14T11:25:51+08:00">2017-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/09/14/LearningOpenStack-6-log/" class="post-meta-item leancloud_visitors" data-flag-title="【学习】六、OpenStack 日志" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/09/14/LearningOpenStack-6-log/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/09/14/LearningOpenStack-6-log/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="日志位置"><a href="#日志位置" class="headerlink" title="日志位置"></a>日志位置</h2><p>日志一般存放在 <code>/var/log/...</code></p>
+<h2 id="日志格式"><a href="#日志格式" class="headerlink" title="日志格式"></a>日志格式</h2><p>OpenStack 的日志格式都是统一的，如下：</p>
+<p>&lt;时间戳&gt;&lt;日志等级&gt;&lt;代码模块&gt;<Request ID>&lt;日志内容&gt;&lt;源代码位置&gt;</p>
+<ul>
+<li><p>时间戳</p>
+<p>日志记录的时间，包括 年 月 日 时 分 秒 毫秒</p>
+</li>
+<li><p>日志等级</p>
+<p>有INFO WARNING ERROR DEBUG等</p>
+</li>
+<li><p>代码模块</p>
+<p>当前运行的模块</p>
+</li>
+<li><p>Request ID</p>
+<p>日志会记录连续不同的操作，为了便于区分和增加可读性，每个操作都被分配唯一的Request ID,便于查找日志内容    这是日志的主体，记录当前正在执行的操作和结果等重要信息</p>
+</li>
+<li><p>源代码位置</p>
+<p>日志代码的位置，包括方法名称，源代码文件的目录位置和行号。这一项不是所有日志都有</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2015-12-10 20:46:49.566 DEBUG nova.virt.libvirt.config [req-5c973fff-e9ba-4317-bfd9-76678cc96584 None None] Generated XML (&#x27;&lt;cpu&gt;\n  &lt;arch&gt;x86_64&lt;/arch&gt;\n  &lt;model&gt;Westmere&lt;/model&gt;\n  &lt;vendor&gt;Intel&lt;/vendor&gt;\n  &lt;topology sockets=&quot;2&quot; cores=&quot;3&quot; threads=&quot;1&quot;/&gt;\n  &lt;feature name=&quot;avx&quot;/&gt;\n  &lt;feature name=&quot;ds&quot;/&gt;\n  &lt;feature name=&quot;ht&quot;/&gt;\n  &lt;feature name=&quot;hypervisor&quot;/&gt;\n  &lt;feature name=&quot;osxsave&quot;/&gt;\n  &lt;feature name=&quot;pclmuldq&quot;/&gt;\n  &lt;feature name=&quot;rdtscp&quot;/&gt;\n  &lt;feature name=&quot;ss&quot;/&gt;\n  &lt;feature name=&quot;vme&quot;/&gt;\n  &lt;feature name=&quot;xsave&quot;/&gt;\n&lt;/cpu&gt;\n&#x27;,) to_xml /opt/stack/nova/nova/virt/libvirt/config.py:82</span><br></pre></td></tr></table></figure>
+
+<p>这条日志我们可以得知：</p>
+<ol>
+<li>代码模块是 nova.virt.libvirt.config，由此可知应该是 Hypervisor Libvirt 相关的操作</li>
+<li>日志内容是生成 XML</li>
+<li>如果要跟踪源代码，可以到 /opt/stack/nova/nova/virt/libvirt/config.py 的 82 行，方法是 to_xml</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2017/09/12/LearningOpenStack-5-nova/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/09/12/LearningOpenStack-5-nova/" class="post-title-link" itemprop="url">【学习】五、Nova 组件详解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-12 20:21:55" itemprop="dateCreated datePublished" datetime="2017-09-12T20:21:55+08:00">2017-09-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/09/12/LearningOpenStack-5-nova/" class="post-meta-item leancloud_visitors" data-flag-title="【学习】五、Nova 组件详解" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/09/12/LearningOpenStack-5-nova/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/09/12/LearningOpenStack-5-nova/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Nova组件详解"><a href="#Nova组件详解" class="headerlink" title="Nova组件详解"></a>Nova组件详解</h1><h2 id="nova-api"><a href="#nova-api" class="headerlink" title="nova-api"></a>nova-api</h2><p>nova-api 是 nova 组件的门户，所有对 nova 的请求都首先由 nova-api 处理，nova 对外暴露几个接口，也就是 endpoint，查看 endpoint：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openstack endpoint show nova</span><br></pre></td></tr></table></figure>
+
+<p>nova-api 对接收到的请求会做如下操作：</p>
+<ol>
+<li>检查传递的参数是否合法</li>
+<li>调用 nova 的其他子服务来处理请求</li>
+<li>格式化其他子服务返回的结果并返回给客户端</li>
+</ol>
+<p><strong>nova-api 可以接受哪些请求？</strong><br>简单来说，只要是与虚拟机生命周期管理相关的操作，nova-api 都可以相应，大部分的操作在 dashboard 上面都可以找到，如图所示：</p>
+<p><img src="/images/nova-4.png" alt="nova-4"></p>
+<h2 id="nova-conductor"><a href="#nova-conductor" class="headerlink" title="nova-conductor"></a>nova-conductor</h2><p>nova-compute 需要访问数据库获取 instance 的信息，但是 nova-compute 不会直接访问数据库，需要通过 nova-conductor 实现数据的访问。</p>
+<p><img src="/images/nova-5.png" alt="nova-5"></p>
+<p>这样做有两个好处：</p>
+<ol>
+<li>更好的系统安全性</li>
+<li>更好的系统伸缩性</li>
+</ol>
+<ul>
+<li><strong>更好的系统安全性</strong></li>
+</ul>
+<p>在 OpenStack 的早期版本中，nova-compute 可以直接访问数据库，但这样存在非常大的安全隐患。 因为 nova-compute 这个服务是部署在计算节点上的，为了能够访问控制节点上的数据库，就必须在计算节点的 /etc/nova/nova.conf 中配置访问数据库的连接信息，比如</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[database]</span><br><span class="line">connection = mysql+pymysql://root:secret@controller/nova?charset=utf8</span><br></pre></td></tr></table></figure>
+
+<p>试想任意一个计算节点被黑客入侵，都会导致部署在控制节点上的数据库面临极大风险。为了解决这个问题，从 G 版本开始，Nova 引入了一个新服务 nova-conductor，将 nova-compute 访问数据库的全部操作都放到 nova-conductor 中，而且 nova-conductor 是部署在控制节点上的。 这样就避免了 nova-compute 直接访问数据库，增加了系统的安全性。</p>
+<ul>
+<li><strong>更好的伸缩性</strong></li>
+</ul>
+<p>nova-conductor 将 nova-compute 与数据库解耦之后还带来另一个好处：提高了 nova 的伸缩性。nova-compute 与 conductor 是通过消息中间件交互的。</p>
+<p>这种松散的架构允许配置多个 nova-conductor 实例。 在一个大规模的 OpenStack 部署环境里，管理员可以通过增加 nova-conductor 的数量来应对日益增长的计算节点对数据库的访问。</p>
+<h2 id="nova-scheduler"><a href="#nova-scheduler" class="headerlink" title="nova-scheduler"></a>nova-scheduler</h2><p>在 /etc/nova/nova.conf 中，nova 通过 scheduler_driver、scheduler_available_filters、scheduler_default_filters 来配置 nova-scheduler。</p>
+<h3 id="filter-scheduler"><a href="#filter-scheduler" class="headerlink" title="filter_scheduler"></a>filter_scheduler</h3><p>filter_scheduler 是 nova-scheduler 默认的调度器，调度过程分为两步：</p>
+<ol>
+<li>通过 filter 选择满足条件的计算节点（运行 nova-compute）</li>
+<li>通过权重计算（weighting）选择在最优的计算节点上创建 instance</li>
+</ol>
+<p><img src="/images/nova-6.png" alt="img"></p>
+<p>调度过程</p>
+<h3 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h3><p>当 filter-scheduler 需要执行调度操作时，会让 filter 对计算节点进行判断，filter 返回 True 或 False。Nova.conf 中的 scheduler_available_filters 选项用于配置 scheduler 可用的 filter，默认是所有 nova 自带的 filter 都可以用于滤操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scheduler_available_filters = nova.scheduler.filters.all_filters</span><br></pre></td></tr></table></figure>
+
+<p>另外还有一个选项 scheduler_default_filters，用于指定 scheduler 真正使用的 filter，默认值如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scheduler_default_filters = RetryFilter, AvailabilityZoneFilter, RamFilter, DiskFilter, ComputeFilter, ComputeCapabilitiesFilter, ImagePropertiesFilter, ServerGroupAntiAffinityFilter, ServerGroupAffinityFilter</span><br></pre></td></tr></table></figure>
+
+<p><strong>RetryFilter</strong></p>
+<p>RetryFilter 的作用是过滤掉已经调度过的节点，比如上次选择部署在计算节点 A 上面，但是由于某种原因失败了，那么这次就不会再部署。</p>
+<p><strong>AvailabilityZoneFilter</strong></p>
+<p>为提高容灾性和提供隔离服务，可以将计算节点划分到不同的Availability Zone中。例如把一个机架上的机器划分在一个 Availability Zone 中。 OpenStack 默认有一个命名为 “Nova” 的 Availability Zone，所有的计算节点初始都是放在 “Nova” 中。 用户可根据需要创建自己的 Availability Zone。nova-scheduler 会将不属于指定 AvailableZone 的计算节点过滤掉。</p>
+<p><strong>RamFilter</strong></p>
+<p>RamFilter 将不能满足 flavor 内存需求的计算节点过滤掉。</p>
+<p>对于内存有一点需要注意： 为了提高系统的资源使用率，OpenStack 在计算节点可用内存时允许 overcommit，也就是可以超过实际内存大小。 超过的程度是通过 nova.conf 中 ram_allocation_ratio 这个参数来控制的，默认值为 1.5</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ram_allocation_ratio = 1.5</span><br></pre></td></tr></table></figure>
+
+<p>其含义是：如果计算节点的内容为 10GB，OpenStack 则会认为它有 15GB（10*1.5）内存。</p>
+<p><strong>DiskFilter</strong></p>
+<p>DiskFilter 将不能满足 flavor 磁盘需求的计算节点过滤掉。Disk 同样允许 overcommit，通过 nova.conf 中 disk_allocation_ratio 控制，默认值为 1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">disk_allocation_ratio = 1.0</span><br></pre></td></tr></table></figure>
+
+<p><strong>CoreFilter</strong></p>
+<p>CoreFilter 将不能满足 flavor vCPU 需求的计算节点过滤掉。vCPU 同样允许 overcommit，通过 nova.conf 中 cpu_allocation_ratio 控制，默认值为 16</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cpu_allocation_ratio = 16.0</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>ComputeFilter</strong></p>
+<p>ComputeFilter 保证只有 nova-compute 服务正常工作的计算节点才能够被 nova-scheduler调度。ComputeFilter 显然是必选的 filter。</p>
+<p><strong>ComputeCapabilitiesFilter</strong></p>
+<p>ComputeCapabilitiesFilter 根据计算节点的特性来筛选。这个比较高级，我们举例说明。<br>例如我们的节点有 x86_64 和 ARM 架构的，如果想将 Instance 指定部署到 x86_64 架构的节点上，就可以利用 ComputeCapabilitiesFilter。还记得 flavor 中有个 Metadata 吗，Compute 的 Capabilitie s就在 Metadata中 指定。</p>
+<p><strong>ImagePropertiesFilter</strong></p>
+<p>ImagePropertiesFilter 根据所选 image 的属性来筛选匹配的计算节点。 跟 flavor 类似，image 也有 metadata，用于指定其属性。</p>
+<p>例如希望某个 image 只能运行在 kvm 的 hypervisor 上，可以通过 “Hypervisor Type” 属性来指定。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqHfDp3xocW9A8pmGO7lSjGEruoobfuj7ib4puicFr8UiaAWVYzf3WmI4PicrOPOWxoM5XQYqLiboEajvoA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p><strong>ServerGroupAntiAffinityFilter</strong></p>
+<p>ServerGroupAntiAffinityFilter 可以尽量将 Instance 分散部署到不同的节点上。</p>
+<p>例如有 inst1，inst2 和 inst3 三个 instance，计算节点有 A,B 和 C。 为保证分散部署，进行如下操作：</p>
+<ol>
+<li>创建一个 anti-affinity 策略的 server group “group-1”</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nova server-group-create --policy anti-affinity group-1</span><br></pre></td></tr></table></figure>
+
+<p>请注意，这里的 server group 其实是 instance group，并不是计算节点的 group。</p>
+<ol start="2">
+<li>依次创建 Instance inst1, inst2和inst3并放到group-1中</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-1 inst1</span><br><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-1 inst2</span><br><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-1 inst3</span><br></pre></td></tr></table></figure>
+
+<p>因为 group-1 的策略是 AntiAffinity，调度时 ServerGroupAntiAffinityFilter 会将 inst1, inst2 和 inst3 部署到不同计算节点 A, B 和 C。目前只能在 CLI 中指定 server group 来创建 instance。</p>
+<p>创建 instance 时如果没有指定 server group，ServerGroupAntiAffinityFilter 会直接通过，不做任何过滤。</p>
+<p><strong>ServerGroupAffinityFilter</strong></p>
+<p>与 ServerGroupAntiAffinityFilter 的作用相反，ServerGroupAffinityFilter 会尽量将 instance 部署到同一个计算节点上。 方法类似</p>
+<ol>
+<li>创建一个 affinity 策略的 server group “group-2”</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nova server-group-create --policy affinity group-2</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>依次创建 instance inst1, inst2 和 inst3 并放到 group-2 中</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-2 inst1</span><br><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-2 inst2</span><br><span class="line">nova boot --image IMAGE_ID --flavor 1 --hint group=group-2 inst3</span><br></pre></td></tr></table></figure>
+
+<p>因为 group-2 的策略是 Affinity，调度时 ServerGroupAffinityFilter 会将 inst1, inst2 和 inst3 部署到同一个计算节点。创建 instance 时如果没有指定 server group，ServerGroupAffinityFilter 会直接通过，不做任何过滤。</p>
+<h3 id="weight"><a href="#weight" class="headerlink" title="weight"></a>weight</h3><p>通过过滤之后会计算权重值，根据计算节点空闲内存来计算权重值，内存越多，权重值越大。</p>
+<h3 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/var/log/nova/scheduler.log</span><br></pre></td></tr></table></figure>
+
+<p>注：要显示 DEBUG 日志，需要在 /etc/nova/nova.conf 中打开 debug 选项</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[DEFAULT]</span><br><span class="line">debug = True</span><br></pre></td></tr></table></figure>
+
+<h2 id="nova-compute"><a href="#nova-compute" class="headerlink" title="nova-compute"></a>nova-compute</h2><p>nova-compute 通过 Driver架构支持多种 Hypervisor。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HOIic9qUBjiawxfMhd9Uu6iaHA/0?wx_lazy=1"></p>
+<p>我们可以在 /opt/stack/nova/nova/virt/ 目录下查看到 OpenStack 源代码中已经自带了上面这几个 Hypervisor 的 Driver：</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HEvkgnaPF0j6JpZhkhic3FSA/0?wx_lazy=1"></p>
+<p>某个特定的计算节点上只会运行一种 Hypervisor，只需在该节点 nova-compute 的配置文件 /etc/nova/nova.conf 中配置所对应的 compute_driver 就可以了。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HVQzKbULzbJ36Lk63COsOgw/0?wx_lazy=1"></p>
+<p>nova-compute 的功能可以分为两类：</p>
+<ol>
+<li>定时向 OpenStack 报告计算节点的状态</li>
+<li>实现 instance 生命周期的管理</li>
+</ol>
+<h3 id="定时向-OpenStack-报告计算节点的状态"><a href="#定时向-OpenStack-报告计算节点的状态" class="headerlink" title="定时向 OpenStack 报告计算节点的状态"></a>定时向 OpenStack 报告计算节点的状态</h3><p>前面我们看到 nova-scheduler 的很多 Filter 是根据算节点的资源使用情况进行过滤的。比如 RamFilter 要检查计算节点当前可以的内存量；CoreFilter 检查可用的 vCPU 数量；DiskFilter 则会检查可用的磁盘空间。</p>
+<p>那这里有个问题：OpenStack 是如何得知每个计算节点的这些信息呢？答案是 nova-compute 会定期向 OpenStack 报告。</p>
+<p>nova-compute 是如何获得当前计算节点的资源使用信息的？nova-compute 可以通过 Hypervisor 的 driver 拿到这些信息。</p>
+<h3 id="实现-instance-生命周期的管理"><a href="#实现-instance-生命周期的管理" class="headerlink" title="实现 instance 生命周期的管理"></a>实现 instance 生命周期的管理</h3><p>OpenStack 对 instance 最主要的操作都是通过 nova-compute 实现的，包括 instance 的 launch、shutdown、reboot、suspend、resume、terminate、resize、migration、snapshot 等。</p>
+<p><em>本节讨论实例的创建操作。</em></p>
+<p>nova-compute 创建 instance 的过程可以分为 4 步：</p>
+<ol>
+<li>为 instance 准备资源</li>
+<li>创建 instance 的镜像文件</li>
+<li>创建 instance 的 XML 定义文件</li>
+<li>创建虚拟网络并启动虚拟机</li>
+</ol>
+<h4 id="为-instance-准备资源"><a href="#为-instance-准备资源" class="headerlink" title="为 instance 准备资源"></a>为 instance 准备资源</h4><p>nova-compute 首先会根据指定的 flavor 依次为 instance 分配内存、磁盘空间和 vCPU。可以在日志中看到这些细节。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HyvKUuR3MJKTrRtEiaqCUuGA/0?wx_lazy=1"></p>
+<p>网络资源也会提前分配。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HM75tW5vXVlN2bazicRvd1lA/0?wx_lazy=1"></p>
+<h4 id="创建-instance-的镜像文件"><a href="#创建-instance-的镜像文件" class="headerlink" title="创建 instance 的镜像文件"></a>创建 instance 的镜像文件</h4><p>OpenStack 启动一个 instance 时，会选择一个 image，这个 image 由 Glance 管理。 nova-compute会：</p>
+<ol>
+<li>首先将该 image 下载到计算节点</li>
+<li>然后将其作为 backing file 创建 instance 的镜像文件</li>
+</ol>
+<p><strong>从 Glance 下载 image</strong></p>
+<p>nova-compute 首先会检查 image 是否已经下载（比如之前已经创建过基于相同 image 的 instance）。如果没有，就从 Glance 下载 image 到本地。由此可知，如果计算节点上要运行多个相同 image 的 instance，只会在启动第一个 instance 的时候从 Glance 下载 image，后面的 instance 启动速度就大大加快了。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HNAxlaVXZswZhEfUKMfHlYg/0?wx_lazy=1"></p>
+<p>可以看到：</p>
+<ol>
+<li>image（ID为 917d60ef-f663-4e2d-b85b-e4511bb56bc2）是 qcow2 格式，nova-compute 将其下载。Nova 默认会通过 qemu-img 转换成 raw 格式，以提高 IO 性能。</li>
+<li>image 的存放目录是 <code>/opt/stack/data/nova/instances/_base</code>，这是由 <code>/etc/nova/nova.conf</code> 的下面两个配置选项决定的。 </li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">instances_path = /opt/stack/data/nova/instances</span><br><span class="line">base_dir_name = _base</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>下载的 image 文件被命名为 60bba5916c6c90ed2ef7d3263de8f653111dd35f，这是 image id 的 SHA1 哈希值。</li>
+</ol>
+<h4 id="为-instance-创建镜像文件"><a href="#为-instance-创建镜像文件" class="headerlink" title="为 instance 创建镜像文件"></a>为 instance 创建镜像文件</h4><p>有了 image 之后，instance 的镜像文件直接通过 qemu-img 命令创建，backing file 就是下载的 image。</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HTq97sJz331iboFhVFpcVgIg/0?wx_lazy=1" alt="http://7xo6kd.com1.z0.glb.clouddn.com/upload-ueditor-image-20160501-1462109263590069817.png"></p>
+<p>可以通过 qume-info 查看 disk 文件的属性：</p>
+<p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HdBCibgTzShNK4wxWvEGPKIw/0?wx_lazy=1" alt="http://7xo6kd.com1.z0.glb.clouddn.com/upload-ueditor-image-20160501-1462109267370087342.png"></p>
+<p>这里有两个容易搞混淆的术语，在此特别说明一下：</p>
+<ol>
+<li>image，指的是 Glance 上保存的镜像，作为 instance 运行的模板。 计算节点将下载的 image 存放在 /opt/stack/data/nova/instances/_base 目录下。</li>
+<li>镜像文件，指的是 instance 启动盘所对应的文件</li>
+<li>二者的关系是：image 是镜像文件 的 backing file。image 不会变，而镜像文件会发生变化。比如安装新的软件后，镜像文件会变大。</li>
+</ol>
+<h4 id="创建-instance-的-XML-定义文件"><a href="#创建-instance-的-XML-定义文件" class="headerlink" title="创建 instance 的 XML 定义文件"></a>创建 instance 的 XML 定义文件</h4><p>创建的 XML 文件会保存到该 instance 目录 /opt/stack/data/nova/instances/f1e22596-6844-4d7a-84a3-e41e6d7618ef，命名为 libvirt.xml</p>
+<h4 id="创建虚拟网络并启动-instance"><a href="#创建虚拟网络并启动-instance" class="headerlink" title="创建虚拟网络并启动 instance"></a>创建虚拟网络并启动 instance</h4><p><img src="http://mmsns.qpic.cn/mmsns/Hia4HVYXRicqFQtJ8pZe5tCJiaY2ibNv6Z9HtmIzRM8MjZuK6j3RvQhlqA/0?wx_lazy=1" alt="http://7xo6kd.com1.z0.glb.clouddn.com/upload-ueditor-image-20160501-1462109268755029101.png"></p>
+<p>本环境用的是 linux-bridge 实现的虚拟网络。</p>
+<p>CLI 查看实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virsh list</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2017/09/12/LearningOpenStack-4-nova/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/09/12/LearningOpenStack-4-nova/" class="post-title-link" itemprop="url">【学习】四、Nova 综述及 OpenStack 通用设计思路</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-12 19:39:54" itemprop="dateCreated datePublished" datetime="2017-09-12T19:39:54+08:00">2017-09-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/09/12/LearningOpenStack-4-nova/" class="post-meta-item leancloud_visitors" data-flag-title="【学习】四、Nova 综述及 OpenStack 通用设计思路" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/09/12/LearningOpenStack-4-nova/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/09/12/LearningOpenStack-4-nova/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="nova架构"><a href="#nova架构" class="headerlink" title="nova架构"></a>nova架构</h1><p><img src="/images/nova-f9ad05cc-94a8-408b-90dd-4863227bd681.png" alt="nova-f9ad05cc-94a8-408b-90dd-4863227bd681"></p>
+<h2 id="nova组件"><a href="#nova组件" class="headerlink" title="nova组件"></a>nova组件</h2><p>可分为以下几类</p>
+<h3 id="api"><a href="#api" class="headerlink" title="api"></a>api</h3><p><strong><em>nova-api</em></strong></p>
+<p>接收和响应客户的 API 调用。 除了提供 OpenStack 自己的API，nova-api 还支持 Amazon EC2 API。</p>
+<h3 id="compute-core"><a href="#compute-core" class="headerlink" title="compute core"></a>compute core</h3><p><strong><em>nova-scheduler</em></strong></p>
+<p>虚机调度服务，负责决定在哪个计算节点上运行虚机</p>
+<p><strong><em>nova-compute</em></strong></p>
+<p>管理虚机的核心服务，通过调用 Hypervisor API 实现虚机生命周期管理</p>
+<p><strong><em>Hypervisor</em></strong></p>
+<p>计算节点上跑的虚拟化管理程序，虚机管理最底层的程序。 不同虚拟化技术提供自己的 Hypervisor。 常用的 Hypervisor 有 KVM，Xen， VMWare 等</p>
+<p><strong><em>nova-conductor</em></strong></p>
+<p>nova-compute 经常需要更新数据库，比如更新虚机的状态。 出于安全性和伸缩性的考虑，nova-compute 并不会直接访问数据库，而是将这个任务委托给 nova-conductor，这个我们后面详细讨论。</p>
+<h3 id="Console-Interface"><a href="#Console-Interface" class="headerlink" title="Console Interface"></a>Console Interface</h3><p><strong><em>nova-console</em></strong></p>
+<p>用户可以通过多种方式访问虚机的控制台： nova-novncproxy，基于 Web 浏览器的 VNC 访问 nova-spicehtml5proxy，基于 HTML5 浏览器的 SPICE 访问 nova-xvpnvncproxy，基于 Java 客户端的 VNC 访问</p>
+<p><strong><em>nova-consoleauth</em></strong></p>
+<p>负责对访问虚机控制台请亲提供 Token 认证</p>
+<p><strong><em>nova-cert</em></strong></p>
+<p>提供 x509 证书支持</p>
+<h3 id="Database"><a href="#Database" class="headerlink" title="Database"></a>Database</h3><p>Nova 会有一些数据需要存放到数据库中，一般使用 MySQL。</p>
+<p>数据库安装在控制节点上。 Nova 使用命名为 “nova” 的数据库。</p>
+<h3 id="Message-Queue"><a href="#Message-Queue" class="headerlink" title="Message Queue"></a>Message Queue</h3><p>在前面我们了解到 Nova 包含众多的子服务，这些子服务之间需要相互协调和通信。</p>
+<p>为解耦各个子服务，Nova 通过 Message Queue 作为子服务的信息中转站。所以在架构图上我们看到了子服务之间没有直接的连线，是通过 Message Queue 联系的。</p>
+<h1 id="Nova组件如何协同工作"><a href="#Nova组件如何协同工作" class="headerlink" title="Nova组件如何协同工作"></a>Nova组件如何协同工作</h1><p>1、只有nova-compute组件需要安装在计算节点上</p>
+<p>2、可以使用命令查看nova组件分别安装在哪些节点上</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nova service-list</span><br></pre></td></tr></table></figure>
+
+<p>3、虚拟机创建流程：</p>
+<p>客户向 api 发送请求，api 传递给消息队列，消息队列通知 scheduler，scheduler 通过调度算法确定在哪一台虚拟机上面创建，发消息给消息队列，消息队列通知该计算节点的 compute 组件，compute 创建虚拟机，发送消息给消息队列，消息队列传递给 conductor 组件，conductor 组件写入更新数据库。</p>
+<p><img src="/images/nova-2.png" alt="nova-2"></p>
+<h1 id="OpenStack通用设计思路"><a href="#OpenStack通用设计思路" class="headerlink" title="OpenStack通用设计思路"></a>OpenStack通用设计思路</h1><ol>
+<li><p> 每一个 OpenStack 组件都通过 api 对外提供服务，还可以运行多个 api 实现高可用。</p>
+</li>
+<li><p> 对于某项操作，如果有多个实体能够完成任务，那么一般都会有 scheduler 调度服务，如 nova、cinder。</p>
+</li>
+<li><p> worker 工作服务：如 nova 的nova-compute服务，如果调度不过来那么可以增加scheduler服务，如果计算资源不够可以增加计算节点。</p>
+</li>
+<li><p>采用基于 driver 的框架。 以 nova 为例，OpenStack 的计算节点支持多种 Hypervisor。 包括 KVM, Hyper-V, VMWare, Xen, Docker, LXC 等。 nova-compute 为这些 Hypervisor 定义了统一的接口，Hypervisor 只需要实现这些接口，就可以 driver 的形式即插即用到 OpenStack 中。</p>
+<p> <img src="/images/nova-3.png" alt="nova-3"></p>
+<p> 配置文件 /etc/nova/nova.conf 中由 compute_driver 配置项指定该计算节点使用哪种 Hypervisor 的 driver。glance 支持多种存储后端，也是一种 driver 架构，cinder、neutron 都是。</p>
+</li>
+<li><p> 消息队列服务。将每一个服务解耦，实现异步调用。</p>
+</li>
+<li><p> database。每一个服务的状态信息都在数据库中维护。</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/23/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/25/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

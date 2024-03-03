@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这是我学习邱岳老师在极客时间上的产品训练营所做的学习笔记。 产品经理的起源和发展产品经理这个岗位，最初是源于宝洁公司的。1923 年宝洁公司的一位销售经理发现自己所负责的一款香皂销售业绩并不好，而原因是这款香皂和公司另外一款非常成功的香皂发生了冲突。不管是市场定位还是营销手段都太过相似了，这就导致这款香皂不能够从市场中突出重围。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="什么是产品经理？">
+<meta property="og:url" content="http://iziyang.github.io/2021/03/21/product1/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="这是我学习邱岳老师在极客时间上的产品训练营所做的学习笔记。 产品经理的起源和发展产品经理这个岗位，最初是源于宝洁公司的。1923 年宝洁公司的一位销售经理发现自己所负责的一款香皂销售业绩并不好，而原因是这款香皂和公司另外一款非常成功的香皂发生了冲突。不管是市场定位还是营销手段都太过相似了，这就导致这款香皂不能够从市场中突出重围。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210321112133">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210321121721">
+<meta property="article:published_time" content="2021-03-21T12:56:27.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.824Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="产品经理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210321112133">
+
+<link rel="canonical" href="http://iziyang.github.io/2021/03/21/product1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>什么是产品经理？ | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2021/03/21/product1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          什么是产品经理？
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-21 20:56:27" itemprop="dateCreated datePublished" datetime="2021-03-21T20:56:27+08:00">2021-03-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E8%B0%88/" itemprop="url" rel="index"><span itemprop="name">杂谈</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/03/21/product1/" class="post-meta-item leancloud_visitors" data-flag-title="什么是产品经理？" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/03/21/product1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/21/product1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>这是我学习邱岳老师在极客时间上的产品训练营所做的学习笔记。</strong></p>
+<h1 id="产品经理的起源和发展"><a href="#产品经理的起源和发展" class="headerlink" title="产品经理的起源和发展"></a>产品经理的起源和发展</h1><p>产品经理这个岗位，最初是源于宝洁公司的。1923 年宝洁公司的一位销售经理发现自己所负责的一款香皂销售业绩并不好，而原因是这款香皂和公司另外一款非常成功的香皂发生了冲突。不管是市场定位还是营销手段都太过相似了，这就导致这款香皂不能够从市场中突出重围。</p>
+<span id="more"></span>
+
+<p>于是这位销售经理就向公司总裁提出「一个人负责一个品牌」的理念，从此产品经理就诞生了，而经过改革的宝洁公司，旗下的众多产品都具有了自己的独特市场定位，例如当今市场上大家都熟悉的飘柔、海飞丝、沙宣等等洗发水品牌就是这一改革的结果。</p>
+<p>再到后来计算机发展起来之后，软件工程开始兴起，如微软、IBM 等公司，都是以制造传统软件闻名的，这一过程，产品经理更多的是项目经理的角色，并不需要承担过多的市场分析的职责，需求通常都是由客户直接提出的。</p>
+<p>再到互联网兴起之后，产品经理开始真正的面对海量的用户，开始进行一系列的需求分析、市场研究等工作，开始追求用户体验，追求规模效应和边际效应，渐渐的也就演变成了今天的样子。</p>
+<p>从这个角度来看，产品经理其实经历了三个阶段，从<strong>消费品</strong>到<strong>软件</strong>行业再到<strong>互联网</strong>行业。</p>
+<p>对于一个消费型产品来说，大致会有这么几个阶段，定义、生产、营销、渠道、销售，在这些环节里面，产品经理是要贯穿始终的，每一个环节最终都会反馈到定义这里，促进产品的进化。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210321112133"></p>
+<p>在这个过程中，从 0 到 1 其实是最简单的，当产品销售出去之后，从 1 到 100 的这个过程才是最难的。</p>
+<p>从产品经理的起源也可以看出来，它并不是一个因为需求的增加、职责的增加产生的岗位，而是一个各个岗位的黏合剂，它本身并不能创造什么东西，所有的事情都是别人做的。在这个过程中，产品经理不断的推动、整合资源，因此产品经理的价值定义和边界是模糊的。</p>
+<p>对应上面产品经理的行业发展，自然而然的，产品经理也有一个岗位的发展，那就是从<strong>项目管理</strong>到<strong>需求分析</strong>再到<strong>产品经理</strong>，而产品经理整个的工作过程，其实就是<strong>从需求出发，产出方案，拿到结果</strong>。</p>
+<h1 id="产品经理的工作内容"><a href="#产品经理的工作内容" class="headerlink" title="产品经理的工作内容"></a>产品经理的工作内容</h1><p>产品经理整个的工作内容，可以分为内外两个方面，这里的内指的是需要自己一个人做的工作，外则是需要其他人协助的工作。</p>
+<ol>
+<li>前期需要进行大量的调研和分析工作，对外。</li>
+<li>进行需求分析、设计解决方案、研究可行性，对内。</li>
+<li>向老板汇报，协调资源，拉起上下游沟通，对外。</li>
+<li>立项，跟进整个过程，测试发布，对外。</li>
+<li>分析数据，了解用户反馈，调整迭代，对内。</li>
+<li>推广与运营，对外。</li>
+<li>教育用户并服务用户，对外。</li>
+</ol>
+<p>典型的产品经理每日工作内容应该是这个样子的：</p>
+<ol>
+<li>看数据，了解用户反馈，阅读业内资讯。这部分需要自己完成，大部分人这里的时间花的是不够的，是需要提升的。</li>
+<li>开会、和其他人聊天。这是属于调研、沟通的部分，是需要摄入信息的。这是和别人完成的，这部分的时间维持即可。需要注意的是信息的消费效率，也就是在聊天的时候，如何提升聊天的信息密度，提高自己信息摄入的效率。</li>
+<li>然后是个人进行思考分析，包括需求分析，内外部的形势分析等。这里很重要的一点是，需求分析并不等于写需求文档，我们应该把大量的时间花在思考和分析上面，这部分的时间需要提升。</li>
+<li>然后是图文写作，包括文档、原型图、会议纪要等等，这部分的时间是要减少的，我们要提高写作的效率。</li>
+<li>最后就是各种杂活，一系列的沟通、找人等等事情，这部分需要关注占比，要减少干活的时间，提高干活的效率。</li>
+</ol>
+<p>另外一个很重要的事情就是，要给自己写备忘录，写决策日记，要记录下自己的每一个决定是如何做出的，背景是什么，我们的判断是什么，我们的决策是什么，我们的目标是什么，做了哪些取舍，要把这个思考过程给记录下来。过段时间回过头，就可以再看看自己的这个决策，有哪些失误，哪些需要改进，哪些纠结是不值一提的。</p>
+<h1 id="产品经理的考核标准"><a href="#产品经理的考核标准" class="headerlink" title="产品经理的考核标准"></a>产品经理的考核标准</h1><p>大致可以分为 5 部分的内容：</p>
+<ul>
+<li>过程性标准：主要考察执行力，也就是项目是否有延期，项目规模有多大，日常事务交付的完成度如何，还有上下游的满意度如何，项目的稳定性如何。</li>
+<li>上线与发布：负责的特性和功能模块能不能按时发布，需求列表里面的需求能不能如期完成，以及完成率有多少。</li>
+<li>产品的指标数字：比如产品的新增、留存、转化、传播等等。</li>
+<li>业务指标：用户数有多少，赚了多少钱，平台的规模有多大，团队的规模有多大。</li>
+<li>个人成长的指标：学习和阅读的能力，影响力，判断力，管理能力。</li>
+</ul>
+<p>二爷这里提到了，在面试产品经理时，通过询问对方所关注的业务指标，是能够看出来对方对业务的理解深度的。对于高层级的产品管理者来说，通常都会背负业务 KPI 和团队 KPI，例如公司营收，业务的规模和团队的规模，团队的成长等。</p>
+<h1 id="产品经理的上下游和环境"><a href="#产品经理的上下游和环境" class="headerlink" title="产品经理的上下游和环境"></a>产品经理的上下游和环境</h1><p>产品经理的上下游是非常复杂的，对内包括运营、设计、研发、测试、运维、项目管理、市场营销、财税法合规等各种角色。对外包括用户、客户、资本市场、生产方和供应方、分销商、代理商和渠道等。</p>
+<p>所以产品经理这个角色就像是奥利奥中间的奶油一样，自己的身段要足够的软，要能够去融合两边又黑又硬的各种角色。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210321121721"></p>
+<h1 id="产品经理的不同种类与发展"><a href="#产品经理的不同种类与发展" class="headerlink" title="产品经理的不同种类与发展"></a>产品经理的不同种类与发展</h1><ul>
+<li>从用户来看：分为 To B 和 To C。</li>
+<li>从产品客户端来看：分为 Web、移动、嵌入式、桌面等。</li>
+<li>从方向来看：分为用户、策略、平台、AI、数据、推荐、内部等。</li>
+<li>从行业来看：分为供应链、SaaS、音乐、社交、工具、云计算等。</li>
+<li>从职级来看：分为助理、专员、经理、资深、高级、专家、主管、总监等。</li>
+</ul>
+<p>对我们自身来说，要从两个维度去考虑，一个是行业，一个是技能。要先选定一个行业，看自己想不想在这个行业发展下去，想不想成为这个行业的专家，然后再辅以对应的方向，是做用户还是策略还是数据等，今天的行业已经被极度细分了。</p>
+<h1 id="产品经理的能力模型"><a href="#产品经理的能力模型" class="headerlink" title="产品经理的能力模型"></a>产品经理的能力模型</h1><p>这一块分为 5 部分内容：</p>
+<ul>
+<li>执行力</li>
+<li>学习研究能力</li>
+<li>沟通社交的能力</li>
+<li>逻辑分析能力和判断力</li>
+<li>韧性扛压宽容能力</li>
+</ul>
+<h2 id="执行力"><a href="#执行力" class="headerlink" title="执行力"></a>执行力</h2><p>WHY：产品经理的工作迭代性非常强，我们必须基于用户的反馈、数据来不断的反哺到我们的产品，做出对应的调整。而且产品经理是这个产品唯一的出入口，所有的信息都从产品经理这里发出和汇聚。做出的产品就是唯一的名片。</p>
+<p>HOW：具体来说，要做到事事有着落、有回音、有记录。用户提的需求，产品经理记下之后，不能悄悄的就把需求给做了，而要及时给用户反馈。对于一个项目，要给出清晰具体的指标，可量化的数据以及对应的截止时间。做到出拳有落点，打中有总结，挨打有反思。</p>
+<p>WHAT：可以通过需求文档、决策记录、产品日记等等手段来一件件的落实。</p>
+<p><strong>执行力就是把每一个小事做好。</strong></p>
+<h2 id="学习研究能力"><a href="#学习研究能力" class="headerlink" title="学习研究能力"></a>学习研究能力</h2><p>WHY：产品经理是一个多跨岗位。什么东西都需要了解，比如产品、设计、运营、项目管理等等能力。产品经理的工作迭代性很强，这就要求产品经理必须保持学习。</p>
+<p>HOW：例如自学一门编程语言，Python 即可。或者研究一门与工作不相干的课题，再或者从业界的产品专家大牛处学习。</p>
+<p>WHAT：多参与些外部的分享培训，多看些研究报告，和同事们喝咖啡，都可以提高我们学习的能力。</p>
+<h2 id="沟通社交能力"><a href="#沟通社交能力" class="headerlink" title="沟通社交能力"></a>沟通社交能力</h2><p>WHY：产品经理是不能够产出任何事情的，所有对产品的影响都是由别人产出的，这就是产品经理的无力本质。工作就是在做协调和资源的交易，对产品经理来说，信息是否通畅非常重要。</p>
+<p>HOW：确定沟通的目的、背景和形式，了解对方要的和怕的东西，在沟通的时候不能双方都集中到了怕的东西上面，而要直接说出我想要什么，同时搞清楚对方想要的是什么。情绪问题也很重要，不能沟通变成了吵架，要控制好自己的情绪。然后最重要的一点就是，要诉诸利益，而不是指望靠沟通给对方带来什么东西。</p>
+<p>WHAT：在会议、沟通前，要有文档记录，写下来自己准备沟通的内容。提前规划好如何沟通，甚至还可以做一场演练，再认真的话，可以细致到每一句话如何说，每一个包袱如何甩。然后要善于建立自己的信息网络，能够在各个部门都有自己的关系在，这样信息就会顺畅很多。</p>
+<h2 id="逻辑分析能力和判断力"><a href="#逻辑分析能力和判断力" class="headerlink" title="逻辑分析能力和判断力"></a>逻辑分析能力和判断力</h2><p>WHY：产品工作是消化信息来做决断的，产品经理需要分析各种可能的情况，然后给出一个判断，如果判断错误，那么就会造成极大的资源浪费。</p>
+<p>HOW：提高分析能力和判断力，需要产品经理能够听进去大多数人的意见，在脑子中能够存在两套思维体系，同时建立系统性思维的框架。还可以针对一款市场上的产品，把自己代入进去，如果是自己的话，会怎么决策这个产品。</p>
+<p>WHAT：还是前面说过的，要写决策日记。同时还要有总结以及复盘。还可以画系统思维的网络图，同样是可以通过饭局、咖啡、群聊。</p>
+<h2 id="韧性扛压宽容能力"><a href="#韧性扛压宽容能力" class="headerlink" title="韧性扛压宽容能力"></a>韧性扛压宽容能力</h2><p>WHY：产品经理需要能够接受失败，强如小龙，微信视频动态也已经被证明是一个失败的产品特性。团队中每个成员的收益预期是不一样的，要能够去接受其他人这种不同的预期，要宽容其他人。</p>
+<p>HOW：需要认清自己的性格，接受自己。同时还需要能够找到自己的安全感，不要把安全感建立在脆弱的东西上面，例如一个东西做砸了就要崩溃了，这不行。</p>
+<p>WHAT：还是决策日记，然后要多读名人传记，跟朋友、家人吐槽，但是不要跟同事吐槽。</p>
+<h1 id="产品经理的个人素质"><a href="#产品经理的个人素质" class="headerlink" title="产品经理的个人素质"></a>产品经理的个人素质</h1><ul>
+<li>内向 VS 外向</li>
+<li>敏感 VS 钝感</li>
+<li>同理心同情心 VS 果断专行</li>
+<li>责任心/主动性</li>
+<li>细心/严谨</li>
+</ul>
+<p>这些素质看似是矛盾的，但其实是对产品经理不同层面的能力要求，真的还是挺难的。</p>
+<p>先说内向和外向。</p>
+<p>产品经理是需要内向也是需要外向的。内向可以独处，进行系统性思考、取舍和做决策，通常还会具有内在激励的特性，有坚韧不拔的的性格，思考和下结论一般会比较慢，但相应的也会更加全面。</p>
+<p>外向则是产品经理的岗位本质。本身就需要协调、沟通和社交的能力。建立信息网、获取信息的效率会很高。影响力和感染力也相对会比较容易构建，思路会比较跳脱，通常市场认知也会认为产品经理外向会大于内向。</p>
+<p>再说敏感和钝感。</p>
+<p>敏感型的产品经理情绪容易起伏，易被激怒。但是感受力通常比较强，反应很快，也缺乏长性，容易倦怠。钝感的产品经理更有耐心，情绪也更加稳定，适合长期投入。</p>
+<p>从整体来说，钝感是需要大于敏锐的，在推土机阶段，也就是需要走坚实的路线，强悍的执行，需要钝感大于敏锐。而当业务破局或者新业务的阶段，则需要敏锐大于钝感。这两者之间也并没有绝对的界限。敏锐的人是可以靠硬扛变得钝感，钝感的人也可以通过学习和反思来培养敏锐。</p>
+<h1 id="产品经理的特质与气场"><a href="#产品经理的特质与气场" class="headerlink" title="产品经理的特质与气场"></a>产品经理的特质与气场</h1><ul>
+<li>产品经理的审美一般都不错，例如音乐和穿着都挺好。</li>
+<li>产品经理的人缘一般都不错。</li>
+<li>运气都还挺好。</li>
+<li>恢宏大度、有江湖气，就不是那种公事公办，一板一眼的人。</li>
+<li>聪明有灵性。</li>
+<li>有一技之长。这个一技之长还不是仅仅只是感兴趣，通常都还是认真去学习去深入的。</li>
+<li>做成过事情。这个事情很重要，一定要通过做成过事情来体现产品经理的能力，不论是每天写两百字还是坚持做过什么事。</li>
+<li>善于反思。成功的产品经理都是善于反思的，会不断的否定自己的判断。</li>
+</ul>
+<h1 id="产品经理的职业发展阶段与晋级"><a href="#产品经理的职业发展阶段与晋级" class="headerlink" title="产品经理的职业发展阶段与晋级"></a>产品经理的职业发展阶段与晋级</h1><p>产品经理的发展一般分为这几个阶段：</p>
+<ul>
+<li>打下手（交付具体任务）</li>
+<li>做功能（交付功能实现）</li>
+<li>管模块（交付具体产品指标）</li>
+<li>管产品线（交付业务目标）</li>
+<li>带团队/做业务（交付团队效率/公司价值）</li>
+</ul>
+<h2 id="打下手"><a href="#打下手" class="headerlink" title="打下手"></a>打下手</h2><p>这个阶段只要多花一点时间，多花一点精力，就能超过大多数人。例如邀约会议、整理会议纪要、汇总统计数据、写产品周报、整理完善产品文档、做小需求管理和跟进。</p>
+<p>这个阶段评估新人的方式一般是扎实、靠谱、主动（有想法）、责任心。而且也是超出期望最容易的一个阶段，把文档要写的讲究一点，多修改几遍。要死磕自己，写好日报、周报。同时利用新手红利期多多了解业务，这个阶段提出的任何愚蠢的问题都会被谅解。</p>
+<p>但是很重要的一点是，一定要打好扎实的基本功。</p>
+<h2 id="做功能"><a href="#做功能" class="headerlink" title="做功能"></a>做功能</h2><p>这个阶段，刚开始可能是被安排的一个功能，只要执行到位就可以了。到后面就开始负责小的功能点，到做大的功能点。然后写需求文档，组织项目推进。做需求评审，立项申请。</p>
+<p>这个阶段评估的方式是完成度高不高，能不能贯彻意图，主动（有想法），责任心。</p>
+<p>要多想一步，少说几句。做好后续的跟进工作，就能击败 90% 的同行。要定时总结，产出，分享，提案。这个阶段一定要积累信任和影响力，能打能扛。同时积累好行业和方法层面扎实的基本功。</p>
+<h2 id="管模块"><a href="#管模块" class="headerlink" title="管模块"></a>管模块</h2><p>到了这一阶段，就开始从被指定功能到开始被指定目标了。从怎么做到决定做什么。开始有利益关系，不同的上下游以及环境。</p>
+<p>这个阶段评估方式是从做好到做对，同时也要主动（有想法）、责任心。</p>
+<p>要建立横向纵向的渠道和联系，要开始构建畅通的信息输入渠道。同时学会取舍和协调，建立自己的思考与工作套路。很有可能会开始协调公司不同部门的利益冲突，需要让公司的利益达到一个平衡。</p>
+<h2 id="管产品线"><a href="#管产品线" class="headerlink" title="管产品线"></a>管产品线</h2><p>这一阶段要开始从被指定目标到负责业务目标了。可能会负责公司的投融资，从功能规划层面更多的转向业务规划。要开始为商业指标负责了，也就是要给公司赚钱。给公司提供一个产品视角。</p>
+<p>这一阶段的评估标准就是业务指标。</p>
+<p>需要能够理解公司和业务的价值，理解市场，能够有规划，会用人，对目标笃定。</p>
+<h2 id="带团队-做业务"><a href="#带团队-做业务" class="headerlink" title="带团队/做业务"></a>带团队/做业务</h2><p>这一阶段，最重要的事情就是从管事情向管人转变。要对效率负责，对公司人才结构负责。要对员工负责，对公司的能力负责。什么是公司的能力？比如一个业务方向可能做垮了，但是员工的能力给保留下来了，可以快速的复用到另外一个方向上去。这就是公司的能力。所谓的借假修真，借事修人。</p>
+<p>最重要的是管人，要定目标、定策略、定组织架构，开始学习管理学的知识，理解组织架构的力量，熟悉人才组合，识人、用人、培养人。对招聘和晋升负责。</p>
+<h1 id="互联网产品经理的若干真相"><a href="#互联网产品经理的若干真相" class="headerlink" title="互联网产品经理的若干真相"></a>互联网产品经理的若干真相</h1><p>产品经理并不是想象中的那么美好。很多时候都是在做一些沟通、协调、扯皮的工作，这就是实际的日常。并没有那么多的高光时刻，很有可能永远不会来。绝大部分的项目都会以失败告终，即便是最成功的产品，在成功之前也要经历无数次濒死的考验。</p>
+<p>产品经理需要背锅，需要为团队出头，承担各种后果和指责，这需要一颗大心脏和一副厚脸皮，以及过硬的情绪管理能力。</p>
+<p>产品经理没有资源的绝对控制权，我们对产品所做的一切只能是间接的，需要依靠别人。越早意识到这些事情，就可以越早进入角色。</p>
+<hr>
+<p>这一部分，我自己的感受是，要有自己的目标，要知道自己在向何处去，自己做工作的目的是什么，目标是什么，只有这样，才不会迷失在无尽的工作中。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86/" rel="tag"># 产品经理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/21/product1-homework/" rel="prev" title="产品经理的市场要求是什么">
+      <i class="fa fa-chevron-left"></i> 产品经理的市场要求是什么
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/04/18/product2/" rel="next" title="产品思维和产品意识是什么？">
+      产品思维和产品意识是什么？ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84%E8%B5%B7%E6%BA%90%E5%92%8C%E5%8F%91%E5%B1%95"><span class="nav-text">产品经理的起源和发展</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%86%85%E5%AE%B9"><span class="nav-text">产品经理的工作内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84%E8%80%83%E6%A0%B8%E6%A0%87%E5%87%86"><span class="nav-text">产品经理的考核标准</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%B8%B8%E5%92%8C%E7%8E%AF%E5%A2%83"><span class="nav-text">产品经理的上下游和环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84%E4%B8%8D%E5%90%8C%E7%A7%8D%E7%B1%BB%E4%B8%8E%E5%8F%91%E5%B1%95"><span class="nav-text">产品经理的不同种类与发展</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84%E8%83%BD%E5%8A%9B%E6%A8%A1%E5%9E%8B"><span class="nav-text">产品经理的能力模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%8A%9B"><span class="nav-text">执行力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E7%A0%94%E7%A9%B6%E8%83%BD%E5%8A%9B"><span class="nav-text">学习研究能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B2%9F%E9%80%9A%E7%A4%BE%E4%BA%A4%E8%83%BD%E5%8A%9B"><span class="nav-text">沟通社交能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E5%88%86%E6%9E%90%E8%83%BD%E5%8A%9B%E5%92%8C%E5%88%A4%E6%96%AD%E5%8A%9B"><span class="nav-text">逻辑分析能力和判断力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9F%A7%E6%80%A7%E6%89%9B%E5%8E%8B%E5%AE%BD%E5%AE%B9%E8%83%BD%E5%8A%9B"><span class="nav-text">韧性扛压宽容能力</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%B4%A0%E8%B4%A8"><span class="nav-text">产品经理的个人素质</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84%E7%89%B9%E8%B4%A8%E4%B8%8E%E6%B0%94%E5%9C%BA"><span class="nav-text">产品经理的特质与气场</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84%E8%81%8C%E4%B8%9A%E5%8F%91%E5%B1%95%E9%98%B6%E6%AE%B5%E4%B8%8E%E6%99%8B%E7%BA%A7"><span class="nav-text">产品经理的职业发展阶段与晋级</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E4%B8%8B%E6%89%8B"><span class="nav-text">打下手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%9A%E5%8A%9F%E8%83%BD"><span class="nav-text">做功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E6%A8%A1%E5%9D%97"><span class="nav-text">管模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E4%BA%A7%E5%93%81%E7%BA%BF"><span class="nav-text">管产品线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A6%E5%9B%A2%E9%98%9F-%E5%81%9A%E4%B8%9A%E5%8A%A1"><span class="nav-text">带团队&#x2F;做业务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%92%E8%81%94%E7%BD%91%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84%E8%8B%A5%E5%B9%B2%E7%9C%9F%E7%9B%B8"><span class="nav-text">互联网产品经理的若干真相</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

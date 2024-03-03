@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="LVM 结构图">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LVM 配置">
+<meta property="og:url" content="http://iziyang.github.io/post_bak/lvmmanagement.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="LVM 结构图">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fkbsqqnikdj20gy06vaa6.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fkbtiik0njj215y0d1q3u.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fkbtw880dvj20ml0k7q4m.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fkcxyo92yoj20ur05h0sy.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fkd0gohi50j20k108haab.jpg">
+<meta property="article:published_time" content="2017-10-09T01:58:12.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.861Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="LVM">
+<meta property="article:tag" content="分区">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fkbsqqnikdj20gy06vaa6.jpg">
+
+<link rel="canonical" href="http://iziyang.github.io/post_bak/lvmmanagement">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>LVM 配置 | 原少子杨
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">LVM 配置
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1 id="LVM-结构图"><a href="#LVM-结构图" class="headerlink" title="LVM 结构图"></a>LVM 结构图</h1><span id="more"></span>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fkbsqqnikdj20gy06vaa6.jpg"></p>
+<h1 id="空白磁盘的-LVM-配置"><a href="#空白磁盘的-LVM-配置" class="headerlink" title="空白磁盘的 LVM 配置"></a>空白磁盘的 LVM 配置</h1><p>1、parted 查看磁盘的未分区空间</p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fkbtiik0njj215y0d1q3u.jpg"></p>
+<p>2、fdisk 对空白磁盘进行分区（也可使用 parted 命令分区）</p>
+<p>3、fdisk 将 systemID 修改为LVM标记（8e）</p>
+<p>4、partprobe 更新系统分区表</p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fkbtw880dvj20ml0k7q4m.jpg"></p>
+<p>5、pvcreat 将 Linux 分区处理成物理卷 PV</p>
+<p>6、vgcreate 将 PV 处理成 VG，或者 vgextend，将某个物理卷添加进 VG</p>
+<p>7、lvcreate 将卷组分成若干个逻辑卷 LV</p>
+<p>8、mkfs.xfs 将 LV 格式化，挂载格式化后的 LV 到文件系统</p>
+<h1 id="管理文件系统空间"><a href="#管理文件系统空间" class="headerlink" title="管理文件系统空间"></a>管理文件系统空间</h1><h2 id="增大空间"><a href="#增大空间" class="headerlink" title="增大空间"></a>增大空间</h2><ol>
+<li>umount 先卸载逻辑卷</li>
+<li>通过 vgextend，lvextend 增大 LV 空间</li>
+<li>再使用 resize2fs 将逻辑卷容量增加</li>
+<li>mount 重新挂载</li>
+</ol>
+<h2 id="减小空间"><a href="#减小空间" class="headerlink" title="减小空间"></a>减小空间</h2><ol>
+<li>umount 卸载逻辑卷</li>
+<li>使用 resize2fs 将逻辑卷容量减小</li>
+<li>vgreduce，lvreduce 减小 LV</li>
+<li>mount 重新挂载</li>
+</ol>
+<h1 id="LVM-管理命令"><a href="#LVM-管理命令" class="headerlink" title="LVM 管理命令"></a>LVM 管理命令</h1><h2 id="物理卷（PV）管理"><a href="#物理卷（PV）管理" class="headerlink" title="物理卷（PV）管理"></a>物理卷（PV）管理</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pvcreate 创建物理卷 # pvcreate /dev/sda6</span><br><span class="line">pvremove 删除物理卷</span><br><span class="line">pvscan 查看物理卷信息</span><br><span class="line">pvdisplay 查看各个物理卷的详细参数</span><br></pre></td></tr></table></figure>
+
+<h2 id="卷组（VG）管理"><a href="#卷组（VG）管理" class="headerlink" title="卷组（VG）管理"></a>卷组（VG）管理</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vgcreate 创建卷组</span><br><span class="line">vgscan 查看卷组信息</span><br><span class="line">vgdisplay 查看卷组详细参数</span><br><span class="line">vgreduce 缩小卷组，把某个物理卷删除</span><br><span class="line">vgextend 扩展卷组，把某个物理卷添加到卷组</span><br><span class="line">vgremove 删除卷组</span><br></pre></td></tr></table></figure>
+
+<h2 id="逻辑卷（LV）管理"><a href="#逻辑卷（LV）管理" class="headerlink" title="逻辑卷（LV）管理"></a>逻辑卷（LV）管理</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lvcreate 创建逻辑卷</span><br><span class="line">lvscan 查看逻辑卷信息</span><br><span class="line">lvdisplay 查看逻辑卷具体参数</span><br><span class="line">lvextend 增大逻辑卷大小</span><br><span class="line">lvreduce 减小逻辑卷大小</span><br><span class="line">lvremove 删除逻辑卷</span><br><span class="line">lvs 查看逻辑卷属性信息</span><br></pre></td></tr></table></figure>
+
+<h2 id="快照管理"><a href="#快照管理" class="headerlink" title="快照管理"></a>快照管理</h2><h3 id="创建快照"><a href="#创建快照" class="headerlink" title="创建快照"></a>创建快照</h3><p>创建快照需要注意：</p>
+<ol>
+<li>VG 中需要预留存放快照本身的空间，不能全部被占满。</li>
+<li>快照所在的 VG 必须与被备份的 LV 相同，也就是说，快照存放的位置必须与被照卷存放在同一个 VG 上。否则快照会失败。</li>
+</ol>
+<p>为根分区创建快照：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@controller ~]# lvcreate -L 10G -s -n root_orign_backup /dev/centos_controller/root </span><br><span class="line">  Using default stripesize 64.00 KiB.</span><br><span class="line">  Logical volume &quot;root_orign_backup&quot; created.</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fkcxyo92yoj20ur05h0sy.jpg"></p>
+<h3 id="恢复快照"><a href="#恢复快照" class="headerlink" title="恢复快照"></a>恢复快照</h3><p>要恢复快照，我们首先需要卸载文件系统。注意，要卸载被恢复的文件系统。</p>
+<p>只想检查挂载点是否卸载成功，可以使用下面的命令。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df -h</span><br></pre></td></tr></table></figure>
+
+<p>卸载之后恢复快照：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> lvconvert --merge /dev/centos_controller/root_orign_backup</span></span><br></pre></td></tr></table></figure>
+
+<p>在合并完成后，快照卷将被自动移除。</p>
+<h3 id="自动扩展"><a href="#自动扩展" class="headerlink" title="自动扩展"></a>自动扩展</h3><p>要自动扩展快照，我们可以通过修改配置文件来进行。对于手动扩展，我们可以使用lvextend。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># vim /etc/lvm/lvm.conf</span><br></pre></td></tr></table></figure>
+
+<p>搜索单词 autoextend。</p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fkd0gohi50j20k108haab.jpg"></p>
+<p>修改此处的100为75，这样自动扩展的起始点就是75，而自动扩展百分比为20，它将自动扩容百分之20。</p>
+<h1 id="一些磁盘管理命令"><a href="#一些磁盘管理命令" class="headerlink" title="一些磁盘管理命令"></a>一些磁盘管理命令</h1><p>lsblk：查看分区情况</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@controller ~]# lsblk </span><br><span class="line">NAME                       MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda                          8:0    0 153.4G  0 disk </span><br><span class="line">├─sda1                       8:1    0     1G  0 part /boot</span><br><span class="line">├─sda2                       8:2    0 115.6G  0 part </span><br><span class="line">│ ├─centos_controller-root 253:0    0   100G  0 lvm  /</span><br><span class="line">│ ├─centos_controller-swap 253:1    0   5.6G  0 lvm  [SWAP]</span><br><span class="line">│ └─centos_controller-home 253:2    0    10G  0 lvm  /home</span><br><span class="line">└─sda3                       8:3    0  36.8G  0 part                </span><br></pre></td></tr></table></figure>
+
+<p>df -h：查看可用空间</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@controller ~]# df -h</span><br><span class="line">Filesystem                          Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/mapper/centos_controller-root  100G 1022M   99G   1% /</span><br><span class="line">devtmpfs                            2.7G     0  2.7G   0% /dev</span><br><span class="line">tmpfs                               2.7G     0  2.7G   0% /dev/shm</span><br><span class="line">tmpfs                               2.7G  8.6M  2.7G   1% /run</span><br><span class="line">tmpfs                               2.7G     0  2.7G   0% /sys/fs/cgroup</span><br><span class="line">/dev/sda1                          1014M  143M  872M  15% /boot</span><br><span class="line">/dev/mapper/centos_controller-home   10G   33M   10G   1% /home</span><br><span class="line">tmpfs                               551M     0  551M   0% /run/user/0</span><br></pre></td></tr></table></figure>
+
+<p>fdisk：分区命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">[root@controller ~]# fdisk -l</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 164.7 GB, 164696555520 bytes, 321672960 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x0000bfc8</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *        2048     2099199     1048576   83  Linux</span><br><span class="line">/dev/sda2         2099200   244592639   121246720   8e  Linux LVM</span><br><span class="line">/dev/sda3       244592640   321672959    38540160   8e  Linux LVM</span><br><span class="line"></span><br><span class="line">Disk /dev/mapper/centos_controller-root: 107.4 GB, 107374182400 bytes, 209715200 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/mapper/centos_controller-swap: 6039 MB, 6039797760 bytes, 11796480 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/mapper/centos_controller-home: 10.7 GB, 10737418240 bytes, 20971520 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br></pre></td></tr></table></figure>
+
+<p>parted：与fdisk类似</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@controller ~]# parted</span><br><span class="line">GNU Parted 3.1</span><br><span class="line">Using /dev/sda</span><br><span class="line">Welcome to GNU Parted! Type &#x27;help&#x27; to view a list of commands.</span><br><span class="line">(parted) help                                                             </span><br><span class="line">  align-check TYPE N                        check partition N for TYPE(min|opt) alignment</span><br><span class="line">  help [COMMAND]                           print general help, or help on COMMAND</span><br><span class="line">  mklabel,mktable LABEL-TYPE               create a new disklabel (partition table)</span><br><span class="line">  mkpart PART-TYPE [FS-TYPE] START END     make a partition</span><br><span class="line">  name NUMBER NAME                         name partition NUMBER as NAME</span><br><span class="line">  print [devices|free|list,all|NUMBER]     display the partition table, available devices, free space, all found partitions, or a particular partition</span><br><span class="line">  quit                                     exit program</span><br><span class="line">  rescue START END                         rescue a lost partition near START and END</span><br><span class="line">  rm NUMBER                                delete partition NUMBER</span><br><span class="line">  select DEVICE                            choose the device to edit</span><br><span class="line">  disk_set FLAG STATE                      change the FLAG on selected device</span><br><span class="line">  disk_toggle [FLAG]                       toggle the state of FLAG on selected device</span><br><span class="line">  set NUMBER FLAG STATE                    change the FLAG on partition NUMBER</span><br><span class="line">  toggle [NUMBER [FLAG]]                   toggle the state of FLAG on partition NUMBER</span><br><span class="line">  unit UNIT                                set the default unit to UNIT</span><br><span class="line">  version                                  display the version number and copyright information of GNU Parted</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LVM-%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="nav-text">LVM 结构图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A9%BA%E7%99%BD%E7%A3%81%E7%9B%98%E7%9A%84-LVM-%E9%85%8D%E7%BD%AE"><span class="nav-text">空白磁盘的 LVM 配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%A9%BA%E9%97%B4"><span class="nav-text">管理文件系统空间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A2%9E%E5%A4%A7%E7%A9%BA%E9%97%B4"><span class="nav-text">增大空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%8F%E5%B0%8F%E7%A9%BA%E9%97%B4"><span class="nav-text">减小空间</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LVM-%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="nav-text">LVM 管理命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%8D%B7%EF%BC%88PV%EF%BC%89%E7%AE%A1%E7%90%86"><span class="nav-text">物理卷（PV）管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%B7%E7%BB%84%EF%BC%88VG%EF%BC%89%E7%AE%A1%E7%90%86"><span class="nav-text">卷组（VG）管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E5%8D%B7%EF%BC%88LV%EF%BC%89%E7%AE%A1%E7%90%86"><span class="nav-text">逻辑卷（LV）管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7%E7%AE%A1%E7%90%86"><span class="nav-text">快照管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%BF%AB%E7%85%A7"><span class="nav-text">创建快照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E5%BF%AB%E7%85%A7"><span class="nav-text">恢复快照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E6%89%A9%E5%B1%95"><span class="nav-text">自动扩展</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="nav-text">一些磁盘管理命令</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

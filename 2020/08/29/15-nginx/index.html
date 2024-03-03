@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Nginx 缓存：定义存放缓存的载体1234567891011Syntax: proxy_cache zone | off;Default: proxy_cache off; Context: http, server, locationSyntax: proxy_cache_path path [levels&#x3D;levels] [use_temp_path&#x3D;on|off]         keys">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx 的缓存">
+<meta property="og:url" content="http://iziyang.github.io/2020/08/29/15-nginx/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="Nginx 缓存：定义存放缓存的载体1234567891011Syntax: proxy_cache zone | off;Default: proxy_cache off; Context: http, server, locationSyntax: proxy_cache_path path [levels&#x3D;levels] [use_temp_path&#x3D;on|off]         keys">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200622163329">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200622170403">
+<meta property="article:published_time" content="2020-08-29T04:47:01.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.854Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200622163329">
+
+<link rel="canonical" href="http://iziyang.github.io/2020/08/29/15-nginx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Nginx 的缓存 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2020/08/29/15-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Nginx 的缓存
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-29 12:47:01" itemprop="dateCreated datePublished" datetime="2020-08-29T12:47:01+08:00">2020-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/29/15-nginx/" class="post-meta-item leancloud_visitors" data-flag-title="Nginx 的缓存" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/29/15-nginx/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/29/15-nginx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Nginx-缓存：定义存放缓存的载体"><a href="#Nginx-缓存：定义存放缓存的载体" class="headerlink" title="Nginx 缓存：定义存放缓存的载体"></a>Nginx 缓存：定义存放缓存的载体</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_cache</span> zone | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">proxy_cache</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: proxy_cache_path path [levels=levels] [use_temp_path=<span class="literal">on</span>|<span class="literal">off</span>] </span><br><span class="line">        keys_zone=name:size [inactive=time] [max_size=size] [manager_files=number] </span><br><span class="line">        [manager_sleep=time] [manager_threshold=time] [loader_files=number] </span><br><span class="line">        [loader_sleep=time] [loader_threshold=time] [purger=<span class="literal">on</span>|<span class="literal">off</span>] [purger_files=number] </span><br><span class="line">        [purger_sleep=time] [purger_threshold=time];</span><br><span class="line">Default: —</span><br><span class="line">Context: http</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>对于 Nginx 缓存来说，缓存的文件是在磁盘上的，而文件的元信息则是存放在内存中，所以需要先定义共享内存。</p>
+<p>proxy_cache_path 指令需要定义缓存的路径以及共享内存中 key zone 的名字和大小，只能在 http 上下文中使用；而 proxy_cache 则可以使用 proxy_cache_path 中定义的 zone 名字。</p>
+<p>下面介绍一下 proxy_cache_path 指令的含义。</p>
+<h2 id="proxy-cache-path-指令"><a href="#proxy-cache-path-指令" class="headerlink" title="proxy_cache_path 指令"></a>proxy_cache_path 指令</h2><ul>
+<li>path：定义缓存文件存放位置</li>
+<li>levels：定义缓存路径的目录层级，最多3 级，每层目录长度为 1 或者 2 字节</li>
+<li>use_temp_path<ul>
+<li>on：使用 proxy_temp_path 定义的临时目录</li>
+<li>off 直接使用 path 路径存放临时文件</li>
+</ul>
+</li>
+<li>keys_zone<ul>
+<li>name 是共享内存名字，由 proxy_cache 指令使用</li>
+<li>size 是共享内存大小，1MB 大约可以存放 8000 个 key</li>
+</ul>
+</li>
+<li>inactive：在 inactive 时间内没有被访问的缓存，会被淘汰掉，默认 10 分钟</li>
+<li>max_size：设置最大的缓存文件大小，超出后由 cache manager 进程按 LRU 链表淘汰</li>
+<li>manager_files：cache manager 进程在 1 次淘汰过程中，淘汰的最大文件数，默认 100</li>
+<li>manager_sleep：执行一次淘汰循环后 cache manager 进程的休眠时间，默认 200 毫秒</li>
+<li>manager_threshold：执行一次淘汰循环的最大耗时，默认 50 毫秒</li>
+<li>loader_files：cache loader 进程载入磁盘中缓存文件至共享内存，每批最多处理的文件数</li>
+<li>默认 100</li>
+<li>loader_sleep：执行一次缓存文件至共享内存后，进程休眠的时间，载入默认 200 毫秒</li>
+<li>loader_threshold：每次载入缓存文件至共享内存的最大耗时，默认 50 毫秒</li>
+</ul>
+<h2 id="缓存的关键字"><a href="#缓存的关键字" class="headerlink" title="缓存的关键字"></a>缓存的关键字</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_cache_key</span> string;</span><br><span class="line">Default: <span class="attribute">proxy_cache_key</span> $scheme$proxy_host$request_uri; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h2 id="缓存什么样的响应"><a href="#缓存什么样的响应" class="headerlink" title="缓存什么样的响应"></a>缓存什么样的响应</h2><p>这个指令非常重要，它用来表示我们缓存什么样的响应。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_cache_valid</span> [code ...] time;</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>对不同的响应码缓存不等的时长：例如：code 404 5m</li>
+<li>只标识时间<ul>
+<li>仅对以下响应码缓存<ul>
+<li>200</li>
+<li>301</li>
+<li>302</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>通过响应头部控制缓存时长<ul>
+<li>X-Accel-Expires，单位秒<ul>
+<li>为 0 时表示禁止 Nginx 缓存内容</li>
+<li>通过 @ 设置缓存到一天中的某一时刻</li>
+</ul>
+</li>
+<li>响应头若含有 Set-Cookie 则不缓存</li>
+<li>响应头若含有 Vary 则不缓存</li>
+</ul>
+</li>
+</ul>
+<h2 id="哪些内容不使用缓存？"><a href="#哪些内容不使用缓存？" class="headerlink" title="哪些内容不使用缓存？"></a>哪些内容不使用缓存？</h2><ul>
+<li>参数为真时，响应不存入缓存。这里我们可以自己自定义一些变量或者使用其他的变量来设置是否缓存</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_no_cache</span> string ...;</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>参数为真时，不使用缓存内容，当指定的 string 有值时，不使用缓存内容，直接发送到上游服务</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_cache_bypass</span> string ...;</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h2 id="变更-HEAD-方法"><a href="#变更-HEAD-方法" class="headerlink" title="变更 HEAD 方法"></a>变更 HEAD 方法</h2><p>这个指令默认会把 HEAD 方法转换为 GET 方法，如果设置为 off 则会继续使用 HEAD 方法。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_cache_convert_head</span> <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">proxy_cache_convert_head</span> <span class="literal">on</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h2 id="upstream-cache-status-变量"><a href="#upstream-cache-status-变量" class="headerlink" title="upstream_cache_status 变量"></a>upstream_cache_status 变量</h2><ul>
+<li>upstream_cache_status<ul>
+<li>MISS：未命中缓存</li>
+<li>HIT：命中缓存</li>
+<li>EXPIRED：缓存已经过期</li>
+<li>STALE：命中了陈旧的缓存</li>
+<li>UPDATING：内容陈旧，但正在更新</li>
+<li>REVALIDATED：Nginx 验证了陈旧的内容依然有效</li>
+<li>BYPASS：响应是从原始服务器获得的</li>
+</ul>
+</li>
+</ul>
+<h3 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h3><p>这里面配置文件与上一篇文章的配置文件相同。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">➜  nginx curl cache.ziyang.com/ -I</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Server: nginx/1.17.8</span><br><span class="line">Date: Mon, 22 Jun 2020 14:45:49 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 612</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Last-Modified: Mon, 25 May 2020 11:42:24 GMT</span><br><span class="line">ETag: &quot;5ecbaf20-264&quot;</span><br><span class="line">Expires: Mon, 22 Jun 2020 13:45:49 GMT</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">X-Cache-Status: MISS</span><br><span class="line">Accept-Ranges: bytes</span><br></pre></td></tr></table></figure>
+
+<p>这里第一次访问可以看到 X-Cache-Status 是 MISS 的状态。再次访问：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">➜  nginx curl cache.ziyang.com/ -I</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Server: nginx/1.17.8</span><br><span class="line">Date: Mon, 22 Jun 2020 14:46:41 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 612</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Last-Modified: Mon, 25 May 2020 11:42:24 GMT</span><br><span class="line">ETag: &quot;5ecbaf20-264&quot;</span><br><span class="line">Expires: Mon, 22 Jun 2020 13:46:41 GMT</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">X-Cache-Status: HIT</span><br><span class="line">Accept-Ranges: bytes</span><br></pre></td></tr></table></figure>
+
+<p>X-Cache-Status 已经是 HIT 状态了。</p>
+<h2 id="对客户端请求的缓存处理流程"><a href="#对客户端请求的缓存处理流程" class="headerlink" title="对客户端请求的缓存处理流程"></a>对客户端请求的缓存处理流程</h2><h3 id="缓存流程：发起请求部分"><a href="#缓存流程：发起请求部分" class="headerlink" title="缓存流程：发起请求部分"></a>缓存流程：发起请求部分</h3><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200622163329"></p>
+<h3 id="对哪个-method-方法使用缓存返回响应"><a href="#对哪个-method-方法使用缓存返回响应" class="headerlink" title="对哪个 method 方法使用缓存返回响应"></a>对哪个 method 方法使用缓存返回响应</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_cache_methods</span> GET | HEAD | POST ...;</span><br><span class="line">Default: <span class="attribute">proxy_cache_methods</span> GET HEAD; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h2 id="接收到上游响应后的缓存处理流程"><a href="#接收到上游响应后的缓存处理流程" class="headerlink" title="接收到上游响应后的缓存处理流程"></a>接收到上游响应后的缓存处理流程</h2><h3 id="X-Accel-Expires-头部"><a href="#X-Accel-Expires-头部" class="headerlink" title="X-Accel-Expires 头部"></a>X-Accel-Expires 头部</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Syntax: X-Accel-<span class="attribute">Expires</span> [offseconds]</span><br><span class="line">Default: X-Accel-Expires <span class="literal">off</span></span><br></pre></td></tr></table></figure>
+
+<p>从上游服务定义缓存多长时间。</p>
+<ul>
+<li>0 表示不缓存当前响应</li>
+<li>@ 前缀表示缓存到当天的某个时间</li>
+</ul>
+<h3 id="Vary-头部"><a href="#Vary-头部" class="headerlink" title="Vary 头部"></a>Vary 头部</h3><ul>
+<li>Vary: *：所有的请求都被视为唯一并且非缓存的，使用 Cache-Control: private 来实现则更适用，这样用于说明不存储该对象更加清晰，若没有通过 proxy_ignore_headers 设置忽略，则不缓存响应</li>
+<li>Vary: &lt;header-name&gt;, &lt;header-name&gt;, …<ul>
+<li>逗号分隔的一系列 HTTP 头部名称，用于确定缓存是否可用</li>
+</ul>
+</li>
+</ul>
+<h3 id="Set-Cookie-头部"><a href="#Set-Cookie-头部" class="headerlink" title="Set-Cookie 头部"></a>Set-Cookie 头部</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Set-Cookie: &lt;cookie-name&gt;=&lt;cookie-value&gt; </span><br><span class="line">Set-Cookie: &lt;cookie-name&gt;=&lt;cookie-value&gt;; Expires=&lt;date&gt; </span><br><span class="line">Set-Cookie: &lt;cookie-name&gt;=&lt;cookie-value&gt;; Max-Age=&lt;non-zero-digit&gt; </span><br><span class="line">Set-Cookie: &lt;cookie-name&gt;=&lt;cookie-value&gt;; Domain=&lt;domain-value&gt; </span><br><span class="line">Set-Cookie: &lt;cookie-name&gt;=&lt;cookie-value&gt;; Path=&lt;path-value&gt; </span><br><span class="line">Set-Cookie: &lt;cookie-name&gt;=&lt;cookie-value&gt;; Secure </span><br><span class="line">Set-Cookie: &lt;cookie-name&gt;=&lt;cookie-value&gt;; HttpOnly </span><br><span class="line">Set-Cookie: &lt;cookie-name&gt;=&lt;cookie-value&gt;; SameSite=Strict </span><br><span class="line">Set-Cookie: &lt;cookie-name&gt;=&lt;cookie-value&gt;; SameSite=Lax </span><br><span class="line">Set-Cookie: &lt;cookie-name&gt;=&lt;cookie-value&gt;; Domain=&lt;domain-value&gt;; Secure; HttpOnly</span><br></pre></td></tr></table></figure>
+
+<p>若 Set-Cookie 头部没有被 proxy_ignore_headers 设置忽略，则不对响应进行缓存</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200622170403"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/29/14-nginx/" rel="prev" title="想提升用户体验，那你知道怎么用好浏览器缓存吗？">
+      <i class="fa fa-chevron-left"></i> 想提升用户体验，那你知道怎么用好浏览器缓存吗？
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/29/16-nginx/" rel="next" title="如何减轻缓存失效时上游服务的压力">
+      如何减轻缓存失效时上游服务的压力 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx-%E7%BC%93%E5%AD%98%EF%BC%9A%E5%AE%9A%E4%B9%89%E5%AD%98%E6%94%BE%E7%BC%93%E5%AD%98%E7%9A%84%E8%BD%BD%E4%BD%93"><span class="nav-text">Nginx 缓存：定义存放缓存的载体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proxy-cache-path-%E6%8C%87%E4%BB%A4"><span class="nav-text">proxy_cache_path 指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%9A%84%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-text">缓存的关键字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84%E5%93%8D%E5%BA%94"><span class="nav-text">缓存什么样的响应</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%AA%E4%BA%9B%E5%86%85%E5%AE%B9%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%BC%93%E5%AD%98%EF%BC%9F"><span class="nav-text">哪些内容不使用缓存？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E6%9B%B4-HEAD-%E6%96%B9%E6%B3%95"><span class="nav-text">变更 HEAD 方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#upstream-cache-status-%E5%8F%98%E9%87%8F"><span class="nav-text">upstream_cache_status 变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E7%9A%84%E7%BC%93%E5%AD%98%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-text">对客户端请求的缓存处理流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E6%B5%81%E7%A8%8B%EF%BC%9A%E5%8F%91%E8%B5%B7%E8%AF%B7%E6%B1%82%E9%83%A8%E5%88%86"><span class="nav-text">缓存流程：发起请求部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%93%AA%E4%B8%AA-method-%E6%96%B9%E6%B3%95%E4%BD%BF%E7%94%A8%E7%BC%93%E5%AD%98%E8%BF%94%E5%9B%9E%E5%93%8D%E5%BA%94"><span class="nav-text">对哪个 method 方法使用缓存返回响应</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A5%E6%94%B6%E5%88%B0%E4%B8%8A%E6%B8%B8%E5%93%8D%E5%BA%94%E5%90%8E%E7%9A%84%E7%BC%93%E5%AD%98%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-text">接收到上游响应后的缓存处理流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#X-Accel-Expires-%E5%A4%B4%E9%83%A8"><span class="nav-text">X-Accel-Expires 头部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vary-%E5%A4%B4%E9%83%A8"><span class="nav-text">Vary 头部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Set-Cookie-%E5%A4%B4%E9%83%A8"><span class="nav-text">Set-Cookie 头部</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

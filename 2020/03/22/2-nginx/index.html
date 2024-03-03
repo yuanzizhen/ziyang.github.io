@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Nginx 的应用场景Nginx 的应用场景主要有三个：  静态资源服务 反向代理服务 API 服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx 架构和基础原理">
+<meta property="og:url" content="http://iziyang.github.io/2020/03/22/2-nginx/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="Nginx 的应用场景Nginx 的应用场景主要有三个：  静态资源服务 反向代理服务 API 服务">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200315065927">
+<meta property="og:image" content="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200315071337">
+<meta property="og:image" content="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200315080228">
+<meta property="og:image" content="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200315080633">
+<meta property="article:published_time" content="2020-03-22T10:26:02.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.814Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200315065927">
+
+<link rel="canonical" href="http://iziyang.github.io/2020/03/22/2-nginx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Nginx 架构和基础原理 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2020/03/22/2-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Nginx 架构和基础原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-22 18:26:02" itemprop="dateCreated datePublished" datetime="2020-03-22T18:26:02+08:00">2020-03-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/22/2-nginx/" class="post-meta-item leancloud_visitors" data-flag-title="Nginx 架构和基础原理" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/22/2-nginx/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/22/2-nginx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Nginx-的应用场景"><a href="#Nginx-的应用场景" class="headerlink" title="Nginx 的应用场景"></a>Nginx 的应用场景</h1><p>Nginx 的应用场景主要有三个：</p>
+<ul>
+<li>静态资源服务</li>
+<li>反向代理服务</li>
+<li>API 服务</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="静态资源服务"><a href="#静态资源服务" class="headerlink" title="静态资源服务"></a>静态资源服务</h2><p>Nginx 可以通过本地文件系统提供静态资源的服务，例如纯静态的 HTML 页面等。</p>
+<h2 id="反向代理服务"><a href="#反向代理服务" class="headerlink" title="反向代理服务"></a>反向代理服务</h2><p>很多应用服务的运行效率是很低的，QPS，TPS，并发等都是受限的，所以需要把很多应用服务组成一个集群，向用户提供高可用性的服务，这个时候需要 Nginx 的反向代理功能，而应用服务的动态扩容需要负载均衡功能，另外一个，Nginx 层还需要做缓存。因此反向代理服务主要是三个功能：</p>
+<ul>
+<li>反向代理</li>
+<li>负载均衡</li>
+<li>缓存</li>
+</ul>
+<h2 id="API-服务"><a href="#API-服务" class="headerlink" title="API 服务"></a>API 服务</h2><p>有时候应用服务本身有很多性能问题，但是数据库服务要比应用服务好的多，业务场景比较简单，并发性和 TPS 都要远高于应用服务，所以这个时候可以由 Nginx 直接去访问数据库或者 Redis，还可以利用 Nginx 的强大的并发性来实现应用防火墙的 API 服务。</p>
+<h1 id="Nginx-架构基础"><a href="#Nginx-架构基础" class="headerlink" title="Nginx 架构基础"></a>Nginx 架构基础</h1><h2 id="Nginx-状态机"><a href="#Nginx-状态机" class="headerlink" title="Nginx 状态机"></a>Nginx 状态机</h2><p><img src="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200315065927"></p>
+<p>Nginx 对外提供服务时，主要有三种流量会到达 Nginx：WEB、EMAIL、TCP 流量。这三种流量到达 Nginx 后，会分别由传输层状态机、应用层状态机、MAIL 状态机来处理。当内存不足以缓存所有的静态资源时，会退化成阻塞的磁盘调用，这个时候需要一个线程池来处理，对于每一个处理完的请求记录访问日志和错误日志，日志也是记录到磁盘中的。</p>
+<h2 id="Nginx-的进程结构"><a href="#Nginx-的进程结构" class="headerlink" title="Nginx 的进程结构"></a>Nginx 的进程结构</h2><p><img src="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200315071337"></p>
+<p>Nginx 有四种进程：</p>
+<ul>
+<li>Master 进程。Master 进程是父进程，其他进程都是子进程，Master 进程对 worker 进程进行管理</li>
+<li>worker 进程。worker 进程有多个，是负责处理具体的请求的。Nginx 为什么采用多进程而不是多线程的进程结构呢？是因为 Nginx 要保证高可用性，多线程之间会共享地址空间，当某一个第三方模块引发了一个段错误时，就会导致整个 Nginx 进程挂掉。而采用多进程模型不会出现这个问题</li>
+<li>cache manager 和 cache loader 进程。缓存除了要被多个 worker 进程使用，也要被 cache 进程使用，cache loader 做缓存的载入，cache manager 做缓存的管理，实际上每一个请求所使用的缓存还是由 worker 进程来进行的。这些进程间的通信都是通过共享内存来进行的</li>
+</ul>
+<p>为什么 worker 进程需要很多个？</p>
+<p>这是因为，Nginx 采用了事件驱动的模型后，它期望 worker 进程可以从头到尾占满一颗 CPU，这样可以更加高效的利用整颗 CPU，提高 CPU 的缓存命中率，另外还可以将 worker 进程与某一个 CPU 核绑定在一起。</p>
+<h2 id="使用信号管理-Nginx-的父子进程"><a href="#使用信号管理-Nginx-的父子进程" class="headerlink" title="使用信号管理 Nginx 的父子进程"></a>使用信号管理 Nginx 的父子进程</h2><p>在前面说到了 Nginx 的命令行，其实很多 Nginx 的信号都是通过向 master 进程发送信号来实现的。</p>
+<h3 id="Master-进程"><a href="#Master-进程" class="headerlink" title="Master 进程"></a>Master 进程</h3><p>master 进程会监控 worker 进程，而监控是通过 Linux 规定的当子进程退出时需要向父进程发送 CHLD 信号实现的。这样可以当出现 bug 时，立刻拉起 worker。</p>
+<p>master 进程可以接收以下信号：</p>
+<ul>
+<li>TERM, INT</li>
+<li>QUIT</li>
+<li>HUP</li>
+<li>USR1</li>
+<li>USR2</li>
+<li>WINCH</li>
+</ul>
+<h3 id="Worker-进程"><a href="#Worker-进程" class="headerlink" title="Worker 进程"></a>Worker 进程</h3><p>worker 进程可以接收以下信号：</p>
+<ul>
+<li>TERM, INT</li>
+<li>QUIT</li>
+<li>HUP</li>
+<li>USR1</li>
+<li>WINCH</li>
+</ul>
+<h3 id="命令行对应的信号"><a href="#命令行对应的信号" class="headerlink" title="命令行对应的信号"></a>命令行对应的信号</h3><ul>
+<li>reload：HUP</li>
+<li>reopen：USR1</li>
+<li>stop：TERM</li>
+<li>quit：QUIT</li>
+</ul>
+<p>USR2 和 WINCH 没有对应的信号，只能通过 kill 发送。</p>
+<p>stop 和 quit 的区别是，一个是立即退出，一个是优雅的停止。</p>
+<h3 id="reload-重载配置文件的真相"><a href="#reload-重载配置文件的真相" class="headerlink" title="reload 重载配置文件的真相"></a>reload 重载配置文件的真相</h3><ol>
+<li>向 master 进程发送 HUP 信号</li>
+<li>master 进程检查配置文件是否有语法问题</li>
+<li>master 进程打开新的监听端口（如果配置了新的端口）</li>
+<li>master 进程使用新的配置文件启动 worker 进程</li>
+<li>master 进程向老的 worker 进程发送 QUIT 信号</li>
+<li>老 worker 进程关闭监听句柄，处理完当前连接后结束进程</li>
+</ol>
+<p><img src="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200315080228"></p>
+<h3 id="热部署的真相"><a href="#热部署的真相" class="headerlink" title="热部署的真相"></a>热部署的真相</h3><p>在上一篇文章中，讲了热部署的流程，那么热部署具体的流程是怎么样的呢？</p>
+<ol>
+<li>将旧的 Nginx 文件替换成新的 Nginx 文件（注意备份）</li>
+<li>向 master 进程发送 USR2 信号</li>
+<li>master 进程修改 pid 文件名，加后缀 .oldbin</li>
+<li>master 进程用新 Nginx 文件启动新 master 进程</li>
+<li>向老的 master 进程发送 quit 信号，关闭老的 master</li>
+<li>回滚操作，向老的 master 进程发送 HUP 信号，向新的 master 发 QUIT</li>
+</ol>
+<p><img src="https://s3plus.sankuai.com/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200315080633"></p>
+<h3 id="优雅的关闭-worker-进程"><a href="#优雅的关闭-worker-进程" class="headerlink" title="优雅的关闭 worker 进程"></a>优雅的关闭 worker 进程</h3><ol>
+<li>设置定时器 worker_shutdown_timeout</li>
+<li>关闭监听句柄</li>
+<li>关闭空闲连接</li>
+<li>再循环等待全部连接关闭</li>
+<li>退出进程</li>
+</ol>
+<p>这里面，定时器的作用是，如果时间超时了，但是连接还没有处理完毕，就会强制退出进程。另外，Nginx 只能处理 HTTP 的优雅关闭，websocket 、TCP、UDP 的代理都做不到，worker 不解析数据。</p>
+<p>以上这些内容，就是 Nginx 命令行和信号的完整过程。下一讲开始讲 HTTP 模块。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/09/1-nginx/" rel="prev" title="Nginx 入门及命令行操作">
+      <i class="fa fa-chevron-left"></i> Nginx 入门及命令行操作
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/06/3-nginx/" rel="next" title="Nginx 的配置指令">
+      Nginx 的配置指令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx-%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">Nginx 的应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%9C%8D%E5%8A%A1"><span class="nav-text">静态资源服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1"><span class="nav-text">反向代理服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API-%E6%9C%8D%E5%8A%A1"><span class="nav-text">API 服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx-%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80"><span class="nav-text">Nginx 架构基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx-%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-text">Nginx 状态机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx-%E7%9A%84%E8%BF%9B%E7%A8%8B%E7%BB%93%E6%9E%84"><span class="nav-text">Nginx 的进程结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E7%AE%A1%E7%90%86-Nginx-%E7%9A%84%E7%88%B6%E5%AD%90%E8%BF%9B%E7%A8%8B"><span class="nav-text">使用信号管理 Nginx 的父子进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Master-%E8%BF%9B%E7%A8%8B"><span class="nav-text">Master 进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Worker-%E8%BF%9B%E7%A8%8B"><span class="nav-text">Worker 进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%AF%B9%E5%BA%94%E7%9A%84%E4%BF%A1%E5%8F%B7"><span class="nav-text">命令行对应的信号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reload-%E9%87%8D%E8%BD%BD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9A%84%E7%9C%9F%E7%9B%B8"><span class="nav-text">reload 重载配置文件的真相</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%83%AD%E9%83%A8%E7%BD%B2%E7%9A%84%E7%9C%9F%E7%9B%B8"><span class="nav-text">热部署的真相</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E9%9B%85%E7%9A%84%E5%85%B3%E9%97%AD-worker-%E8%BF%9B%E7%A8%8B"><span class="nav-text">优雅的关闭 worker 进程</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

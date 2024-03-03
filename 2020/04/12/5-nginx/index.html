@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Nginx 处理一个 HTTP 请求的全过程前面给大家讲了 Nginx 是如何处理 HTTP请求头部的，接下来就到了真正处理 HTTP 请求的阶段了。先看下面这张图，这张图是 Nginx 处理 HTTP 请求的示意图，虽然简单，但是却很好的说明了整个过程。  Read Request Headers：解析请求头。 Identify Configuration Block：识别由哪一个 locati">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx 处理 HTTP 请求的 11 个阶段">
+<meta property="og:url" content="http://iziyang.github.io/2020/04/12/5-nginx/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="Nginx 处理一个 HTTP 请求的全过程前面给大家讲了 Nginx 是如何处理 HTTP请求头部的，接下来就到了真正处理 HTTP 请求的阶段了。先看下面这张图，这张图是 Nginx 处理 HTTP 请求的示意图，虽然简单，但是却很好的说明了整个过程。  Read Request Headers：解析请求头。 Identify Configuration Block：识别由哪一个 locati">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200412212208">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200412214329">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1geif6iz1w6j22pd1e5k1k.jpg">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200412230316">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200413083648">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200413083620">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1geif53rd47j21nq1yf148.jpg">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200507062524">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200507070812">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1geo3e7cylzj31da0eeq40.jpg">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200412214329">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200512094602">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gewl3d5pg4j318u0fojtv.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gewl6fm9ufj31ei0eodi5.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gewvduqbxjj31rj0u04qp.jpg">
+<meta property="article:published_time" content="2020-04-12T13:22:42.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.819Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200412212208">
+
+<link rel="canonical" href="http://iziyang.github.io/2020/04/12/5-nginx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Nginx 处理 HTTP 请求的 11 个阶段 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2020/04/12/5-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Nginx 处理 HTTP 请求的 11 个阶段
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-12 21:22:42" itemprop="dateCreated datePublished" datetime="2020-04-12T21:22:42+08:00">2020-04-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/12/5-nginx/" class="post-meta-item leancloud_visitors" data-flag-title="Nginx 处理 HTTP 请求的 11 个阶段" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/04/12/5-nginx/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/12/5-nginx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Nginx-处理一个-HTTP-请求的全过程"><a href="#Nginx-处理一个-HTTP-请求的全过程" class="headerlink" title="Nginx 处理一个 HTTP 请求的全过程"></a>Nginx 处理一个 HTTP 请求的全过程</h1><p>前面给大家讲了 <a href="https://iziyang.github.io/2020/04/08/4-nginx/">Nginx 是如何处理 HTTP请求头部的</a>，接下来就到了真正处理 HTTP 请求的阶段了。先看下面这张图，这张图是 Nginx 处理 HTTP 请求的示意图，虽然简单，但是却很好的说明了整个过程。</p>
+<ol>
+<li>Read Request Headers：解析请求头。</li>
+<li>Identify Configuration Block：识别由哪一个 location 进行处理，匹配 URL。</li>
+<li>Apply Rate Limits：判断是否限速。例如可能这个请求并发的连接数太多超过了限制，或者 QPS 太高。</li>
+<li>Perform Authentication：连接控制，验证请求。例如可能根据 Referrer 头部做一些防盗链的设置，或者验证用户的权限。</li>
+<li>Generate Content：生成返回给用户的响应。为了生成这个响应，做反向代理的时候可能会和上游服务（Upstream Services）进行通信，然后这个过程中还可能会有些子请求或者重定向，那么还会走一下这个过程（Internal redirects and subrequests）。</li>
+<li>Response Filters：过滤返回给用户的响应。比如压缩响应，或者对图片进行处理。</li>
+<li>Log：记录日志。</li>
+</ol>
+<span id="more"></span>
+
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200412212208"></p>
+<p>以上这七个步骤从整体上介绍了一下处理流程，下面还会再说一下实际的处理过程。</p>
+<h1 id="Nginx-处理-HTTP-请求的-11-个阶段"><a href="#Nginx-处理-HTTP-请求的-11-个阶段" class="headerlink" title="Nginx 处理 HTTP 请求的 11 个阶段"></a>Nginx 处理 HTTP 请求的 11 个阶段</h1><p>下面介绍一下详细的 11 个阶段，每个阶段都可能对应着一个甚至多个 HTTP 模块，通过这样一个模块对比，我们也能够很好的理解这些模块具体是怎么样发挥作用的。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200412214329"></p>
+<ol>
+<li>POST_READ：在 read 完请求的头部之后，在没有对头部做任何处理之前，想要获取到一些原始的值，就应该在这个阶段进行处理。这里面会涉及到一个 realip 模块。</li>
+<li>SERVER_REWRITE：和下面的 REWRITE 阶段一样，都只有一个模块叫 rewrite 模块，一般没有第三方模块会处理这个阶段。</li>
+<li>FIND_CONFIG：做 location 的匹配，暂时没有模块会用到。</li>
+<li>REWRITE：对 URL 做一些处理。</li>
+<li>POST_WRITE：处于 REWRITE 之后，也是暂时没有模块会在这个阶段出现。</li>
+</ol>
+<p>接下来是确认用户访问权限的三个模块：</p>
+<ol start="6">
+<li>PREACCESS：是在 ACCESS 之前要做一些工作，例如并发连接和 QPS 需要进行限制，涉及到两个模块：limt_conn 和 limit_req</li>
+<li>ACCESS：核心要解决的是用户能不能访问的问题，例如 auth_basic 是用户名和密码，access 是用户访问 IP，auth_request 根据第三方服务返回是否可以去访问。</li>
+<li>POST_ACCESS：是在 ACCESS 之后会做一些事情，同样暂时没有模块会用到。</li>
+</ol>
+<p>最后的三个阶段处理响应和日志：</p>
+<ol start="9">
+<li><p>PRECONTENT：在处理 CONTENT 之前会做一些事情，例如会把子请求发送给第三方的服务去处理，try_files 模块也是在这个阶段中。</p>
+</li>
+<li><p>CONTENT：这个阶段涉及到的模块就非常多了，例如 index, autoindex, concat 等都是在这个阶段生效的。</p>
+</li>
+<li><p>LOG：记录日志 access_log 模块。</p>
+</li>
+</ol>
+<p>以上的这些阶段都是严格按照顺序进行处理的，当然，每个阶段中各个 HTTP 模块的处理顺序也很重要，如果某个模块不把请求向下传递，后面的模块是接收不到请求的。而且每个阶段中的模块也不一定所有都要执行一遍，下面就接着讲一下各个阶段模块之间的请求顺序。</p>
+<h1 id="11-个阶段的顺序处理"><a href="#11-个阶段的顺序处理" class="headerlink" title="11 个阶段的顺序处理"></a>11 个阶段的顺序处理</h1><p>如下图所示，每一个模块处理之间是有序的，那么这个顺序怎么才能得到呢？其实非常简单，在源码 ngx_module.c 中，有一个数组 <code>ngx_module_name</code>，其中包含了在编译 Nginx 的时候的 with 指令所包含的所有模块，它们之间的顺序非常关键，在数组中顺序是相反的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> *ngx_module_names[] = &#123;</span><br><span class="line">    … …</span><br><span class="line">    <span class="string">&quot;ngx_http_static_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_autoindex_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_index_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_random_index_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_mirror_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_try_files_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_auth_request_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_auth_basic_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_access_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_limit_conn_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_limit_req_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_realip_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_referer_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_rewrite_module&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ngx_http_concat_module&quot;</span>,</span><br><span class="line">    … …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>灰色部分的模块是 Nginx 的框架部分去执行处理的，第三方模块没有机会在这里得到处理。</p>
+<p>在依次向下执行的过程中，也可能不按照这样的顺序。例如，在 access 阶段中，有一个指令叫 satisfy，它可以指示当有一个满足的时候就直接跳到下一个阶段进行处理，例如当 access 满足了，就直接跳到 try_files 模块进行处理，而不会再执行 auth_basic、auth_request 模块。</p>
+<p>在 content 阶段中，当 index 模块执行了，就不会再执行 auto_index 模块，而是直接跳到 log 模块。</p>
+<p>整个 11 个阶段所涉及到的模块和先后顺序如下图所示：</p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1geif6iz1w6j22pd1e5k1k.jpg"></p>
+<p>下面开始详细讲解一下各个阶段。先来看下第一个阶段 postread 阶段，顾名思义，postread 阶段是在正式处理请求之前起作用的。</p>
+<h1 id="postread-阶段"><a href="#postread-阶段" class="headerlink" title="postread 阶段"></a>postread 阶段</h1><p>postread 阶段，是 11 个阶段的第 1 个阶段，这个阶段刚刚获取到了请求的头部，还没有进行任何处理，我们可以拿到一些原始的信息。例如，拿到用户的真实 IP 地址</p>
+<h2 id="问题：如何拿到用户的真实-IP-地址？"><a href="#问题：如何拿到用户的真实-IP-地址？" class="headerlink" title="问题：如何拿到用户的真实 IP 地址？"></a>问题：如何拿到用户的真实 IP 地址？</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200412230316"></p>
+<p>我们知道，TCP 连接是由一个四元组构成的，在四元组中，包含了源 IP 地址。而在真实的互联网中，存在非常多的正向代理和反向代理。例如最终的用户有自己的内网 IP 地址，运营商会分配一个公网 IP，然后访问某个网站的时候，这个网站可能使用了 CDN 加速一些静态文件或图片，如果 CDN 没有命中，那么就会回源，回源的时候可能还要经过一个反向代理，例如阿里云的 SLB，然后才会到达 Nginx。</p>
+<p>我们要拿到的地址应该是运营商给用户分配的公网 IP 地址 115.204.33.1，对这个 IP 来进行并发连接的控制或者限速，而 Nginx 拿到的却是 2.2.2.2，那么怎么才能拿到真实的用户 IP 呢？</p>
+<p>HTTP 协议中，有两个头部可以用来获取用户 IP：</p>
+<ul>
+<li>X-Forwardex-For 是用来传递 IP 的，这个头部会把经过的节点 IP 都记录下来</li>
+<li>X-Real-IP：可以记录用户真实的 IP 地址，只能有一个</li>
+</ul>
+<h2 id="拿到真实用户-IP-后如何使用？"><a href="#拿到真实用户-IP-后如何使用？" class="headerlink" title="拿到真实用户 IP 后如何使用？"></a>拿到真实用户 IP 后如何使用？</h2><p>针对这个问题，Nginx 是基于变量来使用。</p>
+<p>例如 binary_remote_addr、remote_addr 这样的变量，其值就是真实的 IP，这样做连接限制也就是 limit_conn 模块才有意义，这也说明了，limit_conn 模块只能在 preaccess 阶段，而不能在 postread 阶段生效。</p>
+<h2 id="realip-模块"><a href="#realip-模块" class="headerlink" title="realip 模块"></a>realip 模块</h2><ul>
+<li><p>默认不会编译进 Nginx</p>
+<ul>
+<li>需要通过 <code>--with-http_realip_module</code> 启用功能</li>
+</ul>
+</li>
+<li><p>变量：如果还想要使用原来的 TCP 连接中的地址和端口，需要通过这两个变量保存</p>
+<ul>
+<li><code>realip_remote_addr</code></li>
+<li><code>realip_remote_port</code></li>
+</ul>
+</li>
+<li><p>功能</p>
+<ul>
+<li>修改客户端地址</li>
+</ul>
+</li>
+<li><p>指令</p>
+<ul>
+<li><p><code>set_real_ip_from</code></p>
+<p>指定可信的地址，只有从该地址建立的连接，获取的 realip 才是可信的</p>
+</li>
+<li><p><code>real_ip_header</code></p>
+<p>指定从哪个头部取真实的 IP 地址，默认从 <code>X-Real-IP</code> 中取，如果设置从 <code>X-Forwarded-For</code> 中取，会先从最后一个 IP 开始取</p>
+</li>
+<li><p><code>real_ip_recursive</code></p>
+<p>环回地址，默认关闭，打开的时候，如果 <code>X-Forwarded-For</code> 最后一个地址与客户端地址相同，会过滤掉该地址</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Syntax: set_real_ip_from address | CIDR | unix:;</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location</span><br><span class="line"></span><br><span class="line">Syntax: real_ip_header field | X-Real-IP | X-Forwarded-For | proxy_protocol;</span><br><span class="line">Default: real_ip_header X-Real-IP; </span><br><span class="line">Context: http, server, location</span><br><span class="line"></span><br><span class="line">Syntax: real_ip_recursive on | off;</span><br><span class="line">Default: real_ip_recursive off; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><p>上面关于 <code>real_ip_recursive</code> 指令可能不太容易理解，我们来实战练习一下，先来看 <code>real_ip_recursive</code> 默认关闭的情况：</p>
+<ul>
+<li>重新编译一个带有 realip 模块的 nginx</li>
+</ul>
+<blockquote>
+<p>关于如何编译 Nginx，详见：<a href="https://iziyang.github.io/2020/03/10/1-nginx/">https://iziyang.github.io/2020/03/10/1-nginx/</a></p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载 nginx 源码，在源码目录下执行</span></span><br><span class="line">./configure --prefix=自己指定的目录 --with-http_realip_module</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>然后去上一步中自己指定的 Nginx 安装目录</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#屏蔽默认的 nginx.conf 文件的 server 块内容，并添加一行</span></span><br><span class="line"><span class="attribute">include</span> /Users/mtdp/myproject/nginx/test_nginx/conf/example/<span class="regexp">*.conf</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在 example 目录下建立 realip.conf，set_real_ip_from 可以设置为自己的本机 IP</span></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span> ziyang.realip.com;</span><br><span class="line">    <span class="attribute">error_log</span> /Users/mtdp/myproject/nginx/nginx/logs/myerror.log <span class="literal">debug</span>;</span><br><span class="line">    <span class="attribute">set_real_ip_from</span> <span class="number">192.168.0.108</span>;</span><br><span class="line">    <span class="comment">#real_ip_header X-Real-IP;</span></span><br><span class="line">    <span class="attribute">real_ip_recursive</span> <span class="literal">off</span>;</span><br><span class="line">    <span class="comment"># real_ip_recursive on;</span></span><br><span class="line">    <span class="attribute">real_ip_header</span> X-Forwarded-For;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">        <span class="attribute">return</span> <span class="number">200</span> <span class="string">&quot;Client real ip: $remote_addr\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的配置文件中，我设置了可信代理地址为本机地址，<code>real_ip_recursive</code> 为默认的 off，<code>real_ip_header</code> 设为从 <code>X-Forwarded-For</code> 中取。</p>
+<ul>
+<li>重载配置文件</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./sbin/nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试响应结果</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl -H &#x27;X-Forwarded-For: 1.1.1.1,192.168.0.108&#x27; ziyang.realip.com</span><br><span class="line">Client real ip: 192.168.0.108</span><br></pre></td></tr></table></figure>
+
+<p>然后再来测试 <code>real_ip_recursive</code> 打开的情况：</p>
+<ul>
+<li>配置文件中打开 <code>real_ip_recursive</code></li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span> ziyang.realip.com;</span><br><span class="line">    <span class="attribute">error_log</span> /Users/mtdp/myproject/nginx/nginx/logs/myerror.log <span class="literal">debug</span>;</span><br><span class="line">    <span class="attribute">set_real_ip_from</span> <span class="number">192.168.0.108</span>;</span><br><span class="line">    <span class="comment">#real_ip_header X-Real-IP;</span></span><br><span class="line">    <span class="comment">#real_ip_recursive off;</span></span><br><span class="line">    <span class="attribute">real_ip_recursive</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">real_ip_header</span> X-Forwarded-For;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">        <span class="attribute">return</span> <span class="number">200</span> <span class="string">&quot;Client real ip: $remote_addr\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试响应结果</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl -H &#x27;X-Forwarded-For: 1.1.1.1,2.2.2.2,192.168.0.108&#x27; ziyang.realip.com</span><br><span class="line">Client real ip: 2.2.2.2</span><br></pre></td></tr></table></figure>
+
+<p>所以这里面也可看出来，如果使用 <code>X-Forwarded-For</code> 获取 realip 的话，需要打开 <code>real_ip_recursive</code>，并且，realip 依赖于 <code>set_real_ip_from</code> 设置的可信地址。</p>
+<p>那么有人可能就会问了，那直接用 <code>X-Real-IP</code> 来选取真实的 IP 地址不就好了。这是可以的，但是 <code>X-Real-IP</code> 是 Nginx 独有的，不是 RFC 规范，如果客户端与服务器之间还有其他非 Nginx 软件实现的代理，就会造成取不到 <code>X-Real-IP</code> 头部，所以这个要根据实际情况来定。</p>
+<h1 id="rewrite-阶段的-rewrite-模块"><a href="#rewrite-阶段的-rewrite-模块" class="headerlink" title="rewrite 阶段的 rewrite 模块"></a>rewrite 阶段的 rewrite 模块</h1><p>下面来看一下 rewrite 模块。</p>
+<p>首先 rewrite 阶段分为两个，一个是 server_rewrite 阶段，一个是 rewrite，这两个阶段都涉及到一个 rewrite 模块，而在 rewrite 模块中，有一个 return 指令，遇到该指令就不会再向下执行，直接返回响应。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200413083648"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200413083620"></p>
+<h2 id="return-指令"><a href="#return-指令" class="headerlink" title="return 指令"></a>return 指令</h2><p>return 指令的语法如下：</p>
+<ul>
+<li>返回状态码，后面跟上 body</li>
+<li>返回状态码，后面跟上 URL</li>
+<li>直接返回 URL</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Syntax: return code [text];</span><br><span class="line">        return code URL;</span><br><span class="line">        return URL;</span><br><span class="line">Default: —</span><br><span class="line">Context: server, location, if</span><br></pre></td></tr></table></figure>
+
+<p>返回状态码包括以下几种：</p>
+<ul>
+<li>Nginx 自定义<ul>
+<li>444：立刻关闭连接，用户收不到响应</li>
+</ul>
+</li>
+<li>HTTP 1.0 标准<ul>
+<li>301：永久重定向</li>
+<li>302：临时重定向，禁止被缓存</li>
+</ul>
+</li>
+<li>HTTP 1.1 标准<ul>
+<li>303：临时重定向，允许改变方法，禁止被缓存</li>
+<li>307：临时重定向，不允许改变方法，禁止被缓存</li>
+<li>308：永久重定向，不允许改变方法</li>
+</ul>
+</li>
+</ul>
+<h3 id="return-指令与-error-page"><a href="#return-指令与-error-page" class="headerlink" title="return 指令与 error_page"></a>return 指令与 error_page</h3><p><code>error_page</code> 的作用大家肯定经常见到。当访问一个网站出现 404 的时候，一般不会直接出现一个 404 NOT FOUND，而是会有一个比较友好的页面，这就是 <code>error_page</code> 的功能。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: error_page code ... [=[response]] uri;</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location, if in location</span><br></pre></td></tr></table></figure>
+
+<p>我们来看几个例子：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">1. <span class="attribute">error_page</span> <span class="number">404</span> /<span class="number">404</span>.html; </span><br><span class="line">2. <span class="attribute">error_page</span> <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span> /50x.html;</span><br><span class="line">3. <span class="attribute">error_page</span> <span class="number">404</span> =<span class="number">200</span> /empty.gif; </span><br><span class="line">4. <span class="attribute">error_page</span> <span class="number">404</span> = /<span class="number">404</span>.php; </span><br><span class="line">5. <span class="attribute">location</span> / &#123; </span><br><span class="line">       <span class="attribute">error_page</span> <span class="number">404</span> = @fallback; </span><br><span class="line">   &#125; </span><br><span class="line">   <span class="attribute">location</span> @fallback &#123; </span><br><span class="line">       <span class="attribute">proxy_pass</span> http://backend; </span><br><span class="line">   &#125; </span><br><span class="line">6. <span class="attribute">error_page</span> <span class="number">403</span> http://example.com/forbidden.html; </span><br><span class="line">7. <span class="attribute">error_page</span> <span class="number">404</span> =<span class="number">301</span> http://example.com/notfound.html;</span><br></pre></td></tr></table></figure>
+
+<p>那么现在就会有两个问题，大家看下下面这个配置文件：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">server_name</span> ziyang.return.com;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">root</span> html/;</span><br><span class="line">    <span class="attribute">error_page</span> <span class="number">404</span> /<span class="number">403</span>.html;</span><br><span class="line">    <span class="comment">#return 405;</span></span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">        <span class="comment">#return 404 &quot;find nothing!&quot;;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>当 server 下包含 error_page 且 location 下有 return 指令的时候，会执行哪一个呢？</li>
+<li>return 指令同时出现在 server 块下和同时出现在 location 块下，它们有合并关系吗？</li>
+</ol>
+<p>这两个问题我们通过实战验证一下。</p>
+<h3 id="实战-1"><a href="#实战-1" class="headerlink" title="实战"></a>实战</h3><ul>
+<li>将上面的配置添加到配置文件 return.conf</li>
+<li>在本机的 hosts 文件中绑定 ziyang.return.com 为本地的 IP 地址</li>
+<li>访问一个不存在的页面</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl  ziyang.return.com/text</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;&lt;title&gt;403 Forbidden&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;center&gt;&lt;h1&gt;403 Forbidden&lt;/h1&gt;&lt;/center&gt;</span><br><span class="line">&lt;hr&gt;&lt;center&gt;nginx/1.17.8&lt;/center&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候可以看到，是 <code>error_page</code> 生效了，返回的响应是 403。</p>
+<p>那么假如打开了 <code>location</code> 下 <code>return</code> 指令的注释呢？</p>
+<ul>
+<li>打开 <code>return</code> 指令注释，reload 配置文件</li>
+<li>重新访问页面</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl  ziyang.return.com/text</span><br><span class="line">find nothing!%    </span><br></pre></td></tr></table></figure>
+
+<p>这时候，<code>return</code> 指令得到了执行。也就是第一个问题，当 <code>server</code> 下包含 <code>error_page</code> 且 <code>location</code> 下有 <code>return</code> 指令的时候，会执行 <code>return</code> 指令。</p>
+<p>下面再看一下 <code>server</code> 下的 <code>return</code> 指令和 <code>location</code> 下的 <code>return</code> 指令会执行哪一个。</p>
+<ul>
+<li>打开 <code>server</code> 下 <code>return</code> 指令的注释，reload 配置文件</li>
+<li>重新访问页面</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl  ziyang.return.com/text</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;&lt;title&gt;405 Not Allowed&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;center&gt;&lt;h1&gt;405 Not Allowed&lt;/h1&gt;&lt;/center&gt;</span><br><span class="line">&lt;hr&gt;&lt;center&gt;nginx/1.17.8&lt;/center&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>针对上面两个问题也就有了答案：</p>
+<ol>
+<li><p>当 <code>server</code> 下包含 <code>error_page</code> 且 <code>location</code> 下有 <code>return</code> 指令的时候，会执行哪一个呢？</p>
+<p>会执行 <code>location</code> 下的 <code>return</code> 指令。</p>
+</li>
+<li><p><code>return</code> 指令同时出现在 <code>server</code> 块下和同时出现在 <code>location</code> 块下，它们有合并关系吗？</p>
+<p>没有合并关系，先遇到哪个 <code>return</code> 指令就先执行哪一个。</p>
+</li>
+</ol>
+<h2 id="rewrite-指令"><a href="#rewrite-指令" class="headerlink" title="rewrite 指令"></a>rewrite 指令</h2><p><code>rewrite</code> 指令用于修改用户传入 Nginx 的 URL。来看下 <code>rewrite</code> 的指令规则：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: rewrite regex replacement [flag];</span><br><span class="line">Default: —</span><br><span class="line">Context: server, location, if</span><br></pre></td></tr></table></figure>
+
+<p>它的功能主要有下面几点：</p>
+<ul>
+<li>将 <code>regex</code> 指定的 URL 替换成 <code>replacement</code> 这个新的 URL<ul>
+<li>可以使用正则表达式及变量提取</li>
+</ul>
+</li>
+<li>当 <code>replacement</code> 以 http:// 或者 https:// 或者 $schema 开头，则直接返回 302 重定向</li>
+<li>替换后的 URL 根据 flag 指定的方式进行处理<ul>
+<li>last：用 <code>replacement</code> 这个 URL 进行新的 location 匹配</li>
+<li>break：break 指令停止当前脚本指令的执行，等价于独立的 break 指令</li>
+<li>redirect：返回 302 重定向</li>
+<li>permanent：返回 301 重定向</li>
+</ul>
+</li>
+</ul>
+<h3 id="指令示例"><a href="#指令示例" class="headerlink" title="指令示例"></a>指令示例</h3><p>现在我们有这样的一个目录结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">html/first/</span><br><span class="line">└── 1.txt</span><br><span class="line">html/second/</span><br><span class="line">└── 2.txt</span><br><span class="line">html/third/</span><br><span class="line">└── 3.txt</span><br></pre></td></tr></table></figure>
+
+<p>配置文件如下所示：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span> rewrite.ziyang.com;</span><br><span class="line">    <span class="attribute">rewrite_log</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">error_log</span> logs/rewrite_error.log <span class="literal">notice</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">root</span> html/;</span><br><span class="line">    <span class="attribute">location</span> /first &#123;</span><br><span class="line">    	<span class="attribute">rewrite</span> /first(.*) /second<span class="variable">$1</span> <span class="literal">last</span>;</span><br><span class="line">    	<span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;first!\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> /second &#123;</span><br><span class="line">    	<span class="attribute">rewrite</span> /second(.*) /third<span class="variable">$1</span>;</span><br><span class="line">    	<span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;second!\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> /third &#123;</span><br><span class="line">    	<span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;third!\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> /redirect1 &#123;</span><br><span class="line">    	<span class="attribute">rewrite</span> /redirect1(.*) <span class="variable">$1</span> <span class="literal">permanent</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> /redirect2 &#123;</span><br><span class="line">    	<span class="attribute">rewrite</span> /redirect2(.*) <span class="variable">$1</span> <span class="literal">redirect</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> /redirect3 &#123;</span><br><span class="line">        <span class="attribute">rewrite</span> /redirect3(.*) http://rewrite.ziyang.com<span class="variable">$1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> /redirect4 &#123;</span><br><span class="line">        <span class="attribute">rewrite</span> /redirect4(.*) http://rewrite.ziyang.com<span class="variable">$1</span> <span class="literal">permanent</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>那么我们的问题是：</p>
+<ol>
+<li>return 指令 与 rewrite 指令的顺序关系？</li>
+<li>访问 /first/3.txt，/second/3.txt，/third/3.txt 分别返回的是什么？</li>
+<li>如果不携带 flag 会怎么样？</li>
+</ol>
+<p>带着这三个问题，我们来实际演示一下。</p>
+<h3 id="实战-2"><a href="#实战-2" class="headerlink" title="实战"></a>实战</h3><p><strong>准备工作</strong></p>
+<ul>
+<li>将上面的配置添加到配置文件 rewrite.conf</li>
+<li>在本机的 hosts 文件中绑定 rewrite.ziyang.com 为 127.0.0.1</li>
+</ul>
+<p><strong>last flag</strong></p>
+<p>首先访问 rewrite.ziyang.com/first/3.txt，结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ curl rewrite.ziyang.com/first/3.txt</span><br><span class="line">second!</span><br></pre></td></tr></table></figure>
+
+<p>为什么结果是 second! 呢？应该是 third! 呀，可能有人会有这样的疑问。实际的匹配步骤如下：</p>
+<ul>
+<li>curl rewrite.ziyang.com/first/3.txt</li>
+<li>由于 <code>rewrite /first(.*) /second$1 last;</code> 这条指令的存在，last 表示使用新的 URL 进行 location 匹配，因此接下来会去匹配 second/3.txt</li>
+<li>匹配到 /second 块之后，会依次执行指令，最后返回 200</li>
+<li>注意，location 块中虽然也改写了 URL，但是并不会去继续匹配，因为后面没有指定 flag。</li>
+</ul>
+<p><strong>break flag</strong></p>
+<p>下面将 <code>rewrite /second(.*) /third$1;</code> 这条指令加上 break flag，<code>rewrite /second(.*) /third$1 break;</code></p>
+<p>继续访问 rewrite.ziyang.com/first/3.txt，结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ curl rewrite.ziyang.com/first/3.txt</span><br><span class="line">test3%</span><br></pre></td></tr></table></figure>
+
+<p>这时候返回的是 3.txt 文件的内容 test3。实际的匹配步骤如下：</p>
+<ul>
+<li>curl rewrite.ziyang.com/first/3.txt</li>
+<li>由于 <code>rewrite /first(.*) /second$1 last;</code> 这条指令的存在，last 表示使用新的 URL 进行 location 匹配，因此接下来会去匹配 second/3.txt</li>
+<li>匹配到 /second 块之后，由于 break flag 的存在，会继续匹配 rewrite 过后的 URL</li>
+<li>匹配 /third location</li>
+</ul>
+<p>因此，这个过程实际请求的 URL 是 rewrite.ziyang.com/third/3.txt，这样自然结果就是 test3 了。你还可以试试访问 rewrite.ziyang.com/third/2.txt 看看会返回什么。</p>
+<p><strong>redirect 和 permanent flag</strong></p>
+<p>配置文件中还有 4 个 location，你可以分别试着访问一下，结果是这样的：</p>
+<ul>
+<li>redirect1：返回 301</li>
+<li>redirect2：返回 302</li>
+<li>redirect3：返回 302</li>
+<li>redirect4：返回 301</li>
+</ul>
+<h2 id="rewrite-行为记录日志"><a href="#rewrite-行为记录日志" class="headerlink" title="rewrite 行为记录日志"></a><strong>rewrite</strong> 行为记录日志</h2><p>主要是一个指令 <code>rewrite_log</code>：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">rewrite_log</span> <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">rewrite_log</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, location, if</span><br></pre></td></tr></table></figure>
+
+<p>这个指令打开之后，会把 rewrite 的日志写入 logs/rewrite_error.log 日志文件中，这是请求 /first/3.txt 的日志记录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">2020/05/06 06:24:05 [notice] 86959#0: *25 &quot;/first(.*)&quot; matches &quot;/first/3.txt&quot;, client: 127.0.0.1, server: rewrite.ziyang.com, request: &quot;GET /first/3.txt HTTP/1.1&quot;, host: &quot;rewrite.ziyang.com&quot;</span><br><span class="line">2020/05/06 06:24:05 [notice] 86959#0: *25 rewritten data: &quot;/second/3.txt&quot;, args: &quot;&quot;, client: 127.0.0.1, server: rewrite.ziyang.com, request: &quot;GET /first/3.txt HTTP/1.1&quot;, host: &quot;rewrite.ziyang.com&quot;</span><br><span class="line">2020/05/06 06:24:05 [notice] 86959#0: *25 &quot;/second(.*)&quot; matches &quot;/second/3.txt&quot;, client: 127.0.0.1, server: rewrite.ziyang.com, request: &quot;GET /first/3.txt HTTP/1.1&quot;, host: &quot;rewrite.ziyang.com&quot;</span><br><span class="line">2020/05/06 06:24:05 [notice] 86959#0: *25 rewritten data: &quot;/third/3.txt&quot;, args: &quot;&quot;, client: 127.0.0.1, server: rewrite.ziyang.com, request: &quot;GET /first/3.txt HTTP/1.1&quot;, host: &quot;rewrite.ziyang.com&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="if-指令"><a href="#if-指令" class="headerlink" title="if 指令"></a>if 指令</h2><p>if 指令也是在 rewrite 阶段生效的，它的语法如下所示：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">if</span> (condition) &#123; ... &#125;</span><br><span class="line">Default: —</span><br><span class="line">Context: server, location</span><br></pre></td></tr></table></figure>
+
+<p>它的规则是：</p>
+<ul>
+<li>条件 condition 为真，则执行大括号内的指令；同时还遵循值指令的继承规则（详见我之前的文章 <a href="https://iziyang.github.io/2020/04/06/3-nginx/">Nginx 的配置指令</a>）</li>
+</ul>
+<p>那么 if 指令的条件表达式包含哪些内容呢？它的规则如下：</p>
+<ol>
+<li>检查变量为空或者值是否为 0</li>
+<li>将变量与字符串做匹配，使用 = 或 !=</li>
+<li>将变量与正则表达式做匹配<ul>
+<li>大小写敏感，~ 或者 !~</li>
+<li>大小写不敏感，<del>* 或者 !</del>*</li>
+</ul>
+</li>
+<li>检查文件是否存在，使用 -f 或者 !-f</li>
+<li>检查目录是否存在，使用 -d 或者 !-d</li>
+<li>检查文件、目录、软链接是否存在，使用 -e 或者 !-e</li>
+<li>检查是否为可执行文件，使用 -x 或者 !-x</li>
+</ol>
+<p>下面是一些例子：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">if</span> ($http_user_agent <span class="regexp">~ MSIE)</span> &#123; <span class="comment"># 与变量 http_user_agent 匹配</span></span><br><span class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^(.*)$</span> /msie/<span class="variable">$1</span> <span class="literal">break</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="attribute">if</span> ($http_cookie <span class="regexp">~* &quot;id=([^</span>;]+)(?:;|$)&quot;) &#123; <span class="comment"># 与变量 http_cookie 匹配</span></span><br><span class="line">    <span class="attribute">set</span> $id <span class="variable">$1</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="attribute">if</span> ($request_method = POST) &#123; <span class="comment"># 与变量 request_method 匹配，获取请求方法</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">405</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="attribute">if</span> ($slow) &#123; <span class="comment"># slow 变量在 map 模块中自定义，也可以进行匹配</span></span><br><span class="line">    <span class="attribute">limit_rate</span> <span class="number">10k</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="attribute">if</span> ($invalid_referer) &#123; </span><br><span class="line">    <span class="attribute">return</span> <span class="number">403</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="find-config-阶段"><a href="#find-config-阶段" class="headerlink" title="find_config 阶段"></a>find_config 阶段</h1><p>当经过 rewrite 模块，匹配到 URL 之后，就会进入 find_config 阶段，开始寻找 URL 对应的 location 配置。</p>
+<h2 id="location-指令"><a href="#location-指令" class="headerlink" title="location 指令"></a>location 指令</h2><h3 id="指令语法"><a href="#指令语法" class="headerlink" title="指令语法"></a>指令语法</h3><p>还是老规矩，咱们先来看一下 location 指令的语法：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">location</span> [ = | <span class="regexp">~ |</span> <span class="regexp">~* |</span><span class="regexp"> ^~</span> ] uri &#123; ... &#125;</span><br><span class="line">        <span class="attribute">location</span> @name &#123; ... &#125;</span><br><span class="line">Default: —</span><br><span class="line">Context: server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: merge_slashes <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">merge_slashes</span> <span class="literal">on</span>; </span><br><span class="line">Context: http, server</span><br></pre></td></tr></table></figure>
+
+<p>这里面有一个 <code>merge_slashes</code> 指令，这个指令的作用是，加入 URL 中有两个重复的 /，那么会合并为一个，这个指令默认是打开的，只有当对 URL 进行 base64 之类的编码时才需要关闭。</p>
+<h3 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h3><p>location 的匹配规则是仅匹配 URI，忽略参数，有下面三种大的情况：</p>
+<ul>
+<li>前缀字符串<ul>
+<li>常规匹配</li>
+<li>=：精确匹配</li>
+<li>^~：匹配上后则不再进行正则表达式匹配</li>
+</ul>
+</li>
+<li>正则表达式<ul>
+<li>~：大小写敏感的正则匹配</li>
+<li>~*：大小写不敏感</li>
+</ul>
+</li>
+<li>用户内部跳转的命名 location<ul>
+<li>@</li>
+</ul>
+</li>
+</ul>
+<p>对于这些规则刚看上去肯定是很懵的，完全不知道在说什么，下面来实战看几个例子。</p>
+<h3 id="实战-3"><a href="#实战-3" class="headerlink" title="实战"></a>实战</h3><p>先看一下 Nginx 的配置文件：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span> location.ziyang.com;</span><br><span class="line">    <span class="attribute">error_log</span>  logs/error.log  <span class="literal">debug</span>;</span><br><span class="line">    <span class="comment">#root html/;</span></span><br><span class="line">    <span class="attribute">default_type</span> text/plain;</span><br><span class="line">    <span class="attribute">merge_slashes</span> <span class="literal">off</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">location</span> <span class="regexp">~ /Test1/$</span> &#123;</span><br><span class="line">    	<span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;first regular expressions match!\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> <span class="regexp">~* /Test1/(\w+)$</span> &#123;</span><br><span class="line">    	<span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;longest regular expressions match!\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span><span class="regexp"> ^~</span> /Test1/ &#123;</span><br><span class="line">    	<span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;stop regular expressions match!\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> /Test1/Test2 &#123;</span><br><span class="line">        <span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;longest prefix string match!\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> /Test1 &#123;</span><br><span class="line">        <span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;prefix string match!\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> = /Test1 &#123;</span><br><span class="line">    	<span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;exact match!\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>问题就来了，访问下面几个 URL 会分别返回什么内容呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/Test1</span><br><span class="line">/Test1/</span><br><span class="line">/Test1/Test2</span><br><span class="line">/Test1/Test2/</span><br><span class="line">/test1/Test2</span><br></pre></td></tr></table></figure>
+
+<p>例如访问 /Test1 时，会有几个部分都匹配上：</p>
+<ol>
+<li>常规前缀匹配：location /Test1</li>
+<li>精确匹配：location = /Test1</li>
+</ol>
+<p>访问 /Test1/ 时，也会有几个部分匹配上：</p>
+<ol>
+<li>location ~ /Test1/$</li>
+<li>location ^~ /Test1/</li>
+</ol>
+<p>那么究竟会匹配哪一个呢？Nginx 其实是遵循一套规则的，如下图所示：</p>
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1geif53rd47j21nq1yf148.jpg"></p>
+<p>全部的前缀字符串是放置在一棵二叉树中的，Nginx 会分为两部分进行匹配：</p>
+<ol>
+<li>先遍历所有的前缀字符串，选取最长的一个前缀字符串，如果这个字符串是 = 的精确匹配或 ^~ 的前缀匹配，会直接使用</li>
+<li>如果第一步中没有匹配上 = 或 ^~，那么会先记住最长匹配的前缀字符串 location</li>
+<li>按照 nginx.conf 文件中的配置依次匹配正则表达式</li>
+<li>如果所有的正则表达式都没有匹配上，那么会使用最长匹配的前缀字符串</li>
+</ol>
+<p>下面看下实际的响应是怎么样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl location.ziyang.com/Test1</span><br><span class="line">exact match!</span><br><span class="line">➜  test_nginx curl location.ziyang.com/Test1/</span><br><span class="line">stop regular expressions match!</span><br><span class="line">➜  test_nginx curl location.ziyang.com/Test1/Test2</span><br><span class="line">longest regular expressions match!</span><br><span class="line">➜  test_nginx curl location.ziyang.com/Test1/Test2/</span><br><span class="line">longest prefix string match!</span><br><span class="line">➜  test_nginx curl location.ziyang.com/Test1/Test3</span><br><span class="line">stop regular expressions match!</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>/Test1 匹配 location = /Test1</li>
+<li>/Test1/ 匹配 location ^~ /Test1/</li>
+<li>/Test1/Test2 匹配 location ~* /Test1/(\w+)$</li>
+<li>/Test1/Test2/ 匹配 location /Test1/Test2</li>
+<li>/Test1/Test3 匹配 location ^~ /Test1/</li>
+</ul>
+<p>这里面重点解释一下 /Test1/Test3 的匹配过程：</p>
+<ol>
+<li>遍历所有可以匹配上的前缀字符串，总共有两个<ul>
+<li>^~ /Test1/</li>
+<li>/Test1</li>
+</ul>
+</li>
+<li>选取最长的前缀字符串 /Test1/，由于前面有 ^~ 禁止正则表达式匹配，因此直接使用 location ^~ /Test1/ 的规则</li>
+<li>返回 <code>stop regular expressions match!</code></li>
+</ol>
+<h1 id="preaccess-阶段"><a href="#preaccess-阶段" class="headerlink" title="preaccess 阶段"></a>preaccess 阶段</h1><p>下面就来到了 preaccess 阶段。我们经常会遇到一个问题，就是如何限制每个客户端的并发连接数？如何限制访问频率？这些就是在 preaccess 阶段处理完成的，顾名思义，preaccess 就是在连接之前。先来看下 limit_conn 模块。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200507062524"></p>
+<h2 id="limit-conn-模块"><a href="#limit-conn-模块" class="headerlink" title="limit_conn 模块"></a>limit_conn 模块</h2><p>这里面涉及到的模块是 <code>ngx_http_limit_conn_module</code>，它的基本特性如下：</p>
+<ul>
+<li>生效阶段：<code>NGX_HTTP_PREACCESS_PHASE</code> 阶段</li>
+<li>模块：<code>http_limit_conn_module</code></li>
+<li>默认编译进 Nginx，通过 <code>--without-http_limit_conn_module</code> 禁用</li>
+<li>生效范围<ul>
+<li>全部 worker 进程（基于共享内存）</li>
+<li>进入 preaccess 阶段前不生效</li>
+<li>限制的有效性取决于 key 的设计：依赖 postread 阶段的 realip 模块取到真实 IP</li>
+</ul>
+</li>
+</ul>
+<p>这里面有一点需要注意，就是 limit_conn key 的设计，所谓的 key 指的就是对哪个变量进行限制，通常我们取的都是用户的真实 IP。</p>
+<p>说完了 limit_conn 的模块，再来说一下指令语法。</p>
+<h3 id="指令语法-1"><a href="#指令语法-1" class="headerlink" title="指令语法"></a>指令语法</h3><ul>
+<li>定义共享内存（包括大小），以及 key 关键字</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">limit_conn_zone</span> key zone=name:size;</span><br><span class="line">Default: —</span><br><span class="line">Context: http</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>限制并发连接数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: limit_conn zone number;</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>限制发生时的日志级别</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">limit_conn_log_level</span> <span class="literal">info</span> | <span class="literal">notice</span> | <span class="literal">warn</span> | <span class="literal">error</span>;</span><br><span class="line">Default: <span class="attribute">limit_conn_log_level</span> <span class="literal">error</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>限制发生时向客户端返回的错误码</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">limit_conn_status</span> code;</span><br><span class="line">Default: <span class="attribute">limit_conn_status</span> <span class="number">503</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h3 id="实战-4"><a href="#实战-4" class="headerlink" title="实战"></a>实战</h3><p>下面又到了实战的环节了，通过一个实际的例子来看一下以上的几个指令是怎么起作用的。</p>
+<p>老规矩，先上配置文件：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">limit_conn_zone</span> $binary_remote_addr zone=addr:<span class="number">10m</span>;</span><br><span class="line"><span class="comment">#limit_req_zone $binary_remote_addr zone=one:10m rate=2r/m;</span></span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span> limit.ziyang.com;</span><br><span class="line">    <span class="attribute">root</span> html/;</span><br><span class="line">    <span class="attribute">error_log</span> logs/myerror.log <span class="literal">info</span>;</span><br><span class="line">    <span class="attribute">location</span> /&#123;</span><br><span class="line">    	<span class="attribute">limit_conn_status</span> <span class="number">500</span>;</span><br><span class="line">    	<span class="attribute">limit_conn_log_level</span>  <span class="literal">warn</span>;</span><br><span class="line">    	<span class="attribute">limit_rate</span> <span class="number">50</span>;</span><br><span class="line">    	<span class="attribute">limit_conn</span> addr <span class="number">1</span>;</span><br><span class="line">        <span class="comment">#limit_req zone=one burst=3 nodelay;</span></span><br><span class="line">        <span class="comment">#limit_req zone=one;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在本地的 hosts 文件中添加 limit.ziyang.com 为本机 IP</li>
+</ul>
+<p>在这个配置文件中，做了两条限制，一个是 <code>limit_rate</code> 限制为 50 个字节，并发连接数 <code>limit_conn</code> 限制为 1。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl limit.ziyang.com</span><br></pre></td></tr></table></figure>
+
+<p>这时候访问 limit.ziyang.com 这个站点，会发现速度非常慢，因为每秒钟只有 50 个字节。</p>
+<p>如果再同时访问这个站点的话，则会返回 500。</p>
+<p>我在另一个终端里面同时访问：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ curl limit.ziyang.com</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;&lt;title&gt;500 Internal Server Error&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;center&gt;&lt;h1&gt;500 Internal Server Error&lt;/h1&gt;&lt;/center&gt;</span><br><span class="line">&lt;hr&gt;&lt;center&gt;nginx/1.17.8&lt;/center&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，Nginx 直接返回了 500。</p>
+<h2 id="limit-req-模块"><a href="#limit-req-模块" class="headerlink" title="limit_req 模块"></a>limit_req 模块</h2><p>在本节开头我们就提出了两个问题：</p>
+<ul>
+<li><p>如何限制每个客户端的并发连接数？</p>
+</li>
+<li><p>如何限制访问频率？</p>
+</li>
+</ul>
+<p>第一个问题限制并发连接数的问题已经解决了，下面来看第二个问题。</p>
+<p>这里面生效的模块是 <code>ngx_http_limit_req_module</code>，它的基本特性如下：</p>
+<ul>
+<li>生效阶段：<code>NGX_HTTP_PREACCESS_PHASE</code> 阶段</li>
+<li>模块：<code>http_limit_req_module</code></li>
+<li>默认编译进 Nginx，通过 <code>--without-http_limit_req_module</code> 禁用</li>
+<li>生效算法：leaky bucket 算法</li>
+<li>生效范围<ul>
+<li>全部 worker 进程（基于共享内存）</li>
+<li>进入 preaccess 阶段前不生效</li>
+</ul>
+</li>
+</ul>
+<h3 id="leaky-bucket-算法"><a href="#leaky-bucket-算法" class="headerlink" title="leaky bucket 算法"></a>leaky bucket 算法</h3><p>leaky bucket 叫漏桶算法，其他用来限制请求速率的还有令牌环算法等，这里面不展开讲。</p>
+<p>漏桶算法的原理是，先定义一个桶的大小，所有进入桶内的请求都会以恒定的速率被处理，如果请求太多超出了桶的容量，那么就会立刻返回错误。用一张图解释一下。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200507070812"></p>
+<p>这张图里面，水龙头在不停地滴水，就像用户发来的请求，所有的水滴都会以恒定的速率流出去，也就是被处理。漏桶算法对于突发流量有很好的限制作用，会将所有的请求平滑的处理掉。</p>
+<h3 id="指令语法-2"><a href="#指令语法-2" class="headerlink" title="指令语法"></a>指令语法</h3><ul>
+<li>定义共享内存（包括大小），以及 key 关键字和限制速率</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: limit_req_zone key zone=name:size rate=rate ;</span><br><span class="line">Default: —</span><br><span class="line">Context: http</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>rate 单位为 r/s 或者 r/m（每分钟或者每秒处理多少个请求）</p>
+</blockquote>
+<ul>
+<li>限制并发连接数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: limit_req zone=name [burst=number] [nodelay];</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<ul>
+<li>burst 默认为 0</li>
+<li>nodelay，如果设置了这个参数，那么对于漏桶中的请求也会立刻返回错误</li>
+</ul>
+</blockquote>
+<ul>
+<li>限制发生时的日志级别</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">limit_req_log_level</span> <span class="literal">info</span> | <span class="literal">notice</span> | <span class="literal">warn</span> | <span class="literal">error</span>;</span><br><span class="line">Default: <span class="attribute">limit_req_log_level</span> <span class="literal">error</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>限制发生时向客户端返回的错误码</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">limit_req_status</span> code;</span><br><span class="line">Default: <span class="attribute">limit_req_status</span> <span class="number">503</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h3 id="实战-5"><a href="#实战-5" class="headerlink" title="实战"></a>实战</h3><p>在实际验证之前呢，需要注意两个问题：</p>
+<ul>
+<li>limit_req 与 limit_conn 配置同时生效时，哪个优先级高？</li>
+<li>nodelay 添加与否，有什么不同？</li>
+</ul>
+<p>添加配置文件，这个配置文件与上一节的配置文件其实是相同的只不过需要注释一下：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">limit_conn_zone</span> $binary_remote_addr zone=addr:<span class="number">10m</span>;</span><br><span class="line"><span class="attribute">limit_req_zone</span> $binary_remote_addr zone=one:<span class="number">10m</span> rate=2r/m;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span> limit.ziyang.com;</span><br><span class="line">    <span class="attribute">root</span> html/;</span><br><span class="line">    <span class="attribute">error_log</span> logs/myerror.log <span class="literal">info</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">location</span> /&#123;</span><br><span class="line">    	<span class="attribute">limit_conn_status</span> <span class="number">500</span>;</span><br><span class="line">    	<span class="attribute">limit_conn_log_level</span>  <span class="literal">warn</span>;</span><br><span class="line">        <span class="comment">#limit_rate 50;</span></span><br><span class="line">        <span class="comment">#limit_conn addr 1;</span></span><br><span class="line">        <span class="comment">#limit_req zone=one burst=3 nodelay;</span></span><br><span class="line">    	<span class="attribute">limit_req</span> zone=one;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结论：在 <code>limit_req zone=one</code> 指令下，超出每分钟处理的请求数后就会立刻返回 503。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl limit.ziyang.com</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;&lt;title&gt;503 Service Temporarily Unavailable&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;center&gt;&lt;h1&gt;503 Service Temporarily Unavailable&lt;/h1&gt;&lt;/center&gt;</span><br><span class="line">&lt;hr&gt;&lt;center&gt;nginx/1.17.8&lt;/center&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>改变一下注释的指令：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">limit_req</span> zone=one burst=<span class="number">3</span>;</span><br><span class="line"><span class="comment">#limit_req zone=one;</span></span><br></pre></td></tr></table></figure>
+
+<p>在没有添加 burst 参数时，会立刻返回错误，而加上之后，不会返回错误，而是等待请求限制解除，直到可以处理请求时再返回。</p>
+<p>再来看一下 nodelay 参数：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">limit_req</span> zone=one burst=<span class="number">3</span> nodelay;</span><br></pre></td></tr></table></figure>
+
+<p>添加了 nodelay 之后，请求在没有达到 burst 限制之前都可以立刻被处理并返回，超出了 burst 限制之后，才会返回 503。</p>
+<p>现在可以回答一下刚开始提出的两个问题：</p>
+<ul>
+<li>limit_req 与 limit_conn 配置同时生效时，哪个优先级高？<ul>
+<li>limit_req 在 limit_conn 处理之前，因此是 limit_req 会生效</li>
+</ul>
+</li>
+<li>nodelay 添加与否，有什么不同？<ul>
+<li>不添加 nodelay，请求会等待，直到能够处理请求；添加 nodelay，在不超出 burst 的限制的情况下会立刻处理并返回，超出限制则会返回 503。</li>
+</ul>
+</li>
+</ul>
+<h1 id="access-阶段"><a href="#access-阶段" class="headerlink" title="access 阶段"></a>access 阶段</h1><p>经过 preaccess 阶段对用户的限流之后，就到了 access 阶段。</p>
+<h2 id="access-模块"><a href="#access-模块" class="headerlink" title="access 模块"></a>access 模块</h2><p>这里面涉及到的模块是 <code>ngx_http_access_module</code>，它的基本特性如下：</p>
+<ul>
+<li>生效阶段：<code>NGX_HTTP_ACCESS_PHASE</code> 阶段</li>
+<li>模块：<code>http_access_module</code></li>
+<li>默认编译进 Nginx，通过 <code>--without-http_access_module</code> 禁用</li>
+<li>生效范围<ul>
+<li>进入 access 阶段前不生效</li>
+</ul>
+</li>
+</ul>
+<h3 id="指令语法-3"><a href="#指令语法-3" class="headerlink" title="指令语法"></a>指令语法</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">allow</span> address | CIDR | unix: | all;</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location, <span class="attribute">limit_except</span></span><br><span class="line"></span><br><span class="line">Syntax: deny address | CIDR | unix: | all;</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location, limit_except</span><br></pre></td></tr></table></figure>
+
+<p>access 模块提供了两条指令 <code>allow</code> 和 <code>deny</code>，来看几个例子：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> / &#123; </span><br><span class="line">    <span class="attribute">deny</span> <span class="number">192.168.1.1</span>; </span><br><span class="line">    <span class="attribute">allow</span> <span class="number">192.168.1.0</span>/<span class="number">24</span>; </span><br><span class="line">    <span class="attribute">allow</span> <span class="number">10.1.1.0</span>/<span class="number">16</span>; </span><br><span class="line">    <span class="attribute">allow</span> <span class="number">2001</span>:0db8::/<span class="number">32</span>; </span><br><span class="line">    <span class="attribute">deny</span> all; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于用户访问来说，这些指令是顺序执行的，当满足了一条之后，就不会再向下执行。这个模块比较简单，我们这里不做实战演练了。</p>
+<h2 id="auth-basic-模块"><a href="#auth-basic-模块" class="headerlink" title="auth_basic 模块"></a>auth_basic 模块</h2><p>auth_basic 模块是用作用户认证的，当开启了这个模块之后，我们通过浏览器访问网站时，就会返回一个 401 Unauthorized，当然这个 401 用户不会看见，浏览器会弹出一个对话框要求输入用户名和密码。这个模块使用的是 RFC2617 中的定义。</p>
+<h3 id="指令语法-4"><a href="#指令语法-4" class="headerlink" title="指令语法"></a>指令语法</h3><ul>
+<li>基于 HTTP Basic Authutication 协议进行用户密码的认证</li>
+<li>默认编译进 Nginx<ul>
+<li>–without-http_auth_basic_module</li>
+<li>disable ngx_http_auth_basic_module</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">auth_basic</span> string | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">auth_basic</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, location, <span class="attribute">limit_except</span></span><br><span class="line"></span><br><span class="line">Syntax: auth_basic_user_file file;</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location, limit_except</span><br></pre></td></tr></table></figure>
+
+<p>这里面我们会用到一个工具叫 htpasswd，这个工具可以用来生成密码文件，而 <code>auth_basic_user_file</code> 就依赖这个密码文件。</p>
+<blockquote>
+<p>htpasswd 依赖安装包 httpd-tools</p>
+</blockquote>
+<p>生成密码的命令为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">htpasswd –c file –b user pass</span><br></pre></td></tr></table></figure>
+
+<p>生成的密码文件的格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># comment </span><br><span class="line">name1:password1 </span><br><span class="line">name2:password2:comment </span><br><span class="line">name3:password3</span><br></pre></td></tr></table></figure>
+
+<h3 id="实战-6"><a href="#实战-6" class="headerlink" title="实战"></a>实战</h3><ul>
+<li>在 example 目录下生成密码文件 auth.pass</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">htpasswd -bc auth.pass ziyang 123456</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>添加配置文件</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">server_name</span> access.ziyang.com;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">error_log</span>  logs/error.log  <span class="literal">debug</span>;</span><br><span class="line">    <span class="attribute">default_type</span> text/plain;</span><br><span class="line">    <span class="attribute">location</span> /auth_basic &#123;</span><br><span class="line">    	<span class="attribute">satisfy</span> any;</span><br><span class="line">    	<span class="attribute">auth_basic</span> <span class="string">&quot;test auth_basic&quot;</span>;</span><br><span class="line">    	<span class="attribute">auth_basic_user_file</span> example/auth.pass;</span><br><span class="line">    	<span class="attribute">deny</span> all;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>重载 Nginx 配置文件</li>
+<li>在 /etc/hosts 文件中添加 access.ziyang.com</li>
+</ul>
+<p>这时候访问 access.ziyang.com 就会弹出对话框，提示输入密码：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1geo3e7cylzj31da0eeq40.jpg"></p>
+<h2 id="auth-request-模块"><a href="#auth-request-模块" class="headerlink" title="auth_request 模块"></a>auth_request 模块</h2><ul>
+<li>功能：向上游的服务转发请求，若上游服务返回的响应码是 2xx，则继续执行，若上游服务返回的响应码是 2xx，则继续执行，若上游服务返回的是 401 或者 403，则将响应返回给客户端</li>
+<li>原理：收到请求后，生成子请求，通过反向代理技术把请求传递给上游服务</li>
+<li>默认未编译进 Nginx，需要通过 –with-http_auth_request_module 编译进去</li>
+</ul>
+<h3 id="指令语法-5"><a href="#指令语法-5" class="headerlink" title="指令语法"></a>指令语法</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">auth_request</span> uri | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">auth_request</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: auth_request_set $variable value;</span><br><span class="line">Default: —</span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h3 id="实战-7"><a href="#实战-7" class="headerlink" title="实战"></a>实战</h3><ul>
+<li>在上一个配置文件中添加以下内容</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">server_name</span> access.ziyang.com;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">error_log</span>  logs/error.log  <span class="literal">debug</span>;</span><br><span class="line">    <span class="comment">#root html/;</span></span><br><span class="line">    <span class="attribute">default_type</span> text/plain;</span><br><span class="line">    <span class="attribute">location</span> /auth_basic &#123;</span><br><span class="line">    	<span class="attribute">satisfy</span> any;</span><br><span class="line">    	<span class="attribute">auth_basic</span> <span class="string">&quot;test auth_basic&quot;</span>;</span><br><span class="line">    	<span class="attribute">auth_basic_user_file</span> example/auth.pass;</span><br><span class="line">    	<span class="attribute">deny</span> all;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">    	<span class="attribute">auth_request</span> /test_auth;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> = /test_auth &#123;</span><br><span class="line">    	<span class="attribute">proxy_pass</span> http://127.0.0.1:8090/auth_upstream;</span><br><span class="line">    	<span class="attribute">proxy_pass_request_body</span> <span class="literal">off</span>;</span><br><span class="line">    	<span class="attribute">proxy_set_header</span> Content-Length <span class="string">&quot;&quot;</span>;</span><br><span class="line">    	<span class="attribute">proxy_set_header</span> X-Original-URI $request_uri;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这个配置文件中，/ 路径下会将请求转发到另外一个服务中去，可以用 nginx 再搭建一个服务</li>
+<li>如果这个服务返回 2xx，那么鉴权成功，如果返回 401 或 403 则鉴权失败</li>
+</ul>
+<h2 id="限制所有-access-阶段模块的-satisfy-指令"><a href="#限制所有-access-阶段模块的-satisfy-指令" class="headerlink" title="限制所有 access 阶段模块的 satisfy 指令"></a>限制所有 access 阶段模块的 satisfy 指令</h2><h3 id="指令语法-6"><a href="#指令语法-6" class="headerlink" title="指令语法"></a>指令语法</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">satisfy</span> all | any;</span><br><span class="line">Default: <span class="attribute">satisfy</span> all; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<p><code>satisfy</code> 指令有两个值一个是 all，一个是 any，这个模块对 acces 阶段的三个模块都生效：</p>
+<ul>
+<li>access 模块</li>
+<li>auth_basic 模块</li>
+<li>auth_request 模块</li>
+<li>其他模块</li>
+</ul>
+<p>如果 <code>satisfy</code> 指令的值是 all 的话，就表示必须所有 access  阶段的模块都要执行，都通过了才会放行；值是 any 的话，表示有任意一个模块得到执行即可。</p>
+<p>下面有几个问题可以加深一下理解：</p>
+<ol>
+<li><p>如果有 return 指令，access 阶段会生效吗？</p>
+<p>return 指令属于 rewrite 阶段，在 access 阶段之前，因此不会生效。</p>
+</li>
+<li><p>多个 access 模块的顺序有影响吗？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ngx_http_auth_request_module,</span><br><span class="line">ngx_http_auth_basic_module,</span><br><span class="line">ngx_http_access_module,</span><br></pre></td></tr></table></figure>
+
+<p>有影响</p>
+</li>
+<li><p>输对密码，下面可以访问到文件吗？</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> /&#123;</span><br><span class="line">    <span class="attribute">satisfy</span> any;</span><br><span class="line">    <span class="attribute">auth_basic</span> <span class="string">&quot;test auth_basic&quot;</span>;</span><br><span class="line">    <span class="attribute">auth_basic_user_file</span> examples/auth.pass;</span><br><span class="line">    <span class="attribute">deny</span> all;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以访问到，因为 <code>satisfy</code> 的值是 any，因此只要有模块满足，即可放行。</p>
+</li>
+<li><p>如果把 deny all 提到 auth_basic 之前呢？</p>
+<p>依然可以，因为各个模块执行顺序和指令的顺序无关。</p>
+</li>
+<li><p>如果改为 allow all，有机会输入密码吗？</p>
+<p>没有机会，因为 allow all 是 access 模块，先于 auth_basic 模块执行。</p>
+</li>
+</ol>
+<h1 id="precontent-阶段"><a href="#precontent-阶段" class="headerlink" title="precontent 阶段"></a>precontent 阶段</h1><p>讲到了这里，我们再来回顾一下 Nginx 处理 HTTP 请求的 11 个阶段：</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200412214329"></p>
+<p>现在我们已经来到了 precontent 阶段，这个阶段只有 try_files 这一个指令。</p>
+<h2 id="try-files-模块"><a href="#try-files-模块" class="headerlink" title="try_files 模块"></a>try_files 模块</h2><h3 id="指令语法-7"><a href="#指令语法-7" class="headerlink" title="指令语法"></a>指令语法</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">try_files</span> file ... uri;</span><br><span class="line">        <span class="attribute">try_files</span> file ... =code;</span><br><span class="line">Default: —</span><br><span class="line">Context: server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>模块：<code>ngx_http_try_files_module</code> 模块</li>
+<li>依次试图访问多个 URL 对应的文件（由 root 或者 alias 指令指定），当文件存在时，直接返回文件内容，如果所有文件都不存在，则按照最后一个 URL 结果或者 code 返回</li>
+</ul>
+<h3 id="实战-8"><a href="#实战-8" class="headerlink" title="实战"></a>实战</h3><p>下面我们实际看一个例子：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">server_name</span> tryfiles.ziyang.com;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">error_log</span>  logs/myerror.log  <span class="literal">info</span>;</span><br><span class="line">    <span class="attribute">root</span> html/;</span><br><span class="line">    <span class="attribute">default_type</span> text/plain;</span><br><span class="line">    <span class="attribute">location</span> /first &#123;</span><br><span class="line">    	<span class="attribute">try_files</span> /system/maintenance.html</span><br><span class="line">            $uri $uri/index.html $uri.html</span><br><span class="line">            @lasturl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> @lasturl &#123;</span><br><span class="line">    	<span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;lasturl!\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> /second &#123;</span><br><span class="line">    	<span class="attribute">try_files</span> $uri $uri/index.html $uri.html =<span class="number">404</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<ul>
+<li>访问 /first 实际上到了 lasturl，然后返回 200</li>
+<li>访问 /second 则返回了 404</li>
+</ul>
+<p>这两个结果都与配置文件是一致的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl tryfiles.ziyang.com/second</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;&lt;title&gt;404 Not Found&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;center&gt;&lt;h1&gt;404 Not Found&lt;/h1&gt;&lt;/center&gt;</span><br><span class="line">&lt;hr&gt;&lt;center&gt;nginx/1.17.8&lt;/center&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">➜  test_nginx curl tryfiles.ziyang.com/first </span><br><span class="line">lasturl!</span><br></pre></td></tr></table></figure>
+
+<h2 id="mirror-模块"><a href="#mirror-模块" class="headerlink" title="mirror 模块"></a>mirror 模块</h2><p>mirror 模块可以实时拷贝流量，这对于需要同时访问多个环境的请求是非常有用的。</p>
+<h3 id="指令语法-8"><a href="#指令语法-8" class="headerlink" title="指令语法"></a>指令语法</h3><ul>
+<li>模块：<code>ngx_http_mirror_module</code> 模块，默认编译进 Nginx<ul>
+<li>通过 –without-http_mirror_module 移除模块</li>
+</ul>
+</li>
+<li>功能：处理请求时，生成子请求访问其他服务，对子请求的返回值不做处理</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">mirror</span> uri | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">mirror</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: mirror_request_body <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">mirror_request_body</span> <span class="literal">on</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h3 id="实战-9"><a href="#实战-9" class="headerlink" title="实战"></a>实战</h3><ul>
+<li>配置文件如下所示，需要再开启另外一个 Nginx 来接收请求</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">server_name</span> mirror.ziyang.com;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8001</span>;</span><br><span class="line">    <span class="attribute">error_log</span> logs/error_log <span class="literal">debug</span>;</span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">        <span class="attribute">mirror</span> /mirror;</span><br><span class="line">        <span class="attribute">mirror_request_body</span> <span class="literal">off</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> = /mirror &#123;</span><br><span class="line">        internal;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://127.0.0.1:10020$request_uri;</span><br><span class="line">        <span class="attribute">proxy_pass_request_body</span> <span class="literal">off</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Content-Length <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> X-Original-URI $request_uri;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在 access.log 文件中可以看到有请求记录日志</li>
+</ul>
+<h1 id="content-阶段"><a href="#content-阶段" class="headerlink" title="content 阶段"></a>content 阶段</h1><p>下面开始就到了 content 阶段，先来看 content 阶段的 static 模块，虽然这是位于 content 阶段的最后一个处理模块，但是这里先来介绍它。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200512094602"></p>
+<h2 id="static-模块"><a href="#static-模块" class="headerlink" title="static 模块"></a>static 模块</h2><h3 id="root-和-alias-指令"><a href="#root-和-alias-指令" class="headerlink" title="root 和 alias 指令"></a>root 和 alias 指令</h3><p>先来一下 root 和 alias 这两个指令，这两个指令都是用来映射文件路径的。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">alias</span> path;</span><br><span class="line">Default: —</span><br><span class="line">Context: location</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">root</span> path;</span><br><span class="line">Default: <span class="attribute">root</span> html; </span><br><span class="line">Context: http, server, location, <span class="attribute">if</span> in location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>功能：将 URL 映射为文件路径，以返回静态文件内容</li>
+<li>差别：root 会将完整 URL 映射进文件路径中，alias 只会将 location 后的 URL 映射到文件路径</li>
+</ul>
+<h3 id="实战-10"><a href="#实战-10" class="headerlink" title="实战"></a>实战</h3><p>下面来看一个问题：</p>
+<p>现在有一个文件路径：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">html/first/</span><br><span class="line">└── 1.txt</span><br></pre></td></tr></table></figure>
+
+<p>配置文件如下所示：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">server_name</span> static.ziyang.com;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">error_log</span>  logs/myerror.log  <span class="literal">info</span>;</span><br><span class="line">    <span class="attribute">location</span> /root &#123;</span><br><span class="line">    	<span class="attribute">root</span> html;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> /alias &#123;</span><br><span class="line">        <span class="attribute">alias</span> html;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> <span class="regexp">~ /root/(\w+\.txt)</span> &#123;</span><br><span class="line">    	<span class="attribute">root</span> html/first/<span class="variable">$1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> <span class="regexp">~ /alias/(\w+\.txt)</span> &#123;</span><br><span class="line">    	<span class="attribute">alias</span> html/first/<span class="variable">$1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span>  /RealPath/ &#123;</span><br><span class="line">    	<span class="attribute">alias</span> html/realpath/;</span><br><span class="line">        <span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;$request_filename:$document_root:$realpath_root\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么访问以下 URL 会得到什么响应呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/root</span><br><span class="line">/alias</span><br><span class="line">/root/1.txt</span><br><span class="line">/alias/1.txt</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl static.ziyang.com/alias/1.txt</span><br><span class="line"><span class="meta">test1%</span><span class="bash"></span></span><br><span class="line"><span class="bash">➜  test_nginx curl static.ziyang.com/<span class="built_in">alias</span>/</span>     </span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;title&gt;Welcome to nginx!&lt;/title&gt;</span><br><span class="line">...</span><br><span class="line">➜  test_nginx curl static.ziyang.com/root/      </span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;&lt;title&gt;404 Not Found&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;center&gt;&lt;h1&gt;404 Not Found&lt;/h1&gt;&lt;/center&gt;</span><br><span class="line">&lt;hr&gt;&lt;center&gt;nginx/1.17.8&lt;/center&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">➜  test_nginx curl static.ziyang.com/root/1.txt</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;&lt;title&gt;404 Not Found&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;center&gt;&lt;h1&gt;404 Not Found&lt;/h1&gt;&lt;/center&gt;</span><br><span class="line">&lt;hr&gt;&lt;center&gt;nginx/1.17.8&lt;/center&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>访问这四个路径分别得到的结果是：</p>
+<ul>
+<li>/root：404</li>
+<li>/alias：200</li>
+<li>/root/1.txt：404</li>
+<li>/alias/1.txt：200</li>
+</ul>
+<p>这是为什么呢？是因为，root 在映射 URL 时，会把 location 中的路径也加进去，也就是：</p>
+<ul>
+<li><code>static.ziyang.com/root/</code> 实际访问的是 <code>html/root/</code></li>
+<li><code>static.ziyang.com/root/1.txt</code> 实际是 <code>html/first/1.txt/root/1.txt</code></li>
+<li><code>static.ziyang.com/alias/</code> 实际上是正确访问到了 <code>html</code> 文件夹，由于后面有 <code>/</code> 的存在，因此实际访问的是 <code>html/index.html</code></li>
+<li><code>static.ziyang.com/alias/1.txt</code> 实际访问的是 <code>html/first/1.txt</code>，文件存在</li>
+</ul>
+<h3 id="三个相关变量"><a href="#三个相关变量" class="headerlink" title="三个相关变量"></a>三个相关变量</h3><p>还是上面的配置文件：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span>  /RealPath/ &#123;</span><br><span class="line">    <span class="attribute">alias</span> html/realpath/;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;$request_filename:$document_root:$realpath_root\n&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里有一个问题，在访问 <code>/RealPath/1.txt</code> 时，这三个变量的值各为多少？</p>
+<p>为了解答这个问题，我们先来解释三个变量：</p>
+<ul>
+<li>request_filename：待访问文件的完整路径</li>
+<li>document_root：由 URI 和 root/alias 指令生成的文件夹路径（可能包含软链接的路径）</li>
+<li>realpath_root：将 document_root 中的软链接替换成真实路径</li>
+</ul>
+<p>为了验证这三个变量，在 html 目录下建立一个软链接指向 first 文件夹：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s first realpath</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  html curl static.ziyang.com/realpath/1.txt</span><br><span class="line">/Users/mtdp/myproject/nginx/test_nginx/html/realpath/1.txt:/Users/mtdp/myproject/nginx/test_nginx/html/realpath/:/Users/mtdp/myproject/nginx/test_nginx/html/first</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，三个路径分别是：</p>
+<ul>
+<li>/Users/mtdp/myproject/nginx/test_nginx/html/realpath/1.txt</li>
+<li>/Users/mtdp/myproject/nginx/test_nginx/html/realpath/</li>
+<li>/Users/mtdp/myproject/nginx/test_nginx/html/first</li>
+</ul>
+<p>还有其他的一些配置指令，例如：</p>
+<p><strong>静态文件返回时的 Content-Type</strong></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="section">types</span> &#123; ... &#125;</span><br><span class="line">Default: <span class="section">types</span> &#123; text/<span class="attribute">html</span> html; image/<span class="attribute">gif</span> gif; image/<span class="attribute">jpeg</span> jpg; &#125; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: default_type mime-type;</span><br><span class="line">Default: <span class="attribute">default_type</span> text/plain; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: types_hash_bucket_size size;</span><br><span class="line">Default: <span class="attribute">types_hash_bucket_size</span> <span class="number">64</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: types_hash_max_size size;</span><br><span class="line">Default: <span class="attribute">types_hash_max_size</span> <span class="number">1024</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<p><strong>未找到文件时的错误日志</strong></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">log_not_found</span> <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">log_not_found</span> <span class="literal">on</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<p>在生产环境中，经常可能会有找不到文件的情况，错误日志中就会打印出来：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[error] 10156#0: *10723 open() &quot;/html/first/2.txt/root/2.txt&quot; failed (2: No such file or directory)</span><br></pre></td></tr></table></figure>
+
+<p>如果不想记录日志，可以关掉。</p>
+<h3 id="重定向跳转的域名"><a href="#重定向跳转的域名" class="headerlink" title="重定向跳转的域名"></a>重定向跳转的域名</h3><p>现在有另外一个问题，当我们访问目录时最后没有带 <code>/</code>，static 模块会返回 301 重定向，那么这个规则是怎么定义的呢，看下面三个指令：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 该指令决定重定向时的域名，可以决定返回哪个域名</span></span><br><span class="line">Syntax: <span class="attribute">server_name_in_redirect</span> <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">server_name_in_redirect</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"><span class="comment"># 该指令决定重定向时的端口</span></span><br><span class="line">Syntax: port_in_redirect <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">port_in_redirect</span> <span class="literal">on</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"><span class="comment"># 该指令决定是否填域名，默认是打开的，也就是返回绝对路径</span></span><br><span class="line">Syntax: absolute_redirect <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">absolute_redirect</span> <span class="literal">on</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<p>这三个指令的实际用法来实战演示一下，先来看配置文件：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">server_name</span> return.ziyang.com dir.ziyang.com;</span><br><span class="line">    <span class="attribute">server_name_in_redirect</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8088</span>;</span><br><span class="line">    <span class="attribute">port_in_redirect</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">absolute_redirect</span> <span class="literal">off</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">root</span> html/;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>absolute_redirect</code> 默认是打开的，我们把它关闭了，看下是怎么返回的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl localhost:8088/first -I</span><br><span class="line">HTTP/1.1 301 Moved Permanently</span><br><span class="line">Server: nginx/1.17.8</span><br><span class="line">Date: Tue, 12 May 2020 00:31:36 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 169</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Location: /first/</span><br></pre></td></tr></table></figure>
+
+<p>这个时候看到返回的头部 <code>Location</code> 中没有加上域名。</p>
+<p>下面再把 <code>absolute_redirect</code> 打开（默认是打开的，因此注释掉就行了），看下返回什么：</p>
+<ul>
+<li><code>absolute_redirect on</code></li>
+<li><code>server_name_in_redirect on</code></li>
+<li><code>port_in_redirect on</code></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl localhost:8088/first -I</span><br><span class="line">HTTP/1.1 301 Moved Permanently</span><br><span class="line">Server: nginx/1.17.8</span><br><span class="line">Date: Tue, 12 May 2020 00:35:49 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 169</span><br><span class="line">Location: http://return.ziyang.com:8088/first/</span><br><span class="line">Connection: keep-alive</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，这时候就返回了域名，而且返回的是我们配置的主域名加端口号，这是因为，<code>server_name_in_redirect</code> 和 <code>port_in_redirect</code> 这两个指令打开了，如果关闭掉这两个指令，看下返回什么：</p>
+<ul>
+<li><p><code>absolute_redirect on</code></p>
+</li>
+<li><p><code>server_name_in_redirect off</code></p>
+</li>
+<li><p><code>port_in_redirect off</code></p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  test_nginx curl localhost:8088/first -I</span><br><span class="line">HTTP/1.1 301 Moved Permanently</span><br><span class="line">Server: nginx/1.17.8</span><br><span class="line">Date: Tue, 12 May 2020 00:39:31 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 169</span><br><span class="line">Location: http://localhost/first/</span><br><span class="line">Connection: keep-alive</span><br></pre></td></tr></table></figure>
+
+<p>这两个指令都设置为 <code>off</code> 之后，会发现返回的不再是主域名加端口号，而是我们请求的域名和端口号，如果在请求头中加上 <code>Host</code>，那么就会用 <code>Host</code> 请求头中的域名。</p>
+<h2 id="index-模块"><a href="#index-模块" class="headerlink" title="index 模块"></a>index 模块</h2><ul>
+<li><p>模块：<code>ngx_http_index_module</code></p>
+</li>
+<li><p>功能：指定 <code>/</code> 结尾的目录访问时，返回 index 文件内容</p>
+</li>
+<li><p>语法：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">index</span> file ...;</span><br><span class="line">Default: <span class="attribute">index</span> index.html; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure></li>
+<li><p>先于 autoindex 模块执行</p>
+</li>
+</ul>
+<p>这个模块，当我们访问以 <code>/</code> 结尾的目录时，会去找 root 或 alias 指令的文件夹下的 index.html，如果有这个文件，就会把文件内容返回，也可以指定其他文件。</p>
+<h2 id="autoindex-模块"><a href="#autoindex-模块" class="headerlink" title="autoindex 模块"></a>autoindex 模块</h2><ul>
+<li><p>模块：<code>ngx_http_autoindex_module</code>，默认编译进 Nginx，使用 <code>--without-http_autoindex_module</code> 取消</p>
+</li>
+<li><p>功能：当 URL 以 <code>/</code> 结尾时，尝试以 html/xml/json/jsonp 等格式返回 root/alias 中指向目录的目录结构</p>
+</li>
+<li><p>语法：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 开启或关闭</span></span><br><span class="line">Syntax: <span class="attribute">autoindex</span> <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">autoindex</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"><span class="comment"># 当以 HTML 格式输出时，控制是否转换为 KB/MB/GB</span></span><br><span class="line">Syntax: autoindex_exact_size <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">autoindex_exact_size</span> <span class="literal">on</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"><span class="comment"># 控制以哪种格式输出</span></span><br><span class="line">Syntax: autoindex_format html | xml | json | jsonp;</span><br><span class="line">Default: <span class="attribute">autoindex_format</span> html; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"><span class="comment"># 控制是否以本地时间格式显示还是 UTC 格式</span></span><br><span class="line">Syntax: autoindex_localtime <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">autoindex_localtime</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+<h3 id="实战-11"><a href="#实战-11" class="headerlink" title="实战"></a>实战</h3></li>
+<li><p>配置文件如下：</p>
+</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">server_name</span> autoindex.ziyang.com;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8080</span>;</span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">        <span class="attribute">alias</span> html/;</span><br><span class="line">        <span class="attribute">autoindex</span> <span class="literal">on</span>;</span><br><span class="line">        <span class="comment">#index b.html;</span></span><br><span class="line">        <span class="attribute">autoindex_exact_size</span> <span class="literal">on</span>;</span><br><span class="line">        <span class="attribute">autoindex_format</span> html;</span><br><span class="line">        <span class="attribute">autoindex_localtime</span> <span class="literal">on</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里我把 <code>index b.html</code> 这条指令给注释掉了，而 index 模块是默认编译进 Nginx 的，且默认指令是 <code>index index.html</code>，因此，会去找是否有 index.html 这个文件。</p>
+<ul>
+<li>打开浏览器，访问 autoindex.ziyang.com:8080，html 目录下默认是有 index.html 文件的，因此显示结果为：</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gewl3d5pg4j318u0fojtv.jpg"></p>
+<ul>
+<li>打开 <code>index b.html</code> 指令注释。由于 html 文件夹下并不存在 b.html 这个文件，所以请求会走到 autoindex 模块，显示目录：</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gewl6fm9ufj31ei0eodi5.jpg"></p>
+<p>后面的文件大小显示格式就是由 <code>autoindex_exact_size on;</code> 这条指令决定的。</p>
+<h2 id="concat模块"><a href="#concat模块" class="headerlink" title="concat模块"></a>concat模块</h2><p>下面介绍一个可以提升小文件性能的模块，这个模块是由阿里巴巴开发的，在淘宝网中有广泛应用。</p>
+<ul>
+<li><p>模块：ngx_http_concat_module</p>
+</li>
+<li><p>模块开发者：Tengine(<a target="_blank" rel="noopener" href="https://github.com/alibaba/nginx-http-concat)">https://github.com/alibaba/nginx-http-concat)</a> –add-module=../nginx-http-concat/</p>
+</li>
+<li><p>功能：合并多个小文件请求，可以明显提升 HTTP 请求的性能</p>
+</li>
+<li><p>指令：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#在 URI 后面加上 ??，通过 ”,“ 分割文件，如果还有参数，则在最后通过 ? 添加参数</span></span><br><span class="line"><span class="attribute">concat</span> <span class="literal">on</span> | <span class="literal">off</span></span><br><span class="line">default concat <span class="literal">off</span></span><br><span class="line">Context http, server, location</span><br><span class="line"></span><br><span class="line">concat_types MIME types</span><br><span class="line">Default concat_types: text/css application/x-javascript</span><br><span class="line">Context http, server, location</span><br><span class="line"></span><br><span class="line">concat_unique <span class="literal">on</span> | <span class="literal">off</span></span><br><span class="line">Default concat_unique <span class="literal">on</span></span><br><span class="line">Context http, server, location</span><br><span class="line"></span><br><span class="line">concat_max_files numberp</span><br><span class="line">Default concat_max_files <span class="number">10</span></span><br><span class="line">Context http, server, location</span><br><span class="line"></span><br><span class="line">concat_delimiter string</span><br><span class="line">Default NONE</span><br><span class="line">Context http, server, locatione</span><br><span class="line">concat_ignore_file_error <span class="literal">on</span> | <span class="literal">off</span></span><br><span class="line">Default <span class="literal">off</span></span><br><span class="line">Context http, server, location</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>打开淘宝主页，会发现小文件都是通过这个模块来提高性能的：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gewvduqbxjj31rj0u04qp.jpg"></p>
+<p>这里就不做实战了，感兴趣的同学可以自己去编译一下这个模块，做一下实验，我把配置文件放在这里：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">server_name</span> concat.ziyang.com;</span><br><span class="line">    <span class="attribute">error_log</span> logs/myerror.log <span class="literal">debug</span>;</span><br><span class="line">    <span class="attribute">concat</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">root</span> html;</span><br><span class="line">    <span class="attribute">location</span> /concat &#123;</span><br><span class="line">        <span class="attribute">concat_max_files</span> <span class="number">20</span>;</span><br><span class="line">        <span class="attribute">concat_types</span> text/plain;</span><br><span class="line">        <span class="attribute">concat_unique</span> <span class="literal">on</span>;</span><br><span class="line">        <span class="attribute">concat_delimiter</span> <span class="string">&#x27;:::&#x27;</span>;</span><br><span class="line">        <span class="attribute">concat_ignore_file_error</span> <span class="literal">on</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="log-阶段"><a href="#log-阶段" class="headerlink" title="log 阶段"></a>log 阶段</h1><p>下面终于来到了 11 个阶段的最后一个阶段，记录请求访问日志的 log 模块。</p>
+<ul>
+<li>功能：将 HTTP 请求相关信息记录到日志</li>
+<li>模块：<code>ngx_http_log_module</code>，无法禁用</li>
+</ul>
+<h2 id="access-日志格式"><a href="#access-日志格式" class="headerlink" title="access 日志格式"></a>access 日志格式</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">log_format</span> name [escape=default|json|<span class="literal">none</span>] string ...;</span><br><span class="line">Default: <span class="attribute">log_format</span> combined <span class="string">&quot;...&quot;</span>; </span><br><span class="line">Context: http</span><br></pre></td></tr></table></figure>
+
+<p>默认的 combined 日志格式：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">log_format</span> combined <span class="string">&#x27;$remote_addr - $remote_user [$time_local] &#x27;</span> </span><br><span class="line"><span class="string">&#x27;&quot;$request&quot; $status $body_bytes_sent &#x27;</span> <span class="string">&#x27;&quot;$http_referer&quot; </span></span><br><span class="line"><span class="string">&quot;$http_user_agent&quot;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置日志文件路径"><a href="#配置日志文件路径" class="headerlink" title="配置日志文件路径"></a>配置日志文件路径</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">access_log</span> path [format [buffer=size] [gzip[=level]] [flush=time] [if=condition]];</span><br><span class="line">        <span class="attribute">access_log</span> <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">access_log</span> logs/access.log combined; </span><br><span class="line">Context: http, server, location, <span class="attribute">if</span> in location, limit_except</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>path 路径可以包含变量：不打开 cache 时每记录一条日志都需要打开、关闭日志文件</p>
+</li>
+<li><p>if 通过变量值控制请求日志是否记录</p>
+</li>
+<li><p>日志缓存</p>
+<ul>
+<li><p>功能：批量将内存中的日志写入磁盘</p>
+</li>
+<li><p>写入磁盘的条件：</p>
+<p>所有待写入磁盘的日志大小超出缓存大小；</p>
+<p>达到 flush 指定的过期时间；</p>
+<p>worker 进程执行 reopen 命令，或者正在关闭。</p>
+</li>
+</ul>
+</li>
+<li><p>日志压缩</p>
+<ul>
+<li>功能：批量压缩内存中的日志，再写入磁盘</li>
+<li>buffer 大小默认为 64KB</li>
+<li>压缩级别默认为 1（1最快压缩率最低，9最慢压缩率最高）</li>
+<li>打开日志压缩时，默认打开日志缓存功能</li>
+</ul>
+</li>
+</ul>
+<h2 id="对日志文件名包含变量时的优化"><a href="#对日志文件名包含变量时的优化" class="headerlink" title="对日志文件名包含变量时的优化"></a>对日志文件名包含变量时的优化</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">open_log_file_cache</span> max=N [inactive=time] [min_uses=N] [valid=time];</span><br><span class="line">        <span class="attribute">open_log_file_cache</span> <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">open_log_file_cache</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>max：缓存内的最大文件句柄数，超出后用 LRU 算法淘汰</li>
+<li>inactive：文件访问完后在这段时间内不会被关闭。默认 10 秒</li>
+<li>min_uses：在 inactive 时间内使用次数超过 min_uses 才会继续存在内存中。默认 1</li>
+<li>valid：超出 valid 时间后，将对缓存的日志文件检查是否存在。默认 60 秒</li>
+<li>off：关闭缓存功能</li>
+</ul>
+<p>日志模块没有实战。</p>
+<hr>
+<p>到了这里，我们已经将 Nginx 处理 HTTP 请求的 11 个阶段全部梳理了一遍，每个阶段基本都有对应的模块。相信对于这样一个全流程的解析，大家都能够看懂 Nginx 的配置了，在此之上，还能够按照需求灵活配置出自己想要的配置，这样就真正的掌握了 11 个阶段。</p>
+<p>最后，欢迎大家关注我的个人博客：<a href="https://iziyang.github.io/">iziyang.github.io</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/08/4-nginx/" rel="prev" title="Nginx 是如何处理 HTTP 头部的？">
+      <i class="fa fa-chevron-left"></i> Nginx 是如何处理 HTTP 头部的？
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/11/1-leetcode/" rel="next" title="LeetCode 之数组">
+      LeetCode 之数组 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx-%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA-HTTP-%E8%AF%B7%E6%B1%82%E7%9A%84%E5%85%A8%E8%BF%87%E7%A8%8B"><span class="nav-text">Nginx 处理一个 HTTP 请求的全过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx-%E5%A4%84%E7%90%86-HTTP-%E8%AF%B7%E6%B1%82%E7%9A%84-11-%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="nav-text">Nginx 处理 HTTP 请求的 11 个阶段</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11-%E4%B8%AA%E9%98%B6%E6%AE%B5%E7%9A%84%E9%A1%BA%E5%BA%8F%E5%A4%84%E7%90%86"><span class="nav-text">11 个阶段的顺序处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#postread-%E9%98%B6%E6%AE%B5"><span class="nav-text">postread 阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A%E5%A6%82%E4%BD%95%E6%8B%BF%E5%88%B0%E7%94%A8%E6%88%B7%E7%9A%84%E7%9C%9F%E5%AE%9E-IP-%E5%9C%B0%E5%9D%80%EF%BC%9F"><span class="nav-text">问题：如何拿到用户的真实 IP 地址？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%BF%E5%88%B0%E7%9C%9F%E5%AE%9E%E7%94%A8%E6%88%B7-IP-%E5%90%8E%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%EF%BC%9F"><span class="nav-text">拿到真实用户 IP 后如何使用？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#realip-%E6%A8%A1%E5%9D%97"><span class="nav-text">realip 模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rewrite-%E9%98%B6%E6%AE%B5%E7%9A%84-rewrite-%E6%A8%A1%E5%9D%97"><span class="nav-text">rewrite 阶段的 rewrite 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#return-%E6%8C%87%E4%BB%A4"><span class="nav-text">return 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#return-%E6%8C%87%E4%BB%A4%E4%B8%8E-error-page"><span class="nav-text">return 指令与 error_page</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-1"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rewrite-%E6%8C%87%E4%BB%A4"><span class="nav-text">rewrite 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E7%A4%BA%E4%BE%8B"><span class="nav-text">指令示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-2"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rewrite-%E8%A1%8C%E4%B8%BA%E8%AE%B0%E5%BD%95%E6%97%A5%E5%BF%97"><span class="nav-text">rewrite 行为记录日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#if-%E6%8C%87%E4%BB%A4"><span class="nav-text">if 指令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#find-config-%E9%98%B6%E6%AE%B5"><span class="nav-text">find_config 阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#location-%E6%8C%87%E4%BB%A4"><span class="nav-text">location 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-text">指令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E8%A7%84%E5%88%99"><span class="nav-text">匹配规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-3"><span class="nav-text">实战</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#preaccess-%E9%98%B6%E6%AE%B5"><span class="nav-text">preaccess 阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#limit-conn-%E6%A8%A1%E5%9D%97"><span class="nav-text">limit_conn 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E8%AF%AD%E6%B3%95-1"><span class="nav-text">指令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-4"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#limit-req-%E6%A8%A1%E5%9D%97"><span class="nav-text">limit_req 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#leaky-bucket-%E7%AE%97%E6%B3%95"><span class="nav-text">leaky bucket 算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E8%AF%AD%E6%B3%95-2"><span class="nav-text">指令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-5"><span class="nav-text">实战</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#access-%E9%98%B6%E6%AE%B5"><span class="nav-text">access 阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#access-%E6%A8%A1%E5%9D%97"><span class="nav-text">access 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E8%AF%AD%E6%B3%95-3"><span class="nav-text">指令语法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#auth-basic-%E6%A8%A1%E5%9D%97"><span class="nav-text">auth_basic 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E8%AF%AD%E6%B3%95-4"><span class="nav-text">指令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-6"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#auth-request-%E6%A8%A1%E5%9D%97"><span class="nav-text">auth_request 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E8%AF%AD%E6%B3%95-5"><span class="nav-text">指令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-7"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E5%88%B6%E6%89%80%E6%9C%89-access-%E9%98%B6%E6%AE%B5%E6%A8%A1%E5%9D%97%E7%9A%84-satisfy-%E6%8C%87%E4%BB%A4"><span class="nav-text">限制所有 access 阶段模块的 satisfy 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E8%AF%AD%E6%B3%95-6"><span class="nav-text">指令语法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#precontent-%E9%98%B6%E6%AE%B5"><span class="nav-text">precontent 阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#try-files-%E6%A8%A1%E5%9D%97"><span class="nav-text">try_files 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E8%AF%AD%E6%B3%95-7"><span class="nav-text">指令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-8"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mirror-%E6%A8%A1%E5%9D%97"><span class="nav-text">mirror 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E8%AF%AD%E6%B3%95-8"><span class="nav-text">指令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-9"><span class="nav-text">实战</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#content-%E9%98%B6%E6%AE%B5"><span class="nav-text">content 阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#static-%E6%A8%A1%E5%9D%97"><span class="nav-text">static 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#root-%E5%92%8C-alias-%E6%8C%87%E4%BB%A4"><span class="nav-text">root 和 alias 指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-10"><span class="nav-text">实战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E4%B8%AA%E7%9B%B8%E5%85%B3%E5%8F%98%E9%87%8F"><span class="nav-text">三个相关变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91%E8%B7%B3%E8%BD%AC%E7%9A%84%E5%9F%9F%E5%90%8D"><span class="nav-text">重定向跳转的域名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#index-%E6%A8%A1%E5%9D%97"><span class="nav-text">index 模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#autoindex-%E6%A8%A1%E5%9D%97"><span class="nav-text">autoindex 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-11"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#concat%E6%A8%A1%E5%9D%97"><span class="nav-text">concat模块</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#log-%E9%98%B6%E6%AE%B5"><span class="nav-text">log 阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#access-%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F"><span class="nav-text">access 日志格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84"><span class="nav-text">配置日志文件路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6%E5%90%8D%E5%8C%85%E5%90%AB%E5%8F%98%E9%87%8F%E6%97%B6%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-text">对日志文件名包含变量时的优化</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

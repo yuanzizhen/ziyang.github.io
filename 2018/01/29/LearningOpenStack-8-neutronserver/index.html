@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="分层模型 Core API 对外提供管理 network, subnet 和 port 的 RESTful API。 Extension API 对外提供管理 router, load balance, firewall 等资源 的 RESTful API。 Commnon Service 认证和校验 API 请求。 Neutron Core Neutron server 的核心处理程序，通过调用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【学习】八、Neutron Server">
+<meta property="og:url" content="http://iziyang.github.io/2018/01/29/LearningOpenStack-8-neutronserver/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="分层模型 Core API 对外提供管理 network, subnet 和 port 的 RESTful API。 Extension API 对外提供管理 router, load balance, firewall 等资源 的 RESTful API。 Commnon Service 认证和校验 API 请求。 Neutron Core Neutron server 的核心处理程序，通过调用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqG2kaGXyYgYWVaMZBrLruk6LYphLicwibym5k79oEPDPAlrVCY9aQ9bDiahZQ2YTNZ8Ee6XgXqnhSGKQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqG2kaGXyYgYWVaMZBrLruk6fRic3xJzD7tJjhr2g0OXKJaOz6DNopZv0JiaibdzBBNcZ4GJsOHh8JpQQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqHOMwJJhLTWQLjEia7SIWD86oJHFSYAiaQgiaibVpXyEsiaZmd9GfbzTvhEGTIv7S9BKibDnakpibFGYgrHg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqHOMwJJhLTWQLjEia7SIWD8627Nbppz9IdbPDib1PyBuSLgvCQW4dEtpRiarkowpt96xiacOhjFB8MvibQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqGFdPu75GJLZJYYsYia6y56DtLEdSl70b04xgEibkUlqict3741PnlGQwOKqMXtJt5JLrsJL9UqYwvag/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqH7ebIW9oTUGZSvmvqG5NE4ADyCNicibVVlsJMnvWSkK6InMQiapp5M247AD4Zep8dN3Hd48qUMK75UA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="article:published_time" content="2018-01-29T03:19:27.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.852Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="OpenStack学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqG2kaGXyYgYWVaMZBrLruk6LYphLicwibym5k79oEPDPAlrVCY9aQ9bDiahZQ2YTNZ8Ee6XgXqnhSGKQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+
+<link rel="canonical" href="http://iziyang.github.io/2018/01/29/LearningOpenStack-8-neutronserver/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【学习】八、Neutron Server | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/01/29/LearningOpenStack-8-neutronserver/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【学习】八、Neutron Server
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-01-29 11:19:27" itemprop="dateCreated datePublished" datetime="2018-01-29T11:19:27+08:00">2018-01-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/01/29/LearningOpenStack-8-neutronserver/" class="post-meta-item leancloud_visitors" data-flag-title="【学习】八、Neutron Server" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/01/29/LearningOpenStack-8-neutronserver/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/01/29/LearningOpenStack-8-neutronserver/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="分层模型"><a href="#分层模型" class="headerlink" title="分层模型"></a>分层模型</h1><p><img src="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqG2kaGXyYgYWVaMZBrLruk6LYphLicwibym5k79oEPDPAlrVCY9aQ9bDiahZQ2YTNZ8Ee6XgXqnhSGKQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p><strong>Core API</strong></p>
+<p>对外提供管理 network, subnet 和 port 的 RESTful API。</p>
+<p><strong>Extension API</strong></p>
+<p>对外提供管理 router, load balance, firewall 等资源 的 RESTful API。</p>
+<p><strong>Commnon Service</strong></p>
+<p>认证和校验 API 请求。</p>
+<p><strong>Neutron Core</strong></p>
+<p>Neutron server 的核心处理程序，通过调用相应的 Plugin 处理请求。</p>
+<p><strong>Core Plugin API</strong></p>
+<p>定义了 Core Plgin 的抽象功能集合，Neutron Core 通过该 API 调用相应的 Core Plgin。</p>
+<p><strong>Extension Plugin API</strong></p>
+<p>定义了 Service Plgin 的抽象功能集合，Neutron Core 通过该 API 调用相应的 Service Plgin。</p>
+<p><strong>Core Plugin</strong></p>
+<p>实现了 Core Plugin API，在数据库中维护 network, subnet 和 port 的状态，并负责调用相应的 agent 在 network provider 上执行相关操作，比如创建 network。</p>
+<p><strong>Service Plugin</strong></p>
+<p>实现了 Extension Plugin API，在数据库中维护 router, load balance, security group 等资源的状态，并负责调用相应的 agent 在 network provider 上执行相关操作，比如创建 router。</p>
+<p>归纳起来，Neutron Server 包括两部分：</p>
+<ol>
+<li>提供 API 服务。</li>
+<li>运行 Plugin。</li>
+</ol>
+<p>即 <strong>Neutron Server = API + Plugins</strong></p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqG2kaGXyYgYWVaMZBrLruk6fRic3xJzD7tJjhr2g0OXKJaOz6DNopZv0JiaibdzBBNcZ4GJsOHh8JpQQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h1 id="多种-network-provider"><a href="#多种-network-provider" class="headerlink" title="多种 network provider"></a>多种 network provider</h1><p>先讨论一个简单的场景：在 Neutorn 中使用 linux bridge 这一种 network provider。</p>
+<p>根据 Neutron Server 的分层模型，我们需要实现两个东西：linux bridge core plugin 和 linux bridge agent。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqHOMwJJhLTWQLjEia7SIWD86oJHFSYAiaQgiaibVpXyEsiaZmd9GfbzTvhEGTIv7S9BKibDnakpibFGYgrHg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p><strong>linux bridge core plugin</strong></p>
+<ol>
+<li>与 neutron server 一起运行。</li>
+<li>实现了 core plugin API。</li>
+<li>负责维护数据库信息。</li>
+<li>通知 linux bridge agent 实现具体的网络功能。</li>
+</ol>
+<p><strong>linux bridge agent</strong></p>
+<ol>
+<li>在计算节点和网络节点（或控制节点）上运行。</li>
+<li>接收来自 plugin 的请求。</li>
+<li>通过配置本节点上的 linux bridge 实现 neutron 网络功能。</li>
+</ol>
+<p>同样的道理，如果要支持 Open vSwitch，只需要实现 Open vSwitch plugin 和 Open vSwitch agent。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqHOMwJJhLTWQLjEia7SIWD8627Nbppz9IdbPDib1PyBuSLgvCQW4dEtpRiarkowpt96xiacOhjFB8MvibQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>Neutron 可以通过开发不同的 plugin 和 agent 支持不同的网络技术。随着支持的 network provider 数量的增加，有两个突出的问题：</p>
+<ol>
+<li>只能在 OpenStack 中使用一种 core plugin，多种 network provider 无法共存。</li>
+<li>不同 plugin 之间存在大量重复代码，开发新的 plugin 工作量大。</li>
+</ol>
+<h1 id="ML2-plugin"><a href="#ML2-plugin" class="headerlink" title="ML2 plugin"></a>ML2 plugin</h1><h2 id="ML2-功能"><a href="#ML2-功能" class="headerlink" title="ML2 功能"></a>ML2 功能</h2><p>ML2 作为新一代的 core plugin，提供了一个框架，允许在 OpenStack 网络中同时使用多种 Layer 2 网络技术，不同的节点可以使用不同的网络实现机制。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqGFdPu75GJLZJYYsYia6y56DtLEdSl70b04xgEibkUlqict3741PnlGQwOKqMXtJt5JLrsJL9UqYwvag/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>如上图所示，采用 ML2 plugin 后，可以在不同节点上分别部署 linux bridge agent, open vswitch agent, hyper-v agent 或其他第三方 agent。</p>
+<p>ML2 不但支持异构部署方案，同时能够与现有的 agent 无缝集成：以前用的 agent 不需要变，只需要将 Neutron server 上的传统 core plugin 替换为 ML2。</p>
+<p>有了 ML2，要支持新的 network provider 就变得简单多了：无需从头开发 core plugin，只需要开发相应的 mechanism driver，大大减少了要编写和维护的代码。</p>
+<h2 id="ML2-架构"><a href="#ML2-架构" class="headerlink" title="ML2 架构"></a>ML2 架构</h2><p>ML2 对二层网络进行抽象和建模，引入了 type driver 和 mechansim driver。这两类 driver 解耦了 Neutron 所支持的网络类型（type）与访问这些网络类型的机制（mechanism），其结果就是使得 ML2 具有非常好的弹性，易于扩展，能够灵活支持多种 type 和 mechanism。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz/Hia4HVYXRicqH7ebIW9oTUGZSvmvqG5NE4ADyCNicibVVlsJMnvWSkK6InMQiapp5M247AD4Zep8dN3Hd48qUMK75UA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h3 id="Type-Driver"><a href="#Type-Driver" class="headerlink" title="Type Driver"></a>Type Driver</h3><p>type driver 负责维护网络类型的状态，执行验证，创建网络等。 ML2 支持的网络类型包括 Local, Flat, Vlan, VxLan 和 GRE。 </p>
+<h3 id="Mechansim-Driver"><a href="#Mechansim-Driver" class="headerlink" title="Mechansim Driver"></a>Mechansim Driver</h3><p>mechanism driver 负责获取由 type driver 维护的网络状态，并确保在相应的网络设备（物理或虚拟）上正确实现这些状态。</p>
+<p>type 和 mechanisim 都太抽象，现在我们举一个具体的例子： type driver 为 vlan，mechansim driver 为 linux bridge，我们要完成的操作是创建 network vlan100，那么：</p>
+<ol>
+<li>vlan type driver 会确保将 vlan100 的信息保存到 Neutron 数据库中，包括 network 的名称，vlan ID 等。</li>
+<li>linux bridge mechanism driver 会确保各节点上的 linux brige agent 在物理网卡上创建 ID 为 100 的 vlan 设备 和 brige 设备，并将两者进行桥接。</li>
+</ol>
+<p>mechanism driver 有三种类型：</p>
+<ul>
+<li>Agent-based：包括 linux bridge, open vswitch 等。</li>
+<li>Controller-based：包括 OpenDaylight, VMWare NSX 等。</li>
+<li>基于物理交换机：包括 Cisco Nexus, Arista, Mellanox 等。 比如前面那个例子如果换成 Cisco 的 mechanism driver，则会在 Cisco 物理交换机的指定 trunk 端口上添加 vlan100。</li>
+</ul>
+<p>linux bridge 和 open vswitch 的 ML2 mechanism driver 作用是配置各节点上的虚拟交换机。L2 population driver 作用是优化和限制 overlay 网络中的广播流量。 vxlan 和 gre 都属于 overlay 网络。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/OpenStack%E5%AD%A6%E4%B9%A0/" rel="tag"># OpenStack学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/01/29/LearningOpenStack-7-neutron/" rel="prev" title="【学习】七、Neutron 概述">
+      <i class="fa fa-chevron-left"></i> 【学习】七、Neutron 概述
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/01/29/LearningOpenStack-9-Service-Plugin-agent/" rel="next" title="【学习】九、Service Plugin/Agent">
+      【学习】九、Service Plugin/Agent <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-text">分层模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E7%A7%8D-network-provider"><span class="nav-text">多种 network provider</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ML2-plugin"><span class="nav-text">ML2 plugin</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ML2-%E5%8A%9F%E8%83%BD"><span class="nav-text">ML2 功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ML2-%E6%9E%B6%E6%9E%84"><span class="nav-text">ML2 架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Type-Driver"><span class="nav-text">Type Driver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mechansim-Driver"><span class="nav-text">Mechansim Driver</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

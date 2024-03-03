@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="在上一篇文章中，我曾提到了一个 proxy_next_upstream 指令，这个指令可以在上游服务器出现失败的时候选择其他服务器，这篇文章我们详细来说一下这个功能是怎么使用的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="上游服务器出问题了，Nginx 还能获取到响应吗？">
+<meta property="og:url" content="http://iziyang.github.io/2020/08/29/12-nginx/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="在上一篇文章中，我曾提到了一个 proxy_next_upstream 指令，这个指令可以在上游服务器出现失败的时候选择其他服务器，这篇文章我们详细来说一下这个功能是怎么使用的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-29T04:45:16.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.827Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://iziyang.github.io/2020/08/29/12-nginx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>上游服务器出问题了，Nginx 还能获取到响应吗？ | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2020/08/29/12-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          上游服务器出问题了，Nginx 还能获取到响应吗？
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-29 12:45:16" itemprop="dateCreated datePublished" datetime="2020-08-29T12:45:16+08:00">2020-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/29/12-nginx/" class="post-meta-item leancloud_visitors" data-flag-title="上游服务器出问题了，Nginx 还能获取到响应吗？" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/29/12-nginx/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/29/12-nginx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在上一篇文章中，我曾提到了一个 <code>proxy_next_upstream</code> 指令，这个指令可以在上游服务器出现失败的时候选择其他服务器，这篇文章我们详细来说一下这个功能是怎么使用的。</p>
+<span id="more"></span>
+
+<h2 id="上游返回失败时的处理办法"><a href="#上游返回失败时的处理办法" class="headerlink" title="上游返回失败时的处理办法"></a>上游返回失败时的处理办法</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_next_upstream</span> <span class="literal">error</span> | timeout | invalid_header | http_500 | http_502 | http_503 | </span><br><span class="line">http_504 | http_403 | http_404 | http_429 | non_idempotent | <span class="literal">off</span> ...;</span><br><span class="line">Default: <span class="attribute">proxy_next_upstream</span> <span class="literal">error</span> timeout; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<p>当上游服务器出现失败时，可以通过 <code>proxy_next_upstream</code> 指令来控制，但是这个指令有一些配置和前提：</p>
+<ul>
+<li>没有向客户端发送任何内容，只要发送了一个字节，表示上游服务已经生效了</li>
+<li>参数含义<ul>
+<li>error：在与上游服务建立连接时出现错误，主要指的是网络错误</li>
+<li>timeout：超时，如 connect timeout、read timeout、write timeout 等</li>
+<li>invalid_header：收到的上游服务响应头是不合法的</li>
+<li>http_：可以配置具体的响应状态码来选择一个新的上游服务器</li>
+<li>non_idempotent：如果客户端是幂等方法（POST，LOCK，PATCH，RFC7231 中定义），配置了这个参数之后，那么是可以继续选择下一个服务器的，默认禁止</li>
+<li>off：关闭这个指令</li>
+</ul>
+</li>
+</ul>
+<h2 id="限制-proxy-next-upstream-的时间与次数"><a href="#限制-proxy-next-upstream-的时间与次数" class="headerlink" title="限制 proxy_next_upstream 的时间与次数"></a>限制 proxy_next_upstream 的时间与次数</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_next_upstream_timeout</span> time;</span><br><span class="line">Default: <span class="attribute">proxy_next_upstream_timeout</span> <span class="number">0</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: proxy_next_upstream_tries number;</span><br><span class="line">Default: <span class="attribute">proxy_next_upstream_tries</span> <span class="number">0</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>proxy_next_upstream_timeout：设置超时时间，0 表示不限制时间</li>
+<li>proxy_next_upstream_tries：设置重试次数，0 表示不限制次数</li>
+</ul>
+<h3 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h3><p>现在我在本地依然是启动了两个 Nginx，一台作为上游服务器，一台作为反向代理。他们的配置分别如下所示：</p>
+<ul>
+<li>上游服务 Nginx。这里我监听了 3 个端口一个 8011，一个 8012，一个 8013</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8011</span>;</span><br><span class="line">    <span class="attribute">default_type</span> text/plain;</span><br><span class="line">    <span class="comment">#limit_rate 1;</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;8011 server response.\n&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8012</span>;</span><br><span class="line">    <span class="attribute">default_type</span> text/plain;</span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">        <span class="attribute">add_header</span> aaa <span class="string">&#x27;aaa value&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment"># client_body_in_single_buffer on;</span></span><br><span class="line">    <span class="attribute">location</span> /test &#123;</span><br><span class="line">    	<span class="attribute">return</span> <span class="number">200</span> <span class="string">&#x27;8012 server response.</span></span><br><span class="line"><span class="string">            uri: $uri</span></span><br><span class="line"><span class="string">            method: $request_method</span></span><br><span class="line"><span class="string">            request: $request</span></span><br><span class="line"><span class="string">            http_name: $http_name</span></span><br><span class="line"><span class="string">            \n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8013</span>;</span><br><span class="line">    <span class="attribute">default_type</span> text/plain;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">500</span> <span class="string">&#x27;8013 server internal error.\n&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>反向代理 Nginx。这里我配置了一个 upstream nextups，转发到上游服务 Nginx 的 8013 和 8011 端口</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">upstream</span> nextups &#123;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">127.0.0.1:8013</span>;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">127.0.0.1:8011</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">server_name</span> nextups.ziyang.com;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">error_log</span>  logs/myerror.log  <span class="literal">debug</span>;</span><br><span class="line">    <span class="attribute">root</span> html/;</span><br><span class="line">    <span class="attribute">default_type</span> text/plain;</span><br><span class="line">    <span class="attribute">error_page</span> <span class="number">500</span> /a.txt;</span><br><span class="line">    <span class="attribute">location</span> /error &#123;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://nextups;</span><br><span class="line">        <span class="attribute">proxy_connect_timeout</span> <span class="number">1s</span>;</span><br><span class="line">        <span class="attribute">proxy_next_upstream</span> <span class="literal">off</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">location</span> /a &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> /intercept &#123;</span><br><span class="line">        <span class="attribute">proxy_intercept_errors</span> <span class="literal">on</span>;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://127.0.0.1:8013;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在先做一下测试看看会返回什么：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">➜  nginx curl nextups.ziyang.com/error</span><br><span class="line">8013 server internal error.</span><br><span class="line">➜  nginx curl nextups.ziyang.com/error</span><br><span class="line">8011 server response.</span><br></pre></td></tr></table></figure>
+
+<p>由于我配置的是 rr 算法，所以一次返回 8013，一次返回 8011。如果继续请求，下一次应该会返回 8013，那来看看当我把监听 8013 的配置取消掉之后看会返回什么：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  nginx curl nextups.ziyang.com/error</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;&lt;title&gt;502 Bad Gateway&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;center&gt;&lt;h1&gt;502 Bad Gateway&lt;/h1&gt;&lt;/center&gt;</span><br><span class="line">&lt;hr&gt;&lt;center&gt;nginx/1.17.8&lt;/center&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看到没，直接报了 502 错误，因为 8013 端口连接不上了，而且 <code>proxy_next_upstream off;</code> 这条指令配置的是 <code>off</code> 所以 Nginx 不会去继续请求下一个上游服务器。</p>
+<p>现在把 <code>proxy_next_upstream error;</code> 配置为 <code>error</code> 看会发生什么：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">➜  nginx curl nextups.ziyang.com/error</span><br><span class="line">8011 server response.</span><br><span class="line">➜  nginx curl nextups.ziyang.com/error</span><br><span class="line">8011 server response.</span><br><span class="line">➜  nginx curl nextups.ziyang.com/error</span><br><span class="line">8011 server response.</span><br></pre></td></tr></table></figure>
+
+<p>现在就全部返回 8011 了，这说明 <code>proxy_next_upstream</code> 指令生效了。</p>
+<h2 id="用-error-page-拦截上游失败响应"><a href="#用-error-page-拦截上游失败响应" class="headerlink" title="用 error_page 拦截上游失败响应"></a>用 error_page 拦截上游失败响应</h2><p>下面这个指令可以配置当上游响应的响应码大于等于 300 时，选择将响应返回客户端还是按 error_page 指令处理，这样，会给用户一个比较好的用户体验。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">proxy_intercept_errors</span> <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">proxy_intercept_errors</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server,</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>proxy_intercept_errors 配置为 on，那么 error page 就可以生效了</li>
+</ul>
+<h3 id="实战-1"><a href="#实战-1" class="headerlink" title="实战"></a>实战</h3><p>依然是上面的配置文件，我配置了 error_page 为 <code>error_page 500 /a.txt;</code>，先看下 a.txt 的内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  nginx curl nextups.ziyang.com/a.txt</span><br><span class="line">a</span><br></pre></td></tr></table></figure>
+
+<p>就是一个简单的字母 a。</p>
+<p>然后请求反向代理的 Nginx，由于我上游 Nginx 8013 返回的是 500，所以这时候应该返回这个 error_page，也就是 a：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  nginx curl nextups.ziyang.com/intercept</span><br><span class="line">a</span><br></pre></td></tr></table></figure>
+
+<p>的确返回了 a，这是符合我们预期结果的。</p>
+<p>这篇文章讲了怎么当上游服务器返回失败或者遇到其他错误时，Nginx 怎么去获取响应，以及当上游服务器故障时如何返回一个用户体验良好的页面。到这里，反向代理和负载均衡的内容就差不多讲完了，下一篇文章开始说一下 Nginx 的缓存。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/29/11-nginx/" rel="prev" title="Nginx 的反向代理流程">
+      <i class="fa fa-chevron-left"></i> Nginx 的反向代理流程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/29/13-nginx/" rel="next" title="对上游使用 SSL 连接">
+      对上游使用 SSL 连接 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E6%B8%B8%E8%BF%94%E5%9B%9E%E5%A4%B1%E8%B4%A5%E6%97%B6%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95"><span class="nav-text">上游返回失败时的处理办法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E5%88%B6-proxy-next-upstream-%E7%9A%84%E6%97%B6%E9%97%B4%E4%B8%8E%E6%AC%A1%E6%95%B0"><span class="nav-text">限制 proxy_next_upstream 的时间与次数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8-error-page-%E6%8B%A6%E6%88%AA%E4%B8%8A%E6%B8%B8%E5%A4%B1%E8%B4%A5%E5%93%8D%E5%BA%94"><span class="nav-text">用 error_page 拦截上游失败响应</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-1"><span class="nav-text">实战</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

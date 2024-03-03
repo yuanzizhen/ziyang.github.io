@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="磁盘 IO 的优化磁盘介质  机械硬盘：一般适合大文件，例如日志 价格低 存储量大 BPS 较大，适用于顺序读写 IOPS 较小 寿命长   固态硬盘：适合小文件的随机读写 价格高 存储量小 BPS 大 IOPS 大，适用于随机读写 写寿命短">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 性能的优化">
+<meta property="og:url" content="http://iziyang.github.io/2020/08/29/28-nginx/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="磁盘 IO 的优化磁盘介质  机械硬盘：一般适合大文件，例如日志 价格低 存储量大 BPS 较大，适用于顺序读写 IOPS 较小 寿命长   固态硬盘：适合小文件的随机读写 价格高 存储量小 BPS 大 IOPS 大，适用于随机读写 写寿命短">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627213634">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627213950">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627214316">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627215005">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627220326">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627221225">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627222418">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627230040">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627230125">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627230138">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627230154">
+<meta property="article:published_time" content="2020-08-29T05:10:36.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.823Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627213634">
+
+<link rel="canonical" href="http://iziyang.github.io/2020/08/29/28-nginx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Linux 性能的优化 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2020/08/29/28-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 性能的优化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-29 13:10:36" itemprop="dateCreated datePublished" datetime="2020-08-29T13:10:36+08:00">2020-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/29/28-nginx/" class="post-meta-item leancloud_visitors" data-flag-title="Linux 性能的优化" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/29/28-nginx/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/29/28-nginx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="磁盘-IO-的优化"><a href="#磁盘-IO-的优化" class="headerlink" title="磁盘 IO 的优化"></a>磁盘 IO 的优化</h2><p><strong>磁盘介质</strong></p>
+<ul>
+<li>机械硬盘：一般适合大文件，例如日志<ul>
+<li>价格低</li>
+<li>存储量大</li>
+<li>BPS 较大，适用于顺序读写</li>
+<li>IOPS 较小</li>
+<li>寿命长</li>
+</ul>
+</li>
+<li>固态硬盘：适合小文件的随机读写<ul>
+<li>价格高</li>
+<li>存储量小</li>
+<li>BPS 大</li>
+<li>IOPS 大，适用于随机读写</li>
+<li>写寿命短</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="减少磁盘-IO"><a href="#减少磁盘-IO" class="headerlink" title="减少磁盘 IO"></a>减少磁盘 IO</h3><p>减少磁盘 IO 可以从以下几个方面来入手。</p>
+<ul>
+<li>优化读取<ul>
+<li>sendfile 零拷贝</li>
+<li>内存盘、SSD 盘</li>
+</ul>
+</li>
+<li>减少写入<ul>
+<li>AIO</li>
+<li>增大 error_log 级别，减少写入的日志</li>
+<li>关闭 access_log：直接就不写日志</li>
+<li>压缩 access_log：减小写入日志的大小</li>
+<li>是否启用 proxy buffering</li>
+<li>syslog 替代本地 IO</li>
+</ul>
+</li>
+<li>线程池 thread pool</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627213634" alt="image-20200627213633025"></p>
+<h3 id="直接-IO-绕开磁盘高速缓存"><a href="#直接-IO-绕开磁盘高速缓存" class="headerlink" title="直接 IO 绕开磁盘高速缓存"></a>直接 IO 绕开磁盘高速缓存</h3><ul>
+<li>通常情况下，文件需要写入缓冲区然后再写到磁盘，读取的时候也是一样，先读到缓冲区，再读到用户存储层，相当于有两次拷贝</li>
+<li>直接 IO 相当于绕开了缓冲区，直接从磁盘读写</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627213950"></p>
+<h3 id="直接-IO，适用于大文件"><a href="#直接-IO，适用于大文件" class="headerlink" title="直接 IO，适用于大文件"></a>直接 IO，适用于大文件</h3><p>当磁盘上的文件大小超过 size 后，启用 directIO 功能，避免 Buffered IO 模式下磁盘页缓存中的拷贝消耗。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">directio</span> size | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">directio</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: directio_alignment size;</span><br><span class="line">Default: <span class="attribute">directio_alignment</span> <span class="number">512</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>directio：需要配置一个大小的指令，表示超过这个大小就会启用 directio。</li>
+</ul>
+<h3 id="异步-IO"><a href="#异步-IO" class="headerlink" title="异步 IO"></a>异步 IO</h3><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627214316"></p>
+<p>在通常情况下，用户进程读取或者写入文件的时候会发生阻塞。而异步 IO 则是用户进程可以去处理其他任务，当写入或读取返回的时候再继续处理。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">aio</span> <span class="literal">on</span> | <span class="literal">off</span> | threads[=pool];</span><br><span class="line">Default: <span class="attribute">aio</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: aio_write <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">aio_write</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>aio：可以设置为 on，另外还可以设置线程池</li>
+<li>aio_write：通常情况下写入是写到磁盘高速缓存的，这个缓存是在内存中的，所以一般不需要开启 aio，而这个指令设置为 on 之后就会强制打开 aio，只有当接收上游服务的响应，同时开启了 proxy buffering，将响应写入到临时文件中的时候才有必要打开 aio</li>
+</ul>
+<h3 id="异步读-IO-线程池"><a href="#异步读-IO-线程池" class="headerlink" title="异步读 IO 线程池"></a>异步读 IO 线程池</h3><ul>
+<li>编译时加 –with-threads</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627215005"></p>
+<p>在静态资源服务场景下，就会有很多阻塞的场景，这时候需要线程池来处理这些请求。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">thread_pool</span> name threads=number [max_queue=number];</span><br><span class="line">Default: <span class="attribute">thread_pool</span> default threads=<span class="number">32</span> max_queue=<span class="number">65536</span>; </span><br><span class="line">Context: main</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>thread_pool：仅用于做静态资源服务的时候使用</li>
+</ul>
+<h3 id="异步-IO-中的缓存"><a href="#异步-IO-中的缓存" class="headerlink" title="异步 IO 中的缓存"></a>异步 IO 中的缓存</h3><p>将磁盘文件读入缓存中待处理，例如 gzip 模块会使用</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">output_buffers</span> number size;</span><br><span class="line">Default: <span class="attribute">output_buffers</span> <span class="number">2</span> <span class="number">32k</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h2 id="减少磁盘读写次数"><a href="#减少磁盘读写次数" class="headerlink" title="减少磁盘读写次数"></a>减少磁盘读写次数</h2><h3 id="empty-gif-模块"><a href="#empty-gif-模块" class="headerlink" title="empty_gif 模块"></a>empty_gif 模块</h3><ul>
+<li>模块：<code>ngx_http_empty_gif_module</code> 模块，通过 <code>--without-http_empty_gif_module</code> 禁用模块</li>
+<li>功能：从前端页面做用户行为分析时，由于跨域等要求，前端打点上报数据一般是 GET 请求，且考虑到浏览器解析 DOM 树的性能消耗，所以请求透明图片消耗最小，而 1*1 的 gif 图片体积最小（仅 43 字节），故通常请求 gif 图片，并在请求中把用户行为信息上报服务器</li>
+<li>Nginx 可以在 access 日志中获取到请求参数，进而统计用户行为，但若在磁盘中读取 1*1 的文件则有磁盘 IO 消耗，empty_gif 模块将图片放在内存中，加快了处理速度</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: empty_gif;</span><br><span class="line">Default: —</span><br><span class="line">Context: location</span><br></pre></td></tr></table></figure>
+
+<h3 id="access-日志的压缩"><a href="#access-日志的压缩" class="headerlink" title="access 日志的压缩"></a>access 日志的压缩</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">access_log</span> path [format [buffer=size] [gzip[=level]] [flush=time] [if=condition]];</span><br><span class="line">Default: <span class="attribute">access_log</span> logs/access.log combined; </span><br><span class="line">Context: http, server, location, <span class="attribute">if</span> in location, limit_except</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>buffer 默认 64 KB</li>
+<li>gzip 默认级别为 1</li>
+<li>通过 zcat 解压查看</li>
+</ul>
+<h3 id="error-log-日志输出内存"><a href="#error-log-日志输出内存" class="headerlink" title="error.log 日志输出内存"></a>error.log 日志输出内存</h3><ul>
+<li>场景：在开发环境下定位问题时，若需要打开 debug 级别日志，但对 debug 级别大量日志引发的性能问题不能容忍，可以将日志输出到内存中</li>
+<li>配置语法：<code>error_log memory:32m debug;</code></li>
+<li>查看内存中日志的方法：<ul>
+<li>gdb -p [worker 进程 id] -ex “source nginx.gdb” –batch</li>
+<li>nginx.gdb 脚本内容</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">set</span> $log = ngx_cycle-&gt;log </span><br><span class="line">while $log-&gt;writer != ngx_log_memory_writer </span><br><span class="line">set $log = $log-&gt;next </span><br><span class="line">end </span><br><span class="line">set $buf = (ngx_log_memory_buf_t *) $log-&gt;wdata </span><br><span class="line">dump binary memory debug_log.txt $buf-&gt;start $buf-&gt;end</span><br></pre></td></tr></table></figure>
+
+<h3 id="syslog-协议"><a href="#syslog-协议" class="headerlink" title="syslog 协议"></a>syslog 协议</h3><p>可以把针对磁盘 IO 的写操作通过网络写入到其他机器上面去。</p>
+<p>网络协议：通过网络传输到 syslog 服务器</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627220326"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627221225"></p>
+<ul>
+<li><p>server：定义 syslog 服务器地址</p>
+</li>
+<li><p>facility</p>
+<ul>
+<li>参见RFC3164，取值：kern, user, mail, daemon, auth, intern, lpr, news,uucp, clock, authpriv, ftp, ntp, audit, alert, cron, local0..local7</li>
+</ul>
+</li>
+<li><p>默认是 locaI7</p>
+</li>
+<li><p>severity：定义 access.log 日志的级别，默认 info 级别</p>
+</li>
+<li><p>tag：定义日志的 tag，默认为 nginx</p>
+</li>
+<li><p>nohostname：不向 syslog 中写入主机名 hostname</p>
+</li>
+</ul>
+<p>rsyslog 与 Nginx：使用 rsyslog 来搭建一个验证服务</p>
+<h2 id="sendfile-零拷贝提升性能"><a href="#sendfile-零拷贝提升性能" class="headerlink" title="sendfile 零拷贝提升性能"></a>sendfile 零拷贝提升性能</h2><ul>
+<li>减少进程间切换</li>
+<li>减少内存拷贝次数</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627222418"></p>
+<p>正常情况下，需要从内核缓冲区拷贝到应用程序缓冲区，而 sendfile 零拷贝技术就是不需要从内核拷贝到应用程序缓冲区而是直接从页缓存发送到 socket 缓冲区。</p>
+<p>但是有一个问题，那就是如果开启了 sendfile，然后又需要做 gzip 压缩的时候，是必须读取到磁盘上的，这时候就产生了一个 gzip_static 模块。</p>
+<h2 id="gzip-static-模块"><a href="#gzip-static-模块" class="headerlink" title="gzip_static 模块"></a>gzip_static 模块</h2><p>这个模块会把静态文件在原有目录下做一下压缩，文件必须是以 .gz 结尾的，这样在 root 或者 alias 指令后面配置，会先检测是否有 gzip 文件，如果有就直接返回给客户端。</p>
+<ul>
+<li>模块：<code>ngx_http_gzip_static_module</code>，通过 <code>--with-http_gzip_static_module</code> 启用模块</li>
+<li>功能：检测到通明 .gz 文件时，response 中以 gzip 相关 header 返回 .gz 文件的内容</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">gzip_static</span> <span class="literal">on</span> | <span class="literal">off</span> | always;</span><br><span class="line">Default: <span class="attribute">gzip_static</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>on 表示检测客户端是否支持 gzip</li>
+<li>always 表示无论客户端是否支持都返回</li>
+</ul>
+<h2 id="gunzip-模块"><a href="#gunzip-模块" class="headerlink" title="gunzip 模块"></a>gunzip 模块</h2><ul>
+<li>模块：<code>ngx_http_gunzip_module</code>，通过 <code>--with-http_gunzip_module</code> 启用模块</li>
+<li>功能：当客户端不支持 gzip 时，且磁盘上仅有压缩文件，则实时解压缩并将其发送给客户端</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Syntax: <span class="attribute">gunzip</span> <span class="literal">on</span> | <span class="literal">off</span>;</span><br><span class="line">Default: <span class="attribute">gunzip</span> <span class="literal">off</span>; </span><br><span class="line">Context: http, server, <span class="attribute">location</span></span><br><span class="line"></span><br><span class="line">Syntax: gunzip_buffers number size;</span><br><span class="line">Default: <span class="attribute">gunzip_buffers</span> <span class="number">32</span> <span class="number">4k</span>|<span class="number">16</span> <span class="number">8k</span>; </span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure>
+
+<h2 id="tcmalloc"><a href="#tcmalloc" class="headerlink" title="tcmalloc"></a>tcmalloc</h2><ul>
+<li>更快的内存分配器<ul>
+<li>并发能力强于 glibc：并发线程数越多，性能越好</li>
+</ul>
+</li>
+<li>减少内存碎片</li>
+<li>擅长管理小块内存</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="http://goog-perftools.sourceforge.net/doc/tcmalloc.html">http://goog-perftools.sourceforge.net/doc/tcmalloc.html</a></p>
+<h3 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h3><ul>
+<li><p>编译 google perf tools，得到 tcmalloc 库： </p>
+<p><a target="_blank" rel="noopener" href="https://github.com/gperftools/gperftools/releases">https://github.com/gperftools/gperftools/releases</a></p>
+</li>
+<li><p>编译 Nginx 时，加入编译选项</p>
+<ul>
+<li>C 语言生成可执行文件的两个步骤</li>
+<li>通过 configure 设定编译的额外参数：<code>--with-cc-opt=OPTIONS set additional C compiler options</code></li>
+<li>通过 configure 设定链接的额外参数：<code>--with-ld-opt=OPTIONS set additional linker options</code></li>
+<li><code>--with-ld-opt=-ltcmalloc</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="使用-gperftools-定位-Nginx-性能问题"><a href="#使用-gperftools-定位-Nginx-性能问题" class="headerlink" title="使用 gperftools 定位 Nginx 性能问题"></a>使用 gperftools 定位 Nginx 性能问题</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627230040" alt="image-20200627230039846"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627230125"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627230138"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20200627230154"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/29/27-nginx/" rel="prev" title="应用层协议的优化">
+      <i class="fa fa-chevron-left"></i> 应用层协议的优化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/01/24/beijing-to-shenzhen/" rel="next" title="写给想要从北京到深圳的你">
+      写给想要从北京到深圳的你 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98-IO-%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-text">磁盘 IO 的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E7%A3%81%E7%9B%98-IO"><span class="nav-text">减少磁盘 IO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5-IO-%E7%BB%95%E5%BC%80%E7%A3%81%E7%9B%98%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98"><span class="nav-text">直接 IO 绕开磁盘高速缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5-IO%EF%BC%8C%E9%80%82%E7%94%A8%E4%BA%8E%E5%A4%A7%E6%96%87%E4%BB%B6"><span class="nav-text">直接 IO，适用于大文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5-IO"><span class="nav-text">异步 IO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E8%AF%BB-IO-%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="nav-text">异步读 IO 线程池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5-IO-%E4%B8%AD%E7%9A%84%E7%BC%93%E5%AD%98"><span class="nav-text">异步 IO 中的缓存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E7%A3%81%E7%9B%98%E8%AF%BB%E5%86%99%E6%AC%A1%E6%95%B0"><span class="nav-text">减少磁盘读写次数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#empty-gif-%E6%A8%A1%E5%9D%97"><span class="nav-text">empty_gif 模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#access-%E6%97%A5%E5%BF%97%E7%9A%84%E5%8E%8B%E7%BC%A9"><span class="nav-text">access 日志的压缩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#error-log-%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA%E5%86%85%E5%AD%98"><span class="nav-text">error.log 日志输出内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#syslog-%E5%8D%8F%E8%AE%AE"><span class="nav-text">syslog 协议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sendfile-%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8F%90%E5%8D%87%E6%80%A7%E8%83%BD"><span class="nav-text">sendfile 零拷贝提升性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gzip-static-%E6%A8%A1%E5%9D%97"><span class="nav-text">gzip_static 模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gunzip-%E6%A8%A1%E5%9D%97"><span class="nav-text">gunzip 模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcmalloc"><span class="nav-text">tcmalloc</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-text">使用方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-gperftools-%E5%AE%9A%E4%BD%8D-Nginx-%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="nav-text">使用 gperftools 定位 Nginx 性能问题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

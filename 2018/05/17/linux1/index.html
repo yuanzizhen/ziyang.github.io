@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Linux 文件属性代表123456[root@localhost ~]# lltotal 171164-rw-------. 1 root root      1261 Apr 27 06:50 anaconda-ks.cfg-rw-r--r--. 1 root root      3624 Apr 28 21:50 install.txt-rw-r--r--. 1 root root 1752">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 基础知识">
+<meta property="og:url" content="http://iziyang.github.io/2018/05/17/linux1/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="Linux 文件属性代表123456[root@localhost ~]# lltotal 171164-rw-------. 1 root root      1261 Apr 27 06:50 anaconda-ks.cfg-rw-r--r--. 1 root root      3624 Apr 28 21:50 install.txt-rw-r--r--. 1 root root 1752">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-17T01:42:35.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.813Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://iziyang.github.io/2018/05/17/linux1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Linux 基础知识 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/05/17/linux1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 基础知识
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-17 09:42:35" itemprop="dateCreated datePublished" datetime="2018-05-17T09:42:35+08:00">2018-05-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/05/17/linux1/" class="post-meta-item leancloud_visitors" data-flag-title="Linux 基础知识" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/05/17/linux1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/05/17/linux1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Linux-文件属性代表"><a href="#Linux-文件属性代表" class="headerlink" title="Linux 文件属性代表"></a>Linux 文件属性代表</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# ll</span><br><span class="line">total 171164</span><br><span class="line">-rw-------. 1 root root      1261 Apr 27 06:50 anaconda-ks.cfg</span><br><span class="line">-rw-r--r--. 1 root root      3624 Apr 28 21:50 install.txt</span><br><span class="line">-rw-r--r--. 1 root root 175262413 Apr  3 14:05 jdk-8u171-linux-x64.rpm</span><br><span class="line">drwxr-xr-x. 3 root root       132 May 13 21:47 script</span><br></pre></td></tr></table></figure>
+
+
+
+<p>-：代表普通文件</p>
+<p>d：代表目录</p>
+<p>l：代表链接文件</p>
+<p>b：代表块设备文件</p>
+<p>c：代表字符设备，如鼠标等</p>
+<h2 id="Linux-命令"><a href="#Linux-命令" class="headerlink" title="Linux 命令"></a>Linux 命令</h2><h3 id="开关机"><a href="#开关机" class="headerlink" title="开关机"></a>开关机</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">shutdown -r now # 重启</span><br><span class="line">init 0 # 关机</span><br><span class="line">init 3 # 纯命令行</span><br><span class="line">init 5 # 含有图形界面</span><br><span class="line">init 6 # 重启</span><br></pre></td></tr></table></figure>
+
+<h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chgrp # 改变文件所属用户组</span><br><span class="line">chown # 改变文件所有者 可以用:或.分割所有者与用户组来进行改变，如 root:root</span><br><span class="line">chmod # 改变文件权限 -R 递归改变</span><br></pre></td></tr></table></figure>
+
+<h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pwd -P # 列出链接文件的完整文件名</span><br><span class="line">mkdir</span><br><span class="line">    -p # 多级创建目录</span><br><span class="line">    -m # 给新建目录添加权限 mkdir -m 777 test</span><br><span class="line">cp -s -l -a # 软链接，硬链接，所有属性</span><br><span class="line">ls -l --time= # atime：权限或属性改变的时间</span><br><span class="line">              # ctime：读取文件内容的时间</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看文件"><a href="#查看文件" class="headerlink" title="查看文件"></a>查看文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">cat</span><br><span class="line">    -n # 打印出行号</span><br><span class="line">tac # 从最后一行开始显示</span><br><span class="line">nl # 输出行号</span><br><span class="line">more # 一页一页的显示</span><br><span class="line"><span class="meta">	 #</span><span class="bash"> 空格键：向下翻一页</span></span><br><span class="line"><span class="meta">	 #</span><span class="bash"> enter：向下滚动一行</span></span><br><span class="line"><span class="meta">	 #</span><span class="bash"> /：向下查询</span></span><br><span class="line"><span class="meta">	 #</span><span class="bash"> :f：立刻显示出文件名以及目前显示的行数</span></span><br><span class="line"><span class="meta">	 #</span><span class="bash"> b：往前翻页，对管道不行</span></span><br><span class="line">less # 与 more 类似，但是可以向前翻页</span><br><span class="line"><span class="meta">	 #</span><span class="bash"> 可以向前/或者向后?查询字符串</span></span><br><span class="line">head # 显示头几行</span><br><span class="line">tail # 显示后几行</span><br><span class="line"><span class="meta">	 #</span><span class="bash"> 这两个都是默认显示 10 行，-n 参数指定行数</span></span><br><span class="line">od # 以二进制方式读取</span><br><span class="line">    -t # 后面可以指定文件类型。a：默认字符；c：ascii字符；d：十进制</span><br><span class="line">touch [-acdmt] # 可以修改文件时间</span><br></pre></td></tr></table></figure>
+
+<h3 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">umask # 默认权限管理，文件最大权限666，目录777</span><br><span class="line">chattr +i +a # 设置默认属性。i：设置文件无法被改动／删除／设置链接等；a：只能增加数据，不能删除修改数据</span><br><span class="line">lsattr # -a：列出隐藏属性</span><br><span class="line">SUID # 使得用户暂时获得执行者权限，4</span><br><span class="line">SGID # 使得用户暂时获得用户组权限，2</span><br><span class="line">SBIT # 其他人无法修改别人创建的文件，只能修改自己的文件，1</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file # 可以查看文件类型</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件查找"><a href="#文件查找" class="headerlink" title="文件查找"></a>文件查找</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">which # 查找命令</span><br><span class="line">whereis # 查找文件</span><br><span class="line">locate # 可以按照部分文件名查找文件</span><br><span class="line">    updatedb # 更新数据库</span><br></pre></td></tr></table></figure>
+
+<h3 id="解压缩命令"><a href="#解压缩命令" class="headerlink" title="解压缩命令"></a>解压缩命令</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tar -zcvf filename.tar.gz 要压缩的文档</span><br><span class="line">tar -zxvf filename.tar.gz -C 目录</span><br><span class="line"></span><br><span class="line">    -z 表示.gz</span><br><span class="line">    -j 表示.bz2</span><br><span class="line">    -c|x 表示压缩/解压</span><br><span class="line">    -v 表示显示文件名</span><br><span class="line">    -f 表示指定文件名</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">type # 可以显示命令类型，属于系统自带还是外部</span><br><span class="line">unset 变量名 # 取消变量设置</span><br><span class="line">单引号会让引号内的内容失去转义，而双引号则不会。</span><br><span class="line">引号内如果需要执行命令，则可以采用 $(命令)的形式，或者采用反单引号</span><br><span class="line">locale -a # 可以显示当前系统支持的语系</span><br><span class="line">read variable # 读取输入内容</span><br><span class="line">declare # 声明变量类型</span><br><span class="line">    -a：# 定义为数组</span><br><span class="line">    -i：# 定义成为整数数字</span><br><span class="line">    -x：# 将变量变成环境变量</span><br><span class="line">    -r: # 将变量设置成为 readonly</span><br><span class="line"><span class="meta">	</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 代表删除最短变量</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 代表删除最长变量</span></span></span><br><span class="line">这两个是从前向后删除</span><br><span class="line"><span class="meta">%</span><span class="bash"> %% <span class="comment"># 从后向前</span></span></span><br><span class="line">/ // # 替换字符串</span><br><span class="line">变量测试与内容替换</span><br><span class="line">- 与 = ？</span><br><span class="line">历史命令</span><br><span class="line">!number # 执行第几条命令</span><br><span class="line">!command # 执行上一个以 command 开头的命令</span><br><span class="line">/etc/issue /etc/motd # 可以设置欢迎信息与提示信息</span><br><span class="line">ctrl + c # 终止命令</span><br><span class="line">ctrl + z # 暂停命令</span><br></pre></td></tr></table></figure>
+
+<h4 id="输出重定向"><a href="#输出重定向" class="headerlink" title="输出重定向"></a>输出重定向</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">1&gt;</span><span class="bash"></span></span><br><span class="line"><span class="bash">2&gt;</span></span><br><span class="line">将错误信息与正确信息分别输入到不同的文件中去</span><br><span class="line">find /home -name .bashrc &gt; list_right 2&gt; list_error</span><br><span class="line">将正确与错误信息统统写入同一个文件</span><br><span class="line">find /home -name .bashrc &gt; list 2&gt;&amp;1</span><br><span class="line">tee # 双向重定向</span><br><span class="line">    -a 表示累加</span><br></pre></td></tr></table></figure>
+
+<h4 id="命令的一次执行"><a href="#命令的一次执行" class="headerlink" title="命令的一次执行"></a>命令的一次执行</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">; # 表示下一个命令与上一个命令没有关系</span><br><span class="line">&amp;&amp; # 表示上一个命令执行正确之后才会执行下一个命令（与）</span><br><span class="line">|| # 表示上一个命令执行错误才执行下一个命令（或）</span><br></pre></td></tr></table></figure>
+
+<h3 id="选取命令"><a href="#选取命令" class="headerlink" title="选取命令"></a>选取命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cut -d &#x27;分隔符&#x27; -f 分隔后的区域块</span><br><span class="line">cut -c 字符范围 # 用于排列整齐的信息</span><br><span class="line">last # 可以显示登录者信息</span><br></pre></td></tr></table></figure>
+
+<h3 id="排序命令"><a href="#排序命令" class="headerlink" title="排序命令"></a>排序命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sort # 排序</span><br><span class="line">    -n # 使用纯数字排序</span><br><span class="line">    -t # 分隔符</span><br><span class="line">    -k # 区间 </span><br><span class="line">uniq # 将重复数据只显示一次</span><br><span class="line">    -c # 计数</span><br><span class="line">wc -l -w -m # 行数／字数／字符数</span><br></pre></td></tr></table></figure>
+
+<h3 id="字符转换命令"><a href="#字符转换命令" class="headerlink" title="字符转换命令"></a>字符转换命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">tr str1 str2 # 将 1 替换为 2 </span><br><span class="line">    -d # 删除字符串</span><br><span class="line">    -s # 替换掉重复的字符串</span><br><span class="line">col # 字符转换命令</span><br><span class="line">    -x # 将 tab 键转换成对等的空格键</span><br><span class="line">join # 将有相同字段的连接为一行</span><br><span class="line">    -t # 默认以空格符分隔，并且对比第一个字段的内容</span><br><span class="line">paste # 直接将两行贴在一起</span><br><span class="line">expand # 将tab转换为空格 -t 接数字，表示空格键个数</span><br><span class="line">split # 切割命令</span><br><span class="line">    -b # 按照文件大小切割</span><br><span class="line">    -t # 按照行数切割</span><br><span class="line">xargs # 参数代换，可以将标准输出作为某一个命令的参数</span><br><span class="line">- # 表示标准输入或输出</span><br><span class="line">sed -n # 安静模式</span><br><span class="line">    a # 新增</span><br><span class="line">    c # 替换</span><br><span class="line">    d # 删除</span><br><span class="line">    i # 插入</span><br><span class="line">    p # 打印</span><br><span class="line">    s # 替换</span><br><span class="line">sed &#x27;s/str1/new_str/g&#x27;</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试及判断命令"><a href="#测试及判断命令" class="headerlink" title="测试及判断命令"></a>测试及判断命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">test</span><br><span class="line">    -e # 该文件名是否存在</span><br><span class="line">    -f # 该文件名是否存在且是否为文件</span><br><span class="line">    -d # 目录</span><br><span class="line">    -rwx # 文件权限</span><br><span class="line">    还可以测试文件之间的比较，整数之间的判定，判定字符串的数据等</span><br><span class="line">    -ne # 两数值不等</span><br><span class="line">    -eq # 两数值相等</span><br><span class="line">    -gt # 大于</span><br><span class="line">    -lt # 小于</span><br><span class="line">    -ge #</span><br><span class="line">    -le #</span><br><span class="line">    -n # 判断字符串是否为非空</span><br><span class="line">    -z # 判断字符串是否为空</span><br><span class="line">    -a # 与</span><br><span class="line">    -o # 或</span><br><span class="line">    ! # 非</span><br></pre></td></tr></table></figure>
+
+<h3 id="shell-参数"><a href="#shell-参数" class="headerlink" title="shell 参数"></a>shell 参数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">0 <span class="comment"># 脚本名字</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash">&#123;1..n&#125; <span class="comment"># 第几个参数</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"><span class="comment"># # 参数个数</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash">@ <span class="comment"># 代表&quot;$1&quot;/&quot;$2&quot;...</span></span></span><br><span class="line">shift # 变量的偏移，后面可以接数字，也即删除掉前面的几个参数</span><br></pre></td></tr></table></figure>
+
+<h3 id="条件判断"><a href="#条件判断" class="headerlink" title="条件判断"></a>条件判断</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">if [];then</span><br><span class="line">...</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [];then</span><br><span class="line">...</span><br><span class="line">elif [];then</span><br><span class="line">...</span><br><span class="line">else</span><br><span class="line">...</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">case $variable in</span><br><span class="line">    &quot;name&quot;)</span><br><span class="line">    ...</span><br><span class="line">    ;;</span><br><span class="line">    &quot;&quot;)</span><br><span class="line">    ...</span><br><span class="line">    ;;</span><br><span class="line">    *)</span><br><span class="line">    exit 1</span><br><span class="line">    ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function fname ()</span><br><span class="line">    &#123;...&#125;</span><br><span class="line">    </span><br><span class="line">需要注意，函数中的 $0,$1,$2,与脚本中的参数不同，这个参数指的是函数的形参</span><br></pre></td></tr></table></figure>
+
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">while []</span><br><span class="line">do</span><br><span class="line">    ...</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">until []</span><br><span class="line">do</span><br><span class="line">    ...</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">for var in con1 con2 con3</span><br><span class="line">do</span><br><span class="line">    ...</span><br><span class="line">done</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">$</span><span class="bash">(seq 1 100) <span class="comment"># 1 到 100</span></span></span><br><span class="line"></span><br><span class="line">for ((初始值;限制值;步长))</span><br><span class="line">do</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="语法检查"><a href="#语法检查" class="headerlink" title="语法检查"></a>语法检查</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bash -nvx </span><br><span class="line">    -n # 查询语法问题</span><br><span class="line">    -v # 执行脚本之前，现将内容输出</span><br><span class="line">    -x # 将使用到的脚本内容显示到屏幕上</span><br></pre></td></tr></table></figure>
+
+<h2 id="系统相关"><a href="#系统相关" class="headerlink" title="系统相关"></a>系统相关</h2><h3 id="后台进程"><a href="#后台进程" class="headerlink" title="后台进程"></a>后台进程</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&amp; # 代表把程序放到后台执行</span><br><span class="line">jobs # 可以查看后台程序，默认只显示jobnumber</span><br><span class="line">    -l # 列出 PID 号码</span><br><span class="line">fg %jobnumber # 把程序拿到前台处理</span><br><span class="line">fg - # 把状态为 - 的拿到前台，默认+</span><br><span class="line">bg %jobnumber # 把后台任务状态变为 running</span><br></pre></td></tr></table></figure>
+
+<h3 id="系统资源查看"><a href="#系统资源查看" class="headerlink" title="系统资源查看"></a>系统资源查看</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">free # 查看内存使用情况</span><br><span class="line">uname # 查看系统与内核相关信息</span><br><span class="line">uptime # 查看系统启动时间与工作负载</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询已打开文件或已执行程序打开的文件"><a href="#查询已打开文件或已执行程序打开的文件" class="headerlink" title="查询已打开文件或已执行程序打开的文件"></a>查询已打开文件或已执行程序打开的文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fuser file／dir # </span><br><span class="line">lsof # 显示进程所打开的文件</span><br><span class="line">pidof # 找出某个正在执行的进程的 PID</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/05/11/HTTP-code/" rel="prev" title="HTTP 状态码">
+      <i class="fa fa-chevron-left"></i> HTTP 状态码
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/30/text-command/" rel="next" title="文本处理命令">
+      文本处理命令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux-%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%E4%BB%A3%E8%A1%A8"><span class="nav-text">Linux 文件属性代表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux-%E5%91%BD%E4%BB%A4"><span class="nav-text">Linux 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%85%B3%E6%9C%BA"><span class="nav-text">开关机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%83%E9%99%90"><span class="nav-text">权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-text">目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6"><span class="nav-text">查看文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86"><span class="nav-text">权限管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="nav-text">文件类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%9F%A5%E6%89%BE"><span class="nav-text">文件查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B%E7%BC%A9%E5%91%BD%E4%BB%A4"><span class="nav-text">解压缩命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell"><span class="nav-text">shell</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-text">输出重定向</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E7%9A%84%E4%B8%80%E6%AC%A1%E6%89%A7%E8%A1%8C"><span class="nav-text">命令的一次执行</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E5%8F%96%E5%91%BD%E4%BB%A4"><span class="nav-text">选取命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E5%91%BD%E4%BB%A4"><span class="nav-text">排序命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E8%BD%AC%E6%8D%A2%E5%91%BD%E4%BB%A4"><span class="nav-text">字符转换命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%8F%8A%E5%88%A4%E6%96%AD%E5%91%BD%E4%BB%A4"><span class="nav-text">测试及判断命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell-%E5%8F%82%E6%95%B0"><span class="nav-text">shell 参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="nav-text">条件判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-text">函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF"><span class="nav-text">循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95%E6%A3%80%E6%9F%A5"><span class="nav-text">语法检查</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3"><span class="nav-text">系统相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E8%BF%9B%E7%A8%8B"><span class="nav-text">后台进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%B5%84%E6%BA%90%E6%9F%A5%E7%9C%8B"><span class="nav-text">系统资源查看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E5%B7%B2%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E6%88%96%E5%B7%B2%E6%89%A7%E8%A1%8C%E7%A8%8B%E5%BA%8F%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6"><span class="nav-text">查询已打开文件或已执行程序打开的文件</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

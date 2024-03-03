@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据分析是什么？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据分析">
+<meta property="og:url" content="http://iziyang.github.io/2021/12/20/8-product/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="数据分析是什么？">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095641">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095641">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220092119">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220092251">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220092257">
+<meta property="article:published_time" content="2021-12-20T01:11:13.000Z">
+<meta property="article:modified_time" content="2024-03-03T09:52:47.604Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="产品经理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095641">
+
+<link rel="canonical" href="http://iziyang.github.io/2021/12/20/8-product/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数据分析 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2021/12/20/8-product/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-20 09:11:13" itemprop="dateCreated datePublished" datetime="2021-12-20T09:11:13+08:00">2021-12-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-03 17:52:47" itemprop="dateModified" datetime="2024-03-03T17:52:47+08:00">2024-03-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E8%B0%88/" itemprop="url" rel="index"><span itemprop="name">杂谈</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/12/20/8-product/" class="post-meta-item leancloud_visitors" data-flag-title="数据分析" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/12/20/8-product/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/12/20/8-product/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">数据分析是什么？</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="产品经理与数据分析"><a href="#产品经理与数据分析" class="headerlink" title="产品经理与数据分析"></a>产品经理与数据分析</h1><h2 id="提纲"><a href="#提纲" class="headerlink" title="提纲"></a>提纲</h2><ul>
+<li><p>为什么要数据分析</p>
+</li>
+<li><p>数据分析常⻅⼯具</p>
+</li>
+<li><p>数据分析的执⾏过程</p>
+</li>
+<li><p>数据分析的思路与框架</p>
+</li>
+<li><p>数据分析的对象和常⻅数据指标</p>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095641"></p>
+<ul>
+<li><p>通过对数据进⾏整理加⼯获得信息和知识，从⽽了解产品的⽣存情况、发现潜在机会、引导和⽀撑产品与运营决策、验证策略效果</p>
+</li>
+<li><p>数据是互联⽹产品经理的福⾳，也是改变互联⽹产品经理与传统软件产品经理/消费品产品经理⼯作性质的核⼼元素</p>
+<ul>
+<li>消费品和传统软件产品经理不能掌握所有的数据</li>
+</ul>
+</li>
+<li><p>⽤数据⽽⾮直觉：避免决策视⻆狭窄、避免⽆依据决策</p>
+</li>
+<li><p>⽴场和视⻆之争永⽆⽌境，数据加逻辑聊天⼀招毙命</p>
+</li>
+</ul>
+<h2 id="⼏个与数据分析有关的故事"><a href="#⼏个与数据分析有关的故事" class="headerlink" title="⼏个与数据分析有关的故事"></a>⼏个与数据分析有关的故事</h2><ul>
+<li><p>“半⼩时之内撤下对⽤户转化率有影响的特性”</p>
+<ul>
+<li>和无码同一个资方的一家公司 CEO 的故事：神策工具</li>
+</ul>
+</li>
+<li><p>“我喜欢 A，我喜欢 B，我喜欢 C……”</p>
+<ul>
+<li>方案 C，<img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095641"></li>
+</ul>
+</li>
+<li><p>Google 的 41 种蓝⾊和 $200M</p>
+</li>
+<li><p>“按钮颜⾊也能带来区别？”</p>
+<ul>
+<li><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></li>
+</ul>
+</li>
+</ul>
+<p>数据分析、AB测试的重要性。</p>
+<h2 id="数据分析的常⻅⼯具"><a href="#数据分析的常⻅⼯具" class="headerlink" title="数据分析的常⻅⼯具"></a>数据分析的常⻅⼯具</h2><ul>
+<li><p><strong>GoogleAnalytics</strong> / MixPanel / Growing IO / Sensors Data / 友盟</p>
+<ul>
+<li>二爷入门就是从 GoogleAnalytics 入门的，还有文档，带有强烈的数据分析的方法论和价值观的东西</li>
+</ul>
+</li>
+<li><p>⼩程序：⼩程序数据助⼿ / 阿拉丁</p>
+<ul>
+<li>小程序日志打到 Googleanalytics</li>
+</ul>
+</li>
+<li><p>Tableau / Excel / Python / Google Sheets / SQL</p>
+</li>
+<li><p>R / MatLab ……</p>
+</li>
+</ul>
+<p>⼏个关键词：Excel 公式、透视表、VBA、Google Script、Python Excel</p>
+<h2 id="数据分析的执⾏过程"><a href="#数据分析的执⾏过程" class="headerlink" title="数据分析的执⾏过程"></a>数据分析的执⾏过程</h2><ol>
+<li>数据规划（设定⽬标）</li>
+<li>数据埋点/记录（技术⽀持与实现）</li>
+<li>数据收集与整理（原始数据 → 结构化数据）</li>
+<li><strong>数据统计与分析（从数据 → 信息/知识）</strong></li>
+<li><strong>结论或⾏动（信息 → 决策/⾏动）</strong></li>
+</ol>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></p>
+<ul>
+<li><p>虚荣指标</p>
+<ul>
+<li>和产品没啥关系，很宏大的指标，PV/UV/DAU</li>
+</ul>
+</li>
+<li><p>利益相关者</p>
+<ul>
+<li>从用户角度做价值判断</li>
+<li>对于抽奖助手来说，抽奖发起数量是一个很关键的指标</li>
+</ul>
+</li>
+<li><p>提前发现问题</p>
+<ul>
+<li>能够提前发现问题的指标，也可以作为关键指标</li>
+<li>滞后指标：例如收入，收入是很滞后的</li>
+</ul>
+</li>
+</ul>
+<p>设定策略水位数值</p>
+<ul>
+<li>双十一在最后几个小时会有一个大额红包，这都是为了冲击GMV而算出来的一个数值</li>
+</ul>
+<h2 id="数据埋点"><a href="#数据埋点" class="headerlink" title="数据埋点"></a>数据埋点</h2><ul>
+<li><p>⼀般说到数据埋点，都指的是⾏为数据的收集</p>
+</li>
+<li><p>本质上是⼀个带了各种各样线索的请求记录，是⽆状态的</p>
+</li>
+<li><p>数据埋点需求，与其描述埋点的⽅案，不如告诉 BI 或⼯程师你想⼲什么</p>
+</li>
+<li><p>⼤部分的数据埋点需求基于事件（⻚⾯访问也算事件），列出想要的时间列表和分类即可</p>
+</li>
+<li><p>很难⼀次就打全打对，从⼩事开始打，⽐如⼀个按钮，然后逐渐研究更⼤的故事</p>
+</li>
+</ul>
+<p>* 若公司存在完善的打点和数据收集流程与规范，以上都不算</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></p>
+<h2 id="数据收集与整理"><a href="#数据收集与整理" class="headerlink" title="数据收集与整理"></a>数据收集与整理</h2><ul>
+<li><p>将原始的异构数据，整理为可以进⾏筛选/统计/处理的结构化数据</p>
+</li>
+<li><p>这⾥的⼤部分⼯作都是数据⼯程师/数据⼯具完成的，这⼀步产品经理介⼊不多</p>
+</li>
+<li><p>然⽽……</p>
+</li>
+</ul>
+<p>BTW. 怎么收集竞争对⼿的数据？ 怎么收集⾏业数据？</p>
+<h2 id="数据统计与分析"><a href="#数据统计与分析" class="headerlink" title="数据统计与分析"></a>数据统计与分析</h2><ul>
+<li><p>指标 和 维度</p>
+<ul>
+<li>指标：某⼀件事情的度量数值，⽐如⽤户量、访问量、访问时⻓、转化率等，通常与具体业务的中间⽬标或最终⽬标直接相关</li>
+<li>维度：对指标进⾏不同细分的⽅式，⽐如⽤户量可以分为新⽤户⽼⽤户、安卓⽤户 iOS ⽤户、付费⽤户免费⽤户等，不同的细分⽅式，代表了不同的分析⻆度</li>
+</ul>
+</li>
+</ul>
+<h2 id="结论或⾏动"><a href="#结论或⾏动" class="headerlink" title="结论或⾏动"></a>结论或⾏动</h2><ul>
+<li><p>数据分析要指向⼀个⽬标，信息/知识/决策/原则</p>
+</li>
+<li><p>「⽬标」是数据分析的起点，也是终点</p>
+</li>
+<li><p>对外：数据报告、数据洞察、业务策略结论</p>
+</li>
+<li><p>对内：⾏业认知、做事的经验和原则</p>
+<ul>
+<li>满减是最好用的</li>
+<li>晚上 8 点钟发文的流量高</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据分析的思路和框架"><a href="#数据分析的思路和框架" class="headerlink" title="数据分析的思路和框架"></a>数据分析的思路和框架</h2><ul>
+<li><p>偏向以⽤户、⾏为为核⼼：⽤户是谁、从哪⾥来、到哪⾥去</p>
+</li>
+<li><p>偏向流量：流量成本、变现效率、可持续性</p>
+</li>
+<li><p>偏向卖货：流量、转化、⽑利</p>
+</li>
+<li><p>偏向 SaaS：客户分类、留存与激活、收⼊规模与效率</p>
+</li>
+<li><p>平台型产品：各⻆⾊利益博弈、货币化率</p>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></p>
+<ul>
+<li><p>用户产品：工具、新闻站点、游戏</p>
+<ul>
+<li><p>关注用户的行为，也就是用户数据</p>
+</li>
+<li><p>最重要的就是用户在整体的框架里面做了哪些动作，如何收获我们希望创造的价值</p>
+</li>
+<li><p>例子：readhub，分析用户如何浏览新闻，怎么打开新闻，有没有浏览信源，如何追寻来龙去脉，有没有订阅公司订阅关键词</p>
+</li>
+</ul>
+</li>
+<li><p>流量型产品：抽奖助手既是流量型也是平台型</p>
+<ul>
+<li>利用流量变现来赚钱，流量结构怎么样，如何获客的</li>
+</ul>
+</li>
+<li><p>社区产品：内容生产者和消费者的供求关系，分发效率</p>
+</li>
+<li><p>平台产品：双边市场有人买卖，都会去读经济学，基尼系数，判断贫富差距的系数</p>
+<ul>
+<li>货币化率：这个平台上所有的交易，平台有多少营收</li>
+<li>拼多多的货币化率很低，京东极高</li>
+</ul>
+</li>
+<li><p>SaaS：软件即服务</p>
+<ul>
+<li>留存与激活</li>
+<li>收入规模与效率</li>
+</ul>
+</li>
+<li><p>卖货：流量、转化、毛利，电商类产品的模型</p>
+</li>
+<li><p>TO B 产品</p>
+<ul>
+<li><p>业务利益：业务诉求和产生的利益</p>
+</li>
+<li><p>用户行为是怎么样的</p>
+</li>
+<li><p>流程成本：企业都是要提高信息化效率的，所以一定要关注成本</p>
+</li>
+<li><p>客户满意度：核心关键人员打分，取平均</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>没有任何一个用户产品是干干净净的用户产品。</p>
+<p>每一个框架都是一个角度，都不可能用一个框架来分析。</p>
+<h2 id="数据分析对象"><a href="#数据分析对象" class="headerlink" title="数据分析对象"></a>数据分析对象</h2><ul>
+<li><p>⽤户属性数据：⼀组画像</p>
+<ul>
+<li><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></li>
+</ul>
+</li>
+<li><p>⽤户⾏为数据：⼀张地图</p>
+<ul>
+<li><p>用户从哪来到哪去，看了什么页面，下了什么订单</p>
+</li>
+<li><p>方法：漏斗或者一张地图</p>
+</li>
+<li><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></p>
+</li>
+<li><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></p>
+</li>
+</ul>
+</li>
+<li><p>业务数据：⼀堆图表</p>
+<ul>
+<li>来自实际数据库里面的数据</li>
+<li><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></li>
+</ul>
+</li>
+<li><p>财务数据：钱</p>
+<ul>
+<li>营收成本利润、开销方式</li>
+</ul>
+</li>
+<li><p>⾏业数据：⼏个数字</p>
+<ul>
+<li>大的数字</li>
+</ul>
+</li>
+<li><p>宏观数据</p>
+<ul>
+<li>大的数字</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据分析常⻅指标与释义"><a href="#数据分析常⻅指标与释义" class="headerlink" title="数据分析常⻅指标与释义"></a>数据分析常⻅指标与释义</h2><ul>
+<li><p>⽤户属性数据 - 技术参数、地理位置、年龄、性别、地区……</p>
+<ul>
+<li>技术参数：浏览器版本、系统版本等</li>
+</ul>
+</li>
+<li><p>⽤户⾏为数据 - PV、UV、（PV/UV）、VV、UPV、DAU、MAU、（DAU / MAU）、WAU、AAC、MAC、WAC、CTR、留存、来源、访问时⻓……</p>
+<ul>
+<li><p>PV：页面访问量</p>
+</li>
+<li><p>UV：独立访问者，也就是访问用户，UV 计算需要考虑统计的时间范围，比如日 UV 还是周 UV</p>
+<ul>
+<li>通过 cookie 来计算，但是是机器的维度</li>
+</ul>
+</li>
+<li><p>PV/UV：访问深度，当然希望深度越深越好</p>
+</li>
+<li><p>VV：video view，视频播放量</p>
+</li>
+<li><p>UPV：uniq page view，每个页面访问的去重数目</p>
+</li>
+<li><p>DAU：日活跃用户，daily active user</p>
+<ul>
+<li>怎么才叫活跃，只要打开 app 就叫活跃、只有停留多长时间的才叫 A，或者用了某些模块才叫 A</li>
+<li>IMEI，来根据手机设备来算</li>
+</ul>
+</li>
+<li><p>MAU、WAU：月活 周活</p>
+</li>
+<li><p>月DAU之和/MAU：数字越大，表示粘性越大，产品吸引力越大，范围 1-30</p>
+<ul>
+<li>高频产品小于 10 可能会有问题</li>
+</ul>
+</li>
+<li><p>AAC/MAC：anual active consumer，年度活跃买家，MAC 月度活跃买家</p>
+<ul>
+<li>外部用 AAC 讲故事，内部用 MAC，AAC 能够用运营手段快速撬动</li>
+<li>AAC、MAC 这两个很可能是不同团队的 KPI</li>
+</ul>
+</li>
+<li><p>CTR：点击率</p>
+</li>
+<li><p>留存：次日留存，周留存、月留存、三月留存，新增留存，活跃留存</p>
+</li>
+<li><p>来源：朋友圈、看一看</p>
+</li>
+<li><p>访问时长</p>
+</li>
+</ul>
+</li>
+<li><p>业务数据 - （跟你相关）如：课程数量、训练营数量、订单数、发帖量、包裹数……</p>
+</li>
+<li><p>财务数据 - GMV、ARPU、LTV、客单价、复购率、转化率、Take Rate……</p>
+<ul>
+<li><p>GMV：商品交易总额，代表了时长的繁荣程度，GMV 究竟包括什么？未支付订单？退款、拒收订单等等</p>
+</li>
+<li><p>ARPU：单用户平均收入，ARPDU，单用户日平均收入</p>
+</li>
+<li><p>流量型产品，小程序一个 DAU，几分钱，APP 端可能是几毛钱</p>
+</li>
+<li><p>LTV：life time value，生命周期总价值，一个用户总共可以赚多少钱</p>
+</li>
+<li><p>Take Rate：货币化率，代表了产品的变现强悍程度</p>
+</li>
+</ul>
+</li>
+<li><p>⾏业数据 - TAM、CAC、TAC……</p>
+<ul>
+<li><p>TAM：市场天花板</p>
+</li>
+<li><p>CAC：客户获取成本</p>
+</li>
+<li><p>TAC：流量获取指标</p>
+</li>
+</ul>
+</li>
+<li><p>宏观数据 - ⾏业市场规模、GDP 占⽐</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>最重要的是，有你⾃⼰的指标定义，⽽不是⼀个业界通⾏的「虚荣指标」</p>
+</li>
+<li><p>所有的指标应该在脑海中组成⼀张「数据⼤图」，知道它们之间的关系</p>
+</li>
+<li><p>让数据成为⾃⼰的语⾔，⽤数据重构直觉，⽽不是⽤情绪和好恶来构建直觉</p>
+</li>
+</ul>
+</blockquote>
+<h1 id="用户数据"><a href="#用户数据" class="headerlink" title="用户数据"></a>用户数据</h1><h2 id="提纲-1"><a href="#提纲-1" class="headerlink" title="提纲"></a>提纲</h2><ul>
+<li><p>⽤户属性</p>
+</li>
+<li><p>⽤户⾏为数据</p>
+</li>
+<li><p>⽤户分类与⽤户标签</p>
+</li>
+<li><p>案例的分析思路</p>
+</li>
+</ul>
+<h2 id="⽤户属性-·-⽤户是谁"><a href="#⽤户属性-·-⽤户是谁" class="headerlink" title="⽤户属性 · ⽤户是谁"></a>⽤户属性 · ⽤户是谁</h2><ul>
+<li><p>通⽤：年龄、性别、地区、终端、分辨率、⽹络条件……</p>
+</li>
+<li><p>业务：社交、来源、职业、家庭关系、学历、ID……</p>
+</li>
+<li><p>来⾃数据⼯具/⽤户调研/业务数据表</p>
+</li>
+<li><p>快速辅助决策</p>
+</li>
+<li><p>应指向⽤户画像</p>
+</li>
+<li><p>形成对⽤户好恶的感性直觉理解</p>
+</li>
+</ul>
+<blockquote>
+<p>对用户理解越深，那么对用户属性标签理解就会越深越具体</p>
+<p>最重要的目的就是快速辅助我们做决策</p>
+<p>不要从硬性的标签来理解用户，要从感性直觉角度来来理解用户——龙哥不喜欢打标签</p>
+</blockquote>
+<h2 id="⽤户⾏为-·-⽤户从哪⾥来，到哪⾥去"><a href="#⽤户⾏为-·-⽤户从哪⾥来，到哪⾥去" class="headerlink" title="⽤户⾏为 · ⽤户从哪⾥来，到哪⾥去"></a>⽤户⾏为 · ⽤户从哪⾥来，到哪⾥去</h2><ul>
+<li><p>互联⽹产品数据分析中最重要的分析领域</p>
+<ul>
+<li>最重要的分析数据就是用户行为</li>
+</ul>
+</li>
+<li><p>宏观分析和局部观察两种</p>
+<ul>
+<li>用户行为数据分为两种</li>
+</ul>
+</li>
+<li><p>数据获取：⽤户⾏为⽇志</p>
+<ul>
+<li>案例，公众号读完率和流失率数据</li>
+</ul>
+</li>
+<li><p>常⽤⼯具：漏⽃/地图</p>
+</li>
+<li><p>思路：从微观轨迹到宏观数据</p>
+</li>
+<li><p>从⽤户的⻆度看产品，标记在每⼀时刻可能做什么，去哪⾥</p>
+</li>
+<li><p>核⼼路径是什么？路径上的核⼼环节是什么？</p>
+<ul>
+<li>通过设计的核心路径，用户在这些核心环节哪里会流失？为什么会流失？</li>
+</ul>
+</li>
+</ul>
+<h2 id="AirPlay-⾛⼀波，在-App-Store-的界⾯上找⼀下感觉"><a href="#AirPlay-⾛⼀波，在-App-Store-的界⾯上找⼀下感觉" class="headerlink" title="AirPlay ⾛⼀波，在 App Store 的界⾯上找⼀下感觉"></a>AirPlay ⾛⼀波，在 App Store 的界⾯上找⼀下感觉</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></p>
+<p>卡片的给人的认路的负担是非常低的</p>
+<p>就诊问问也采用了卡片的设计</p>
+<ul>
+<li><p>整体的信息架构：有四个大的模块</p>
+<ul>
+<li>Today 以卡片的形式展现</li>
+</ul>
+</li>
+</ul>
+<p>⻚⾯：</p>
+<ul>
+<li><p>Portal：今⽇推荐、游戏、App、搜索</p>
+</li>
+<li><p>List：应⽤列表</p>
+</li>
+<li><p>Detail：专⽂推荐、应⽤详情</p>
+</li>
+<li><p>动作：分享、获取（点击获取 → 确认）、退出 …</p>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095642"></p>
+<ul>
+<li>设计的核心路径上，用户的漏斗是怎么样的</li>
+</ul>
+<h2 id="⽤户分类与⽤户标签"><a href="#⽤户分类与⽤户标签" class="headerlink" title="⽤户分类与⽤户标签"></a>⽤户分类与⽤户标签</h2><ul>
+<li><p>⽤户是谁 × ⽤户做了什么 → ⽤户标签</p>
+<ul>
+<li><p>新⽤户 &amp; ⽼⽤户</p>
+</li>
+<li><p>⾼频⽤户 &amp; 低频⽤户</p>
+</li>
+<li><p>浏览⽤户 &amp; 下载⽤户</p>
+</li>
+<li><p>免费⽤户 &amp; 付费⽤户</p>
+</li>
+<li><p>新购⽤户 &amp; 复购⽤户</p>
+</li>
+<li><p>⽆⽀付路径⽤户 &amp; ⽀付宝⽤户 &amp; 银⾏卡⽤户</p>
+</li>
+<li><p>⽣产⼒⼯具⽤户 &amp; 游戏⽤户 &amp; 创造⼒⼯具⽤户</p>
+</li>
+<li><p>⽣产⽤户 &amp; 消费⽤户</p>
+</li>
+<li><p>L1 L2 L3 L4</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="⽤户产品的数据模型"><a href="#⽤户产品的数据模型" class="headerlink" title="⽤户产品的数据模型"></a>⽤户产品的数据模型</h2><ul>
+<li>假设⼀个关键⽬标：提⾼ App 下载量</li>
+<li>以终为始，倒推实现路径</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<h2 id="基于数据反推的策略"><a href="#基于数据反推的策略" class="headerlink" title="基于数据反推的策略"></a>基于数据反推的策略</h2><ul>
+<li><p>针对 App Store 新⽤户提供搜索引导</p>
+<ul>
+<li>⽬标：提⾼新⽤户进⼊搜索⻚ → 输⼊搜索词 → 提交搜索 → 浏览并点击搜索结果的⽐例</li>
+</ul>
+</li>
+<li><p>针对低频⽤户发送 Push，直接导⼊搜索结果⻚</p>
+<ul>
+<li>⽬标：提⾼低频⽤户进⼊搜索⻚ → 浏览并点击 → ⾃⾏输⼊搜索词的⽐例</li>
+</ul>
+</li>
+<li><p>针对免费⽤户，优先展示免费 App 的搜索结果⻚</p>
+<ul>
+<li>⽬标：提⾼免费⽤户的搜索列表⾄应⽤详情的转化率</li>
+</ul>
+</li>
+<li><p>还有很多，当我们将框架建好后，数据填充其间，就可以集中考虑策略了</p>
+</li>
+</ul>
+<h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2><ul>
+<li><p>挑选⼀个你喜欢的产品（结构简单⼀点），做⼀个⽤户路径地图</p>
+</li>
+<li><p>针对这个路径地图，做⼀个漏⽃模型，填⼊你认为合理的数字</p>
+</li>
+<li><p>（选做）根据这个你假设的数字，提出下⼀步的优化重点</p>
+</li>
+<li><p>（选做）针对优化重点，提出⼀到两个改进⽅案</p>
+</li>
+</ul>
+<h1 id="流量型产品的分析逻辑"><a href="#流量型产品的分析逻辑" class="headerlink" title="流量型产品的分析逻辑"></a>流量型产品的分析逻辑</h1><h2 id="提纲-2"><a href="#提纲-2" class="headerlink" title="提纲"></a>提纲</h2><ul>
+<li><p>什么是「流量型产品」，与「⽤户产品」有区别吗？</p>
+</li>
+<li><p>流量型产品的分析指标与维度</p>
+<ul>
+<li><p>获客</p>
+</li>
+<li><p>留存</p>
+</li>
+<li><p>引荐</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="流量型产品？不就是⽤户产品吗？"><a href="#流量型产品？不就是⽤户产品吗？" class="headerlink" title="流量型产品？不就是⽤户产品吗？"></a>流量型产品？不就是⽤户产品吗？</h2><ul>
+<li><p>流量的背后是真实的⽤户，流量的起承转合是真实的⽤户场景</p>
+</li>
+<li><p>所谓的流量型产品其实就是⽤户产品，只不过分析模型常交叉</p>
+</li>
+<li><p>⽤户产品关注⽤户⾏为轨迹，流量产品关注流量获取和引荐</p>
+</li>
+<li><p>平台获利视⻆与⽤户获利视⻆ —— 都不可或缺</p>
+<ul>
+<li>分析流量时，⽬标通常是「引流」&amp;「获利」&amp;「规模」</li>
+<li>分析⽤户时，⽬标通常是「⽤户价值」&amp;「⽤户体验」</li>
+</ul>
+</li>
+<li><p>流量常常伴随的⼀个话题是「增⻓」</p>
+<ul>
+<li>做用户增长通常需要一个情商非常高，因为和其他产品团队都是并列的，但是工作又需要其他所有产品经理配合</li>
+<li>所以资深的产品经理可能才适合做用户增长</li>
+</ul>
+</li>
+</ul>
+<h2 id="流量型产品的分析框架-·-经典的海盗模型"><a href="#流量型产品的分析框架-·-经典的海盗模型" class="headerlink" title="流量型产品的分析框架 · 经典的海盗模型"></a>流量型产品的分析框架 · 经典的海盗模型</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<p>AARRR 模型</p>
+<ul>
+<li><p>首先是获取用户</p>
+</li>
+<li><p>激活：可能是注册成功才算激活，有的下载了 app 就算激活</p>
+</li>
+<li><p>留存：过了一段时间又使用，就说是用户留存下来了。这是整个产品模型最重要的</p>
+</li>
+</ul>
+<p>获取和留存是最重要的两个环节</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<p>留存、变现和引荐，很多时候是可以分开来理解的。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<ul>
+<li><p>要先看流量的来源和占比</p>
+</li>
+<li><p>饼图统一分析用户来源</p>
+<ul>
+<li><p>direct：直接来的</p>
+</li>
+<li><p>referral：引荐来的</p>
+</li>
+<li><p>organic search：自然搜索</p>
+</li>
+<li><p>paid search：</p>
+</li>
+</ul>
+</li>
+<li><p>第二个是用户来源的占比</p>
+</li>
+<li><p>第三个是营销活动带来用户的占比</p>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<ul>
+<li>我们的产品流量占比多大是健康的？</li>
+</ul>
+<h2 id="流量型产品的分析框架——获取"><a href="#流量型产品的分析框架——获取" class="headerlink" title="流量型产品的分析框架——获取"></a>流量型产品的分析框架——获取</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220092119"></p>
+<ul>
+<li><p>app 的获客来源</p>
+<ul>
+<li><p>app store 主动下载</p>
+<ul>
+<li><p>最重要的是做 ASO、SEO，让在搜索中排在前面</p>
+</li>
+<li><p>品牌就是做广告</p>
+</li>
+<li><p>口碑传播建立起来之后，力量摧枯拉朽</p>
+</li>
+</ul>
+</li>
+<li><p>地推</p>
+<ul>
+<li>获客成本很高，管理成本也很高，但是很有效</li>
+<li>鸡蛋是最好的获客产品</li>
+</ul>
+</li>
+<li><p>广告投放</p>
+<ul>
+<li><p>广点通、穿山甲</p>
+</li>
+<li><p>甚至是厕所关注公众号出纸</p>
+</li>
+<li><p>广告联盟水面下有很多流量</p>
+</li>
+</ul>
+</li>
+<li><p>自有流量池</p>
+<ul>
+<li><p>流量品类：美团的高频打低频</p>
+</li>
+<li><p>利润品类</p>
+</li>
+<li><p>强带弱网络效应：通讯工具、聊天软件都是有网络效应的；电商平台也是有网络效应的</p>
+</li>
+</ul>
+</li>
+<li><p>社交网络</p>
+<ul>
+<li>可能是最重要的获客渠道</li>
+</ul>
+</li>
+<li><p>商务换量</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li><p>问题 1：流量结构是什么？是否健康？</p>
+<ul>
+<li>去哪儿的流量来源大部分来自于百度，导致没有任何议价能力，这就是不健康</li>
+<li>流量来自于模板消息，这也是不健康的，模板消息关掉，整个流量来源没有了</li>
+</ul>
+</li>
+<li><p>问题 2：流量规模是否能够⽀撑业务？天花板在哪⾥？是否有可持续性？</p>
+<ul>
+<li><p>强网络效应的产品如果流量来自于地推，那就是流量规模不能够支撑业务</p>
+</li>
+<li><p>做厕所扫码出纸的创业，天花板就是全国的厕所；快递柜就全国的小区和写字楼；</p>
+</li>
+<li><p>很多流量渠道没有可持续性：模板消息、微信朋友圈获客、营销活动</p>
+</li>
+</ul>
+</li>
+<li><p>问题 3：流量属性与业务是否匹配？</p>
+<ul>
+<li>流量渠道要与产品调性匹配</li>
+</ul>
+</li>
+<li><p>问题 4：流量成本是否合理？</p>
+<ul>
+<li>100块钱买一个团长是否划算？</li>
+</ul>
+</li>
+<li><p>问题 5：到哪⾥找/买到与业务匹配的更多流量？</p>
+<ul>
+<li>在做流量规划时或分析时，要考虑这个问题</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>分析维度：来源 / 渠道 / 成本</p>
+</li>
+<li><p>指标：</p>
+<ul>
+<li><p>新⽤户数（规模）</p>
+</li>
+<li><p>CAC/TAC（流量成本）（eCPM / CPC / CPA）</p>
+<ul>
+<li><p>eCPM：展示一千次，我给你100块钱</p>
+</li>
+<li><p>CPC：点击一次付一次钱</p>
+</li>
+<li><p>CPA：用户产生一次行为，我给你一次钱</p>
+</li>
+<li><p>CPS：只有卖出去了才给流量主钱</p>
+</li>
+</ul>
+</li>
+<li><p>ROI（流量质量）</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<ul>
+<li><p>公域：一个渠道来自于视频号的推荐</p>
+</li>
+<li><p>私域：另一个流量来自于朋友圈转发带来的流量</p>
+</li>
+<li><p>卖艺就是通过粉丝打赏获取流量</p>
+</li>
+</ul>
+<p>视频号和抖音快手的区别在哪里？</p>
+<p>需要建立一个思考结构，流量的来源是怎么样的，获客结构是怎么样的。</p>
+<h2 id="留存"><a href="#留存" class="headerlink" title="留存"></a>留存</h2><p>手枪图</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<ul>
+<li><p>问题 1：⽤户从哪⾥回来了？（留存渠道）</p>
+</li>
+<li><p>问题 2：做了什么事情的⽤户回来了？回来⼲什么了？（留存⾏为）</p>
+</li>
+<li><p>问题 3：⽤户时隔多久回来了？（留存周期）</p>
+</li>
+<li><p>问题 4：流失⽤户为什么流失了？</p>
+</li>
+</ul>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>新增留存：某个周期内获取的新⽤户，在⼀段时间后再次执⾏留存⾏为的⽐例。</p>
+<p>活跃留存：某个周期内执⾏某⾏为的⽤户，在⼀段时间后再次执⾏留存⾏为的⽐例。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<ul>
+<li>小张永远不计算入留存框架</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<ul>
+<li><p>手枪图🔫</p>
+</li>
+<li><p>留存率</p>
+</li>
+<li><p>次日留存、三日留存、七日留存、十四日、三十日</p>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<p>从图中能分析出什么问题？</p>
+<ul>
+<li>后期留存很平稳</li>
+<li>有三天颜色很深</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220095643"></p>
+<ul>
+<li><p>什么样的留存数据是健康的？</p>
+<ul>
+<li>Facebook 游戏的留存，次日留存 40%</li>
+</ul>
+</li>
+<li><p>跟产品有关系，readhub 就不是一个新增留存高的产品，对老用户好</p>
+</li>
+</ul>
+<h3 id="留存的作用"><a href="#留存的作用" class="headerlink" title="留存的作用"></a>留存的作用</h3><ul>
+<li><p>留存分析是产品数据分析中最重要的主题</p>
+</li>
+<li><p>不分⻘红皂⽩的次⽇留存可能也是⼀个「虚荣指标」</p>
+<ul>
+<li><p>按渠道/按模块/按分类去做留存分析</p>
+</li>
+<li><p>留存⾏为不应仅仅是「打开」</p>
+</li>
+<li><p>需要根据业务特性确定留存定义</p>
+</li>
+<li><p>例：抽奖助手的留存分析，一定会对抽奖发起人分析，所以需要对留存进行细致分析</p>
+</li>
+</ul>
+</li>
+<li><p>留存数据给产品经理的三个作⽤</p>
+<ul>
+<li>观察产品健康度、验证运营和产品特性有效性、启发改进⽅案</li>
+</ul>
+</li>
+</ul>
+<h3 id="留存的信息和方法"><a href="#留存的信息和方法" class="headerlink" title="留存的信息和方法"></a>留存的信息和方法</h3><ul>
+<li><p>留存数据可以给我们的信息</p>
+<ul>
+<li>渠道或营销活动的获客是否有效</li>
+<li>吸引⽤户的特性是什么？功能还是某个事实</li>
+</ul>
+</li>
+<li><p>提⾼留存的⽅法</p>
+<ul>
+<li><p>改进产品</p>
+</li>
+<li><p>使⽤钩⼦</p>
+</li>
+<li><ul>
+<li>想要快速拉留存的一个方法，push，小程序模板消息，EDM，短信等等</li>
+<li>即刻，拼多多，知乎的 push 很有意思</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="引荐"><a href="#引荐" class="headerlink" title="引荐"></a>引荐</h2><ul>
+<li><p>问题 1：⽤户激励是什么？在什么场景下最容易引发推荐⾏为？</p>
+<ul>
+<li><p>最有用的就是钱</p>
+</li>
+<li><p>心理需求也很重要：得到一直没有做分享有赏；得到希望用户看到内容好才会分享</p>
+</li>
+<li><p>身份认知激励：「我是第几个点赞的」，医生身份的认证，强化自己是医生，二爷做过的一个医疗产品</p>
+</li>
+</ul>
+</li>
+<li><p>问题 2：推荐⾏为的全路径中的数据转化如何？</p>
+</li>
+<li><p>问题 3：⼀个新⽤户可以带来多少新⽤户？</p>
+<ul>
+<li><p>K（周期） = 感染率 × 转化率</p>
+<ul>
+<li>K 大于 1 的话，就会指数级增长</li>
+</ul>
+</li>
+<li><p>本质也是⼀种获客，也有 CAC，也应该回到整体的获客模型中观察</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>获客最有效的，都是社交网络</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220092251"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220092257"></p>
+<ul>
+<li><p>转化入口很重要</p>
+</li>
+<li><p>分享后的文案很重要</p>
+</li>
+<li><p>两个我可能会做的事情：</p>
+<ul>
+<li>显示详情标题提到上面</li>
+<li>纵向推荐与该课程有关的其他课程</li>
+</ul>
+</li>
+<li><p>拼多多很厉害</p>
+<ul>
+<li>用多个手机尝试同一个流程</li>
+</ul>
+</li>
+<li><p>要有数据意识</p>
+</li>
+</ul>
+<p>当我们想要分析用户路径的时候，先分析所有的用户路径，然后找到一条核心路径进行分析</p>
+<ol>
+<li>整体的用户路径（把实际的界面图给列出来）</li>
+<li>选出一条核心路径分析</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86/" rel="tag"># 产品经理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/12/20/7-product/" rel="prev" title="产品规划与功能规划">
+      <i class="fa fa-chevron-left"></i> 产品规划与功能规划
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/12/20/9-product/" rel="next" title="商业分析与变现">
+      商业分析与变现 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90"><span class="nav-text">产品经理与数据分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E7%BA%B2"><span class="nav-text">提纲</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BC%8F%E4%B8%AA%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%9C%89%E5%85%B3%E7%9A%84%E6%95%85%E4%BA%8B"><span class="nav-text">⼏个与数据分析有关的故事</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%9A%84%E5%B8%B8%E2%BB%85%E2%BC%AF%E5%85%B7"><span class="nav-text">数据分析的常⻅⼯具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%9A%84%E6%89%A7%E2%BE%8F%E8%BF%87%E7%A8%8B"><span class="nav-text">数据分析的执⾏过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%9F%8B%E7%82%B9"><span class="nav-text">数据埋点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%94%B6%E9%9B%86%E4%B8%8E%E6%95%B4%E7%90%86"><span class="nav-text">数据收集与整理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E5%88%86%E6%9E%90"><span class="nav-text">数据统计与分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA%E6%88%96%E2%BE%8F%E5%8A%A8"><span class="nav-text">结论或⾏动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%9A%84%E6%80%9D%E8%B7%AF%E5%92%8C%E6%A1%86%E6%9E%B6"><span class="nav-text">数据分析的思路和框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%AF%B9%E8%B1%A1"><span class="nav-text">数据分析对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%B8%B8%E2%BB%85%E6%8C%87%E6%A0%87%E4%B8%8E%E9%87%8A%E4%B9%89"><span class="nav-text">数据分析常⻅指标与释义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE"><span class="nav-text">用户数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E7%BA%B2-1"><span class="nav-text">提纲</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E6%88%B7%E5%B1%9E%E6%80%A7-%C2%B7-%E2%BD%A4%E6%88%B7%E6%98%AF%E8%B0%81"><span class="nav-text">⽤户属性 · ⽤户是谁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E6%88%B7%E2%BE%8F%E4%B8%BA-%C2%B7-%E2%BD%A4%E6%88%B7%E4%BB%8E%E5%93%AA%E2%BE%A5%E6%9D%A5%EF%BC%8C%E5%88%B0%E5%93%AA%E2%BE%A5%E5%8E%BB"><span class="nav-text">⽤户⾏为 · ⽤户从哪⾥来，到哪⾥去</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AirPlay-%E2%BE%9B%E2%BC%80%E6%B3%A2%EF%BC%8C%E5%9C%A8-App-Store-%E7%9A%84%E7%95%8C%E2%BE%AF%E4%B8%8A%E6%89%BE%E2%BC%80%E4%B8%8B%E6%84%9F%E8%A7%89"><span class="nav-text">AirPlay ⾛⼀波，在 App Store 的界⾯上找⼀下感觉</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E6%88%B7%E5%88%86%E7%B1%BB%E4%B8%8E%E2%BD%A4%E6%88%B7%E6%A0%87%E7%AD%BE"><span class="nav-text">⽤户分类与⽤户标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E6%88%B7%E4%BA%A7%E5%93%81%E7%9A%84%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="nav-text">⽤户产品的数据模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%8F%8D%E6%8E%A8%E7%9A%84%E7%AD%96%E7%95%A5"><span class="nav-text">基于数据反推的策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-text">作业</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E5%9E%8B%E4%BA%A7%E5%93%81%E7%9A%84%E5%88%86%E6%9E%90%E9%80%BB%E8%BE%91"><span class="nav-text">流量型产品的分析逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E7%BA%B2-2"><span class="nav-text">提纲</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E5%9E%8B%E4%BA%A7%E5%93%81%EF%BC%9F%E4%B8%8D%E5%B0%B1%E6%98%AF%E2%BD%A4%E6%88%B7%E4%BA%A7%E5%93%81%E5%90%97%EF%BC%9F"><span class="nav-text">流量型产品？不就是⽤户产品吗？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E5%9E%8B%E4%BA%A7%E5%93%81%E7%9A%84%E5%88%86%E6%9E%90%E6%A1%86%E6%9E%B6-%C2%B7-%E7%BB%8F%E5%85%B8%E7%9A%84%E6%B5%B7%E7%9B%97%E6%A8%A1%E5%9E%8B"><span class="nav-text">流量型产品的分析框架 · 经典的海盗模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E5%9E%8B%E4%BA%A7%E5%93%81%E7%9A%84%E5%88%86%E6%9E%90%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94%E8%8E%B7%E5%8F%96"><span class="nav-text">流量型产品的分析框架——获取</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%95%99%E5%AD%98"><span class="nav-text">留存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%95%99%E5%AD%98%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-text">留存的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%95%99%E5%AD%98%E7%9A%84%E4%BF%A1%E6%81%AF%E5%92%8C%E6%96%B9%E6%B3%95"><span class="nav-text">留存的信息和方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%8D%90"><span class="nav-text">引荐</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

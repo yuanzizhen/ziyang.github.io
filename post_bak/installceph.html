@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="预检ceph 集群采用如下的架构：">
+<meta property="og:type" content="website">
+<meta property="og:title" content="安装 Ceph 集群">
+<meta property="og:url" content="http://iziyang.github.io/post_bak/installceph.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="预检ceph 集群采用如下的架构：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fkoj8qjfmsj20eg08kmx5.jpg">
+<meta property="article:published_time" content="2017-10-10T09:09:44.000Z">
+<meta property="article:modified_time" content="2021-05-17T11:59:59.870Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="Ceph">
+<meta property="article:tag" content="OpenStack">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/c552abe7ly1fkoj8qjfmsj20eg08kmx5.jpg">
+
+<link rel="canonical" href="http://iziyang.github.io/post_bak/installceph">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>安装 Ceph 集群 | 原少子杨
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">安装 Ceph 集群
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1 id="预检"><a href="#预检" class="headerlink" title="预检"></a>预检</h1><p>ceph 集群采用如下的架构：</p>
+<span id="more"></span>
+
+<p><img src="http://ww1.sinaimg.cn/large/c552abe7ly1fkoj8qjfmsj20eg08kmx5.jpg"></p>
+<h2 id="安装-Ceph-部署工具（管理节点）"><a href="#安装-Ceph-部署工具（管理节点）" class="headerlink" title="安装 Ceph 部署工具（管理节点）"></a>安装 Ceph 部署工具（管理节点）</h2><blockquote>
+<p>添加向管理节点上添加 Ceph 仓库，然后安装 ceph-deploy 工具。</p>
+</blockquote>
+<ol>
+<li><p>添加并启用 EPEL  仓库：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@admin-node ~]# yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ol start="2">
+<li><p>向 yum 配置文件中添加 Ceph 仓库，yum 配置文件在 <code>/etc/yum.repos.d/ceph.repo</code> 。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@admin-node ~]# vim /etc/yum.repos.d/ceph.repo</span><br><span class="line"></span><br><span class="line">[ceph-noarch]</span><br><span class="line">name=Ceph noarch packages</span><br><span class="line">baseurl=https://download.ceph.com/rpm/el7/noarch</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">type=rpm-md</span><br><span class="line">gpgkey=https://download.ceph.com/keys/release.asc</span><br></pre></td></tr></table></figure></li>
+<li><p>更新仓库并安装 ceph-deploy 工具：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@admin-node ~]# yum update</span><br><span class="line">[root@admin-node ~]# yum install ceph-deploy</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="Ceph-节点安装"><a href="#Ceph-节点安装" class="headerlink" title="Ceph 节点安装"></a>Ceph 节点安装</h2><h3 id="安装-NTP"><a href="#安装-NTP" class="headerlink" title="安装 NTP"></a>安装 NTP</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph_node ~]# yum install ntp ntpdate ntp-doc</span><br><span class="line">[root@ceph_node ~]# ntpdate pool.ntp.org</span><br><span class="line">[root@ceph_node ~]# systemctl restart ntpdate</span><br><span class="line">[root@ceph_node ~]# systemctl restart ntpd</span><br><span class="line">[root@ceph_node ~]# systemctl enable ntpd</span><br><span class="line">[root@ceph_node ~]# systemctl enable ntpdate</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-SSH-服务器"><a href="#安装-SSH-服务器" class="headerlink" title="安装 SSH 服务器"></a>安装 SSH 服务器</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph_node ~]# sudo yum install openssh-server</span><br><span class="line">[root@ceph_node ~]# systemctl status sshd # 确保 SSH 服务器在所有 Ceph 节点上运行</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建一个-Ceph-部署用户"><a href="#创建一个-Ceph-部署用户" class="headerlink" title="创建一个 Ceph 部署用户"></a>创建一个 Ceph 部署用户</h3><ol>
+<li><p>在每个 Ceph 节点上创建一个新用户（storage）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph_node ~]# useradd -d /home/storage -m storage</span><br><span class="line">[root@ceph_node ~]# passwd storage</span><br></pre></td></tr></table></figure></li>
+<li><p>确保用户具有 sudo 特权：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph_node ~]# echo &quot;storage ALL = (root) NOPASSWD:ALL&quot; | sudo tee /etc/sudoers.d/storage</span><br><span class="line">[root@ceph_node ~]# sudo chmod 0440 /etc/sudoers.d/storage</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="开启无密码-SSH（管理节点）"><a href="#开启无密码-SSH（管理节点）" class="headerlink" title="开启无密码 SSH（管理节点）"></a>开启无密码 SSH（管理节点）</h3><ol>
+<li><p>生成 SSH 密钥，但是不要用 sudo 或者 root 用户。口令保留为空。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node ~]$ ssh-keygen</span><br><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file in which to save the key (/home/storage/.ssh/id_rsa): </span><br><span class="line">Created directory &#x27;/home/storage/.ssh&#x27;.</span><br><span class="line">Enter passphrase (empty for no passphrase): </span><br><span class="line">Enter same passphrase again: </span><br><span class="line">Your identification has been saved in /home/storage/.ssh/id_rsa.</span><br><span class="line">Your public key has been saved in /home/storage/.ssh/id_rsa.pub.</span><br></pre></td></tr></table></figure></li>
+<li><p>复制密钥到各个 Ceph 节点。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node ~]$ ssh-copy-id storage@controller</span><br><span class="line">[storage@admin-node ~]$ ssh-copy-id storage@compute01</span><br><span class="line">[storage@admin-node ~]$ ssh-copy-id storage@compute02</span><br></pre></td></tr></table></figure></li>
+</ol>
+<blockquote>
+<p>这里官方文档建议可以修改 <code>~/.ssh/config</code> 文件，把用户名写进去，这样在 ceph-deploy 时就不用指定用户名，事实证明，这个方法无效，会提示拒绝访问。还是指定用户名比较好。</p>
+</blockquote>
+<h3 id="关闭防火墙和-SELINUX"><a href="#关闭防火墙和-SELINUX" class="headerlink" title="关闭防火墙和 SELINUX"></a>关闭防火墙和 SELINUX</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph_node ~]# systemctl stop firewalld</span><br><span class="line">[root@ceph_node ~]# systemctl disable firewalld</span><br><span class="line">[root@ceph_node ~]# setenforce 0</span><br><span class="line">[root@ceph_node ~]# vim /etc/selinux/config</span><br><span class="line">SELINUX=disabled</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装优先软件包"><a href="#安装优先软件包" class="headerlink" title="安装优先软件包"></a>安装优先软件包</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph_node ~]# yum install yum-plugin-priorities</span><br></pre></td></tr></table></figure>
+
+<h1 id="快速安装存储集群"><a href="#快速安装存储集群" class="headerlink" title="快速安装存储集群"></a>快速安装存储集群</h1><p>先在管理节点上创建一个目录，这样，所有生成的文件都会保存在该目录下。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node ~]$ mkdir my-cluster</span><br><span class="line">[storage@admin-node ~]$ cd my-cluster</span><br></pre></td></tr></table></figure>
+
+<p>不要用 <code>sudo</code> 或者 root 用户执行 ceph-deploy 命令，因为它不会在远程主机上调用所需的 <code>sudo</code> 命令。</p>
+<h2 id="从头开始"><a href="#从头开始" class="headerlink" title="从头开始"></a>从头开始</h2><p>如果在某些地方遇到麻烦，可以执行下面的命令从头开始。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node ~]$ ceph-deploy --username storage purge &#123;ceph-node&#125; [&#123;ceph-node&#125;]</span><br><span class="line">[storage@admin-node ~]$ ceph-deploy --username storage purgedata &#123;ceph-node&#125; [&#123;ceph-node&#125;]</span><br><span class="line">[storage@admin-node ~]$ ceph-deploy forgetkeys</span><br><span class="line">[storage@admin-node ~]$ rm ceph*</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h2><ol>
+<li><p>创建集群。先初始化监控节点。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node my-cluster]$ ceph-deploy --username storage new controller</span><br></pre></td></tr></table></figure>
+
+<p>查看输出 <code>ls</code> 你可以看到一个 Ceph 配置文件 <code>ceph.conf</code> 一个监控密钥环 <code>ceph.mon.keyring</code> 还有一个日志文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node my-cluster]$ ls</span><br><span class="line">ceph.conf  ceph-deploy-ceph.log  ceph.mon.keyring</span><br></pre></td></tr></table></figure></li>
+<li><p>安装 Ceph 软件包。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node my-cluster]$ ceph-deploy --username storage install controller compute01 compute02</span><br></pre></td></tr></table></figure></li>
+<li><p>配置初始 monitor 并收集密钥环。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node my-cluster]$ ceph-deploy mon create-initial</span><br></pre></td></tr></table></figure>
+
+<p>官方文档说会有以下输出：</p>
+<ul>
+<li>ceph.client.admin.keyring</li>
+<li>ceph.bootstrap-mgr.keyring</li>
+<li>ceph.bootstrap-osd.keyring</li>
+<li>ceph.bootstrap-mds.keyring</li>
+<li>ceph.bootstrap-rgw.keyring</li>
+<li>ceph.bootstrap-rbd.keyring</li>
+</ul>
+<p>但是我的输出是下面的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node my-cluster]$ ls</span><br><span class="line">ceph.bootstrap-mds.keyring  ceph.client.admin.keyring  </span><br><span class="line">ceph.bootstrap-osd.keyring  </span><br><span class="line">ceph.bootstrap-rgw.keyring  </span><br></pre></td></tr></table></figure></li>
+<li><p>复制配置文件和管理密钥到管理节点和 Ceph 节点，这样你就可以使用 ceph CLI ，而不用每次都需要指定 monitor 的地址和 ceph.client.admin.keyring 。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node my-cluster]$ ceph-deploy --username storage admin controller compute01 compute02</span><br></pre></td></tr></table></figure></li>
+<li><p>添加三个 OSD。经过试验新版本的 Ceph OSD 进程只能装在空硬盘上，安装在目录上和分区上会失败。（据说之前的版本不需要，我装的 J 版本，10.2.10，但我试验了 H 版本，最终失败了，所以就选择在虚拟机里部署。）安装在空分区上经过如下步骤：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[storage@admin-node my-cluster]$ ceph-deploy --username storage osd prepare controller:/dev/sda3 compute01:/dev/sda3 compute02:/dev/sda3</span><br><span class="line">[storage@admin-node my-cluster]$ ceph-deploy --username storage osd activate controller:/dev/sda3 compute01:/dev/sda3 compute02:/dev/sda3</span><br></pre></td></tr></table></figure>
+<p>报错：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[controller][WARNIN] ceph_disk.main.Error: Error: [&#x27;ceph-osd&#x27;, &#x27;--cluster&#x27;, &#x27;ceph&#x27;, &#x27;--mkfs&#x27;, &#x27;--mkkey&#x27;, &#x27;-i&#x27;, u&#x27;2&#x27;, &#x27;--monmap&#x27;, &#x27;/var/lib/ceph/tmp/mnt.uidkdf/activate.monmap&#x27;, &#x27;--osd-data&#x27;, &#x27;/var/lib/ceph/tmp/mnt.uidkdf&#x27;, &#x27;--osd-journal&#x27;, &#x27;/var/lib/ceph/tmp/mnt.uidkdf/journal&#x27;, &#x27;--osd-uuid&#x27;, u&#x27;ade546d3-e1fa-4dd4-b5a5-f9fb8f145841&#x27;, &#x27;--keyring&#x27;, &#x27;/var/lib/ceph/tmp/mnt.uidkdf/keyring&#x27;, &#x27;--setuser&#x27;, &#x27;ceph&#x27;, &#x27;--setgroup&#x27;, &#x27;ceph&#x27;] failed : 2017-10-23 11:02:08.694483 7f69e5898800 -1 filestore(/var/lib/ceph/tmp/mnt.uidkdf) mkjournal error creating journal on /var/lib/ceph/tmp/mnt.uidkdf/journal: (13) Permission denied</span><br><span class="line">[controller][WARNIN] 2017-10-23 11:02:08.694495 7f69e5898800 -1 OSD::mkfs: ObjectStore::mkfs failed with error -13</span><br><span class="line">[controller][WARNIN] 2017-10-23 11:02:08.694536 7f69e5898800 -1  ** ERROR: error creating empty object store in /var/lib/ceph/tmp/mnt.uidkdf: (13) Permission denied</span><br><span class="line">[controller][WARNIN] </span><br><span class="line">[controller][ERROR ] RuntimeError: command returned non-zero exit status: 1</span><br><span class="line">[ceph_deploy][ERROR ] RuntimeError: Failed to execute command: /usr/sbin/ceph-disk -v activate --mark-init systemd --mount /dev/sda3</span><br></pre></td></tr></table></figure></li>
+<li><p>由于我的物理机只有一块硬盘，最终不得不选择在虚拟机中部署集群。在虚拟机中添加了一块硬盘，部署 OSD：</p>
+<blockquote>
+<p>注意，以下是我在虚拟机中重新按照之前的步骤部署的。主机名分别设置为 node1，node2，node3</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd create node1:vdb node2:vdb node3:vdb</span><br></pre></td></tr></table></figure>
+
+<p>节点分区情况如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# lsblk</span><br><span class="line">NAME                        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sr0                          11:0    1 1024M  0 rom  </span><br><span class="line">vda                         252:0    0    9G  0 disk </span><br><span class="line">├─vda1                      252:1    0    1G  0 part /boot</span><br><span class="line">└─vda2                      252:2    0    8G  0 part </span><br><span class="line">  ├─centos_admin--node-root 253:0    0  7.1G  0 lvm  /</span><br><span class="line">  └─centos_admin--node-swap 253:1    0  924M  0 lvm  [SWAP]</span><br><span class="line">vdb                         252:16   0  300G  0 disk </span><br><span class="line">├─vdb1                      252:17   0  295G  0 part /var/lib/ceph/osd/ceph-0</span><br><span class="line">└─vdb2                      252:18   0    5G  0 part</span><br></pre></td></tr></table></figure></li>
+<li><p>检查集群的健康状态。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# ceph health</span><br><span class="line">HEALTH_OK</span><br><span class="line">[root@node1 ~]# ceph -s</span><br><span class="line">    cluster e8b7ae85-8d03-4160-becc-10df8f385c59</span><br><span class="line">     health HEALTH_OK</span><br><span class="line">     monmap e1: 1 mons at &#123;node1=192.168.0.211:6789/0&#125;</span><br><span class="line">            election epoch 4, quorum 0 node1</span><br><span class="line">     osdmap e23: 3 osds: 3 up, 3 in</span><br><span class="line">            flags sortbitwise,require_jewel_osds</span><br><span class="line">      pgmap v48: 64 pgs, 1 pools, 0 bytes data, 0 objects</span><br><span class="line">            101 MB used, 884 GB / 884 GB avail</span><br><span class="line">                  64 active+clean</span><br></pre></td></tr></table></figure>
+
+<p>​</p>
+</li>
+</ol>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%84%E6%A3%80"><span class="nav-text">预检</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-Ceph-%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7%EF%BC%88%E7%AE%A1%E7%90%86%E8%8A%82%E7%82%B9%EF%BC%89"><span class="nav-text">安装 Ceph 部署工具（管理节点）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ceph-%E8%8A%82%E7%82%B9%E5%AE%89%E8%A3%85"><span class="nav-text">Ceph 节点安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-NTP"><span class="nav-text">安装 NTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-SSH-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-text">安装 SSH 服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA-Ceph-%E9%83%A8%E7%BD%B2%E7%94%A8%E6%88%B7"><span class="nav-text">创建一个 Ceph 部署用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E6%97%A0%E5%AF%86%E7%A0%81-SSH%EF%BC%88%E7%AE%A1%E7%90%86%E8%8A%82%E7%82%B9%EF%BC%89"><span class="nav-text">开启无密码 SSH（管理节点）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99%E5%92%8C-SELINUX"><span class="nav-text">关闭防火墙和 SELINUX</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BC%98%E5%85%88%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="nav-text">安装优先软件包</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4"><span class="nav-text">快速安装存储集群</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E5%A4%B4%E5%BC%80%E5%A7%8B"><span class="nav-text">从头开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4"><span class="nav-text">创建集群</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

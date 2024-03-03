@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="怎么做需求评审和产品发布？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="需求评审与产品发布">
+<meta property="og:url" content="http://iziyang.github.io/2021/12/20/5-product/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="怎么做需求评审和产品发布？">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220085650">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220085704">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220094422">
+<meta property="article:published_time" content="2021-12-20T00:53:42.000Z">
+<meta property="article:modified_time" content="2024-03-03T09:52:47.604Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="产品经理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220085650">
+
+<link rel="canonical" href="http://iziyang.github.io/2021/12/20/5-product/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>需求评审与产品发布 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2021/12/20/5-product/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          需求评审与产品发布
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-20 08:53:42" itemprop="dateCreated datePublished" datetime="2021-12-20T08:53:42+08:00">2021-12-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-03 17:52:47" itemprop="dateModified" datetime="2024-03-03T17:52:47+08:00">2024-03-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E8%B0%88/" itemprop="url" rel="index"><span itemprop="name">杂谈</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/12/20/5-product/" class="post-meta-item leancloud_visitors" data-flag-title="需求评审与产品发布" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/12/20/5-product/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/12/20/5-product/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">怎么做需求评审和产品发布？</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>需求评审和产品发布更加像是一个环节，这两个节点承上启下。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220085650"></p>
+<ul>
+<li><p>需求评审</p>
+<ul>
+<li><p>需求评审是什么</p>
+</li>
+<li><p>需求评审的⽬的与形式</p>
+</li>
+<li><p>需求评审的过程</p>
+</li>
+<li><p>需求评审的经验和建议</p>
+</li>
+</ul>
+</li>
+<li><p>产品发布</p>
+<ul>
+<li>产品发布的过程</li>
+<li>产品发布检查列表</li>
+</ul>
+</li>
+</ul>
+<h1 id="需求评审是什么"><a href="#需求评审是什么" class="headerlink" title="需求评审是什么"></a>需求评审是什么</h1><ul>
+<li><p>定义：向各个利益相关⽅解释要做什么、为什么，动员投⼊，达成⼀致，开始⼲活。</p>
+<ul>
+<li>前面都是从设计出发，而下面则是从流程视角出发</li>
+</ul>
+</li>
+<li><p>三个考量：受到什么影响、会有什么收益、需要什么投⼊。</p>
+<ul>
+<li><p>一个是出钱的，一个是出力的，一个是用户</p>
+</li>
+<li><p>例子：自动续签功能</p>
+<ul>
+<li><p>影响：开发、销售部门（自动续签影响销售的业绩）</p>
+</li>
+<li><p>收益</p>
+</li>
+<li><p>投入</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>利益相关⽅：开发（⼯程 &amp; 设计）、资源（业务 &amp; 财务）、⽤户、关联⽅。</p>
+</li>
+</ul>
+<p>在做任何事情之前，都需要知道，这是一件什么事情</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220085704"></p>
+<h1 id="需求评审的过程"><a href="#需求评审的过程" class="headerlink" title="需求评审的过程"></a>需求评审的过程</h1><ol>
+<li><p>背景 &amp; 现状 &amp; 问题</p>
+</li>
+<li><p>演示⽅案</p>
+<ul>
+<li>一定要让所有人沉浸在这个过程里面</li>
+</ul>
+</li>
+<li><p>数据指标和期望</p>
+</li>
+<li><p>影响和伤害</p>
+</li>
+<li><p>成本 &amp; 计划</p>
+</li>
+</ol>
+<blockquote>
+<p>真正的评审都是预先沟通的。</p>
+</blockquote>
+<h2 id="背景-amp-现状-amp-问题"><a href="#背景-amp-现状-amp-问题" class="headerlink" title="背景 &amp; 现状 &amp; 问题"></a>背景 &amp; 现状 &amp; 问题</h2><ul>
+<li><p>具体的故事</p>
+</li>
+<li><p>真实的数据</p>
+</li>
+<li><p>与宏观整体的规划的关系</p>
+<ul>
+<li>一定是要向一个更加宏观的问题负责</li>
+</ul>
+</li>
+<li><p>与其他同级别问题的关系</p>
+</li>
+<li><p>⼤概的投⼊和产出</p>
+</li>
+</ul>
+<blockquote>
+<p>真正的开会的时候，很多人会走神、玩手机，或者只能根据主持人的思路走</p>
+<p>所以要讲一个好的故事</p>
+<p>要有建立画面感的能力</p>
+<p>先调动情绪建立感性，然后辅以理性和逻辑</p>
+</blockquote>
+<h2 id="演示⽅案"><a href="#演示⽅案" class="headerlink" title="演示⽅案"></a>演示⽅案</h2><ul>
+<li><p>这是最核⼼的环节，也是最容易⾛神的环节</p>
+</li>
+<li><p>以总分总的推进逻辑来处理</p>
+<ul>
+<li><p>介绍：⼤致的⻚⾯结构，⽤例列表（总）</p>
+</li>
+<li><p>表演：具体的功能逻辑，流程⽅案（分）</p>
+</li>
+<li><p>回顾：再看⻚⾯结构，⽤例列表（总）</p>
+</li>
+</ul>
+</li>
+<li><p>不断吸引问题和疑虑，问题越多越成功</p>
+<ul>
+<li>讲的还不错的一个标志是工程师在问具体的问题</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>演示的时候，要按照具体的用户例子来演示，而不是演示页面结构。要按照用户流程来讲，这样听众也更加能够发现问题</p>
+</blockquote>
+<h2 id="数据指标和期望"><a href="#数据指标和期望" class="headerlink" title="数据指标和期望"></a>数据指标和期望</h2><ul>
+<li><p>如何证明你对这个东⻄是深刻理解的？</p>
+</li>
+<li><p>如何证明这个事情成功或者不成功？</p>
+</li>
+<li><p>如何证明决策不是拍脑袋？</p>
+</li>
+<li><p>如何保证逻辑是完善的？</p>
+</li>
+</ul>
+<blockquote>
+<p>数据指标化</p>
+<p>用户体验提升，这种也是可以量化的，通过目标能够表现出来</p>
+<p>埋点</p>
+<p>指标数据如何能够估准？心里会有一个经验判断，资深的产品经理都是能够判断的；另外也可以去查</p>
+</blockquote>
+<h2 id="影响和伤害"><a href="#影响和伤害" class="headerlink" title="影响和伤害"></a>影响和伤害</h2><ul>
+<li><p>每个⼈都应该知道⾃⼰会为此付出什么，以及会被此影响到什么。</p>
+</li>
+<li><p>如果不能在此刻，收集到可能的负⾯影响，那项⽬很可能会出现崩盘的⻛险。</p>
+</li>
+<li><p>要有决策权限的⼈来判断，⽴场之争永⽆⽌境。</p>
+<ul>
+<li>把正面和负面的信息都交给他</li>
+<li>决策之前充分讨论，决策之后坚决执行，不要马后炮</li>
+</ul>
+</li>
+</ul>
+<h2 id="成本和计划"><a href="#成本和计划" class="headerlink" title="成本和计划"></a>成本和计划</h2><ul>
+<li><p>⼤致的评估</p>
+<ul>
+<li>即使不准，也要有一个评估，需要有一个模糊的判断</li>
+</ul>
+</li>
+<li><p>⾄少有不同模块的⽐例</p>
+</li>
+<li><p>⼤概可能的时⻓、步骤、优先级</p>
+</li>
+<li><p>各种可能的资源投⼊范围</p>
+<ul>
+<li>大概需要哪些人投入</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>产品经理需要不停的输出产品设计吗？</p>
+<p>乱象：产品不能断档，正确的阶段就是，就应该有一段时间，不做事情，就是要暂停，要观察</p>
+<p>产品经理要有自己的价值观</p>
+</blockquote>
+<h1 id="需求评审的⼀些经验和⼼得"><a href="#需求评审的⼀些经验和⼼得" class="headerlink" title="需求评审的⼀些经验和⼼得"></a>需求评审的⼀些经验和⼼得</h1><ul>
+<li><p>需求评审是胜利的凯歌，⽽不是冲锋的号⻆</p>
+</li>
+<li><p>提前做好准备，不要把问题集中在⼀次「会议」上</p>
+</li>
+<li><p>诉诸利益，⽽⾮「沟通」</p>
+</li>
+<li><p>（在需求优秀的前提下）优秀的评审：提前想得完善、⼤家不⾛神、讲得明⽩</p>
+</li>
+<li><p>态度：专业、投⼊、⾃信</p>
+</li>
+<li><p>需求评审中的对抗：牢记⽬标、认可动机、知错就改、线下讨论</p>
+<ul>
+<li>目标就是和大家对清楚收益和目标，以及方案，除此之外都不是目标</li>
+<li>先认可对方是为了用户体验、成本等动机</li>
+</ul>
+</li>
+<li><p>评审后应该有跟进</p>
+<ul>
+<li>待澄清的、TODO 要记下来，要跟进</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>这里面一定要专业，文档、图、表达，等等，都需要有一个专业的态度，要投入，首先自己要投入</p>
+</blockquote>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211220094422"></p>
+<h1 id="产品的发布环节"><a href="#产品的发布环节" class="headerlink" title="产品的发布环节"></a>产品的发布环节</h1><ul>
+<li><p>深⼊参与开发的发布过程，注意是否有严格步骤依赖和数据迁移前置⼯作</p>
+</li>
+<li><p>如果涉及停机，要提前跟⽤户沟通好；涉及其他系统，也要提前沟通。</p>
+</li>
+<li><p>准备验证⽤例（写下来）</p>
+</li>
+<li><p>⻆⾊、场景、环境、操作、结果、数据库表现</p>
+</li>
+<li><p>所有相关⼈的联系⽅式和备份列表</p>
+</li>
+<li><p>应对可能的失败，准备应对⽅案</p>
+</li>
+<li><p>发布后的持续⼼跳观察</p>
+</li>
+<li><p>记得有⼀个郑重的发布通知（和感谢）</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86/" rel="tag"># 产品经理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/23/read-rich_dad/" rel="prev" title="「富爸爸穷爸爸」教了我们什么">
+      <i class="fa fa-chevron-left"></i> 「富爸爸穷爸爸」教了我们什么
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/12/20/6-product/" rel="next" title="产品经理的项目管理">
+      产品经理的项目管理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E8%AF%84%E5%AE%A1%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">需求评审是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E8%AF%84%E5%AE%A1%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-text">需求评审的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF-amp-%E7%8E%B0%E7%8A%B6-amp-%E9%97%AE%E9%A2%98"><span class="nav-text">背景 &amp; 现状 &amp; 问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%94%E7%A4%BA%E2%BD%85%E6%A1%88"><span class="nav-text">演示⽅案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%8C%87%E6%A0%87%E5%92%8C%E6%9C%9F%E6%9C%9B"><span class="nav-text">数据指标和期望</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%B1%E5%93%8D%E5%92%8C%E4%BC%A4%E5%AE%B3"><span class="nav-text">影响和伤害</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E6%9C%AC%E5%92%8C%E8%AE%A1%E5%88%92"><span class="nav-text">成本和计划</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E8%AF%84%E5%AE%A1%E7%9A%84%E2%BC%80%E4%BA%9B%E7%BB%8F%E9%AA%8C%E5%92%8C%E2%BC%BC%E5%BE%97"><span class="nav-text">需求评审的⼀些经验和⼼得</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E7%9A%84%E5%8F%91%E5%B8%83%E7%8E%AF%E8%8A%82"><span class="nav-text">产品的发布环节</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

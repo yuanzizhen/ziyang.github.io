@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="目前是一名 SRE，爱好 Go 和 Python">
+<meta property="og:type" content="website">
+<meta property="og:title" content="原少子杨">
+<meta property="og:url" content="http://iziyang.github.io/page/21/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="目前是一名 SRE，爱好 Go 和 Python">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="原少子杨">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://iziyang.github.io/page/21/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>原少子杨 - 聊聊技术、产品和商业</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/03/28/xscproject/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/03/28/xscproject/" class="post-title-link" itemprop="url">项目结构</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-28 16:53:06" itemprop="dateCreated datePublished" datetime="2018-03-28T16:53:06+08:00">2018-03-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/03/28/xscproject/" class="post-meta-item leancloud_visitors" data-flag-title="项目结构" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/03/28/xscproject/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/03/28/xscproject/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>项目文件都在 <code>xsc/src/server/</code> 目录下，目录结构：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br></pre></td><td class="code"><pre><span class="line">server/</span><br><span class="line">├── dumpVulCSV.js</span><br><span class="line">├── index.js</span><br><span class="line">├── initial.js</span><br><span class="line">├── lib</span><br><span class="line">│   └── smsSender.js</span><br><span class="line">├── model</span><br><span class="line">│   ├── allSitesAreaStat.js</span><br><span class="line">│   ├── allSitesVulStat.js</span><br><span class="line">│   ├── apiKey.js</span><br><span class="line">│   ├── assetServicePort.js</span><br><span class="line">│   ├── assetStatusStat.js</span><br><span class="line">│   ├── baselineResult.js</span><br><span class="line">│   ├── baselineScript.js</span><br><span class="line">│   ├── constants.js</span><br><span class="line">│   ├── flowLog.js</span><br><span class="line">│   ├── flowLogStatis.js</span><br><span class="line">│   ├── index.js</span><br><span class="line">│   ├── monitorPort.js</span><br><span class="line">│   ├── newsCategory.js</span><br><span class="line">│   ├── news.js</span><br><span class="line">│   ├── osStat.js</span><br><span class="line">│   ├── portStat.js</span><br><span class="line">│   ├── questionAnswer.js</span><br><span class="line">│   ├── questionNaire.js</span><br><span class="line">│   ├── servicePort.js</span><br><span class="line">│   ├── serviceStat.js</span><br><span class="line">│   ├── siteAreaStat.js</span><br><span class="line">│   ├── site.js</span><br><span class="line">│   ├── siteVulStat.js</span><br><span class="line">│   ├── tag.js</span><br><span class="line">│   ├── task.js</span><br><span class="line">│   ├── user.js</span><br><span class="line">│   ├── vulDetail.js</span><br><span class="line">│   ├── vul.js</span><br><span class="line">│   └── vulTrash.js</span><br><span class="line">├── plugins</span><br><span class="line">│   ├── auth</span><br><span class="line">│   │   ├── handlers</span><br><span class="line">│   │   │   └── tokenHandler.js</span><br><span class="line">│   │   ├── index.js</span><br><span class="line">│   │   └── routes</span><br><span class="line">│   │       ├── changePassword.js</span><br><span class="line">│   │       ├── hjLogin.js</span><br><span class="line">│   │       ├── index.js</span><br><span class="line">│   │       ├── login.js</span><br><span class="line">│   │       ├── logout.js</span><br><span class="line">│   │       ├── refreshToken.js</span><br><span class="line">│   │       ├── register.js</span><br><span class="line">│   │       └── smsRegister.js</span><br><span class="line">│   ├── redis.js</span><br><span class="line">│   └── worker.js</span><br><span class="line">├── registerPlugins.js</span><br><span class="line">└── routes</span><br><span class="line">    ├── admin</span><br><span class="line">    │   ├── newsCategory.js</span><br><span class="line">    │   ├── news.js</span><br><span class="line">    │   ├── README.md</span><br><span class="line">    │   ├── user.js</span><br><span class="line">    │   └── vulDetail.js</span><br><span class="line">    ├── ass</span><br><span class="line">    │   └── stat</span><br><span class="line">    │       ├── area.js</span><br><span class="line">    │       ├── count.js</span><br><span class="line">    │       ├── index.js</span><br><span class="line">    │       ├── kind.js</span><br><span class="line">    │       ├── level.js</span><br><span class="line">    │       ├── name.js</span><br><span class="line">    │       ├── range.js</span><br><span class="line">    │       ├── top.js</span><br><span class="line">    │       └── vul.js</span><br><span class="line">    ├── baseline</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   └── script</span><br><span class="line">    │       ├── add.js</span><br><span class="line">    │       ├── delete.js</span><br><span class="line">    │       ├── detail.js</span><br><span class="line">    │       ├── list.js</span><br><span class="line">    │       └── update.js</span><br><span class="line">    ├── changePassword.js</span><br><span class="line">    ├── common</span><br><span class="line">    │   ├── captcha.js</span><br><span class="line">    │   ├── qiniu_token.js</span><br><span class="line">    │   └── sms.js</span><br><span class="line">    ├── flowLog.js</span><br><span class="line">    ├── flowStatis.js</span><br><span class="line">    ├── index.js</span><br><span class="line">    ├── monitorPort.js</span><br><span class="line">    ├── profile.js</span><br><span class="line">    ├── qanswer</span><br><span class="line">    │   ├── add.js</span><br><span class="line">    │   ├── detail.js</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   └── score.js</span><br><span class="line">    ├── qnaire</span><br><span class="line">    │   ├── detail.js</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   ├── list.js</span><br><span class="line">    │   └── update.js</span><br><span class="line">    ├── relatedDomain</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   ├── list.js</span><br><span class="line">    │   ├── setToSite.js</span><br><span class="line">    │   └── stat.js</span><br><span class="line">    ├── servicePort.js</span><br><span class="line">    ├── site</span><br><span class="line">    │   ├── add.js</span><br><span class="line">    │   ├── areaStat.js</span><br><span class="line">    │   ├── baselineDelete.js</span><br><span class="line">    │   ├── baselineList.js</span><br><span class="line">    │   ├── batchAdd.js</span><br><span class="line">    │   ├── delete.js</span><br><span class="line">    │   ├── detail.js</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   ├── list.js</span><br><span class="line">    │   ├── orgList.js</span><br><span class="line">    │   ├── safeStat.js</span><br><span class="line">    │   ├── servicePortList.js</span><br><span class="line">    │   ├── update.js</span><br><span class="line">    │   └── vulList.js</span><br><span class="line">    ├── stat</span><br><span class="line">    │   ├── assetStatus.js</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   ├── os.js</span><br><span class="line">    │   ├── port.js</span><br><span class="line">    │   └── service.js</span><br><span class="line">    ├── syncBaselineFailed.js</span><br><span class="line">    ├── syncBaseline.js</span><br><span class="line">    ├── syncFlow.js</span><br><span class="line">    ├── syncVulsFaild.js</span><br><span class="line">    ├── syncVuls.js</span><br><span class="line">    ├── tag</span><br><span class="line">    │   ├── add.js</span><br><span class="line">    │   ├── delete.js</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   ├── list.js</span><br><span class="line">    │   └── update.js</span><br><span class="line">    ├── task</span><br><span class="line">    │   ├── addBaseline.js</span><br><span class="line">    │   ├── add.js</span><br><span class="line">    │   ├── deleteTask.js</span><br><span class="line">    │   ├── detail.js</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   ├── list.js</span><br><span class="line">    │   ├── retry.js</span><br><span class="line">    │   ├── runningNum.js</span><br><span class="line">    │   ├── status.js</span><br><span class="line">    │   └── vulList.js</span><br><span class="line">    └── vul</span><br><span class="line">        ├── apiKey.js</span><br><span class="line">        ├── downloadDocx.js</span><br><span class="line">        ├── siteVulList.js</span><br><span class="line">        ├── stat</span><br><span class="line">        │   ├── area.js</span><br><span class="line">        │   ├── count.js</span><br><span class="line">        │   ├── index.js</span><br><span class="line">        │   ├── kind.js</span><br><span class="line">        │   ├── level.js</span><br><span class="line">        │   ├── name.js</span><br><span class="line">        │   └── range.js</span><br><span class="line">        ├── vulDetail.js</span><br><span class="line">        └── vul.js</span><br></pre></td></tr></table></figure>
+
+<p><code>../server/model/</code> 目录下都是表的定义；</p>
+<p><code>../plugins/</code> 目录下是一下登录、认证等的处理；</p>
+<p><code>../routes/</code> 目录下包括资产（<code>/ass</code>，<code>/stat</code>）、基线<code>baseline</code>、站点<code>site</code>、任务<code>task</code>、漏洞<code>vul</code>；</p>
+<p>所有的文件夹基本都有一个 <code>index.js</code> 文件，用来保存所有暴露出来的接口。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/03/21/spider-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/03/21/spider-1/" class="post-title-link" itemprop="url">一、BeautifulSoup、爬虫异常及浏览器伪装</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-21 14:55:49" itemprop="dateCreated datePublished" datetime="2018-03-21T14:55:49+08:00">2018-03-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/03/21/spider-1/" class="post-meta-item leancloud_visitors" data-flag-title="一、BeautifulSoup、爬虫异常及浏览器伪装" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/03/21/spider-1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/03/21/spider-1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="BeautifulSoup-库"><a href="#BeautifulSoup-库" class="headerlink" title="BeautifulSoup 库"></a>BeautifulSoup 库</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> urllib.request <span class="keyword">import</span> urlopen</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> urllib.error <span class="keyword">import</span> HTTPError</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基本用法，创建 BeautifulSoup 对象</span></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/page1.html&quot;</span>)</span><br><span class="line">bsObj = BeautifulSoup(html.read(), <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(bsObj.h1)  <span class="comment"># 打印标题</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 一个异常处理</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_title</span>(<span class="params">url</span>):</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        html = urlopen(url)</span><br><span class="line">    <span class="keyword">except</span> HTTPError <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        bs_obj = BeautifulSoup(html.read())</span><br><span class="line">        title = bs_obj.body.h1  <span class="comment"># 同样可以打印标题</span></span><br><span class="line">    <span class="keyword">except</span> AttributeError <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    <span class="keyword">return</span> title</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">title = get_title(<span class="string">&quot;http://www.pythonscraping.com/pages/page1.html&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> title <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Title could not be found&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(title)</span><br><span class="line"></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/warandpeace.html&quot;</span>)</span><br><span class="line">bsObj = BeautifulSoup(html.read(), <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(bsObj.h1)</span><br><span class="line">nameList = bsObj.findAll(<span class="string">&quot;span&quot;</span>, &#123;<span class="string">&quot;class&quot;</span>: <span class="string">&quot;green&quot;</span>&#125;)  <span class="comment"># 找到 span 标签，属性为 class=green 的内容</span></span><br><span class="line"><span class="keyword">for</span> name <span class="keyword">in</span> nameList:</span><br><span class="line">    <span class="built_in">print</span>(name)</span><br><span class="line">    <span class="built_in">print</span>(name.get_text())  <span class="comment"># 获取到文本内容</span></span><br><span class="line"></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/page3.html&quot;</span>)  <span class="comment"># 处理子标签</span></span><br><span class="line">bsObj = BeautifulSoup(html, <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> child <span class="keyword">in</span> bsObj.find(<span class="string">&quot;table&quot;</span>, &#123;<span class="string">&quot;id&quot;</span>: <span class="string">&quot;giftList&quot;</span>&#125;).children:  <span class="comment"># 子标签</span></span><br><span class="line">    <span class="built_in">print</span>(child)</span><br><span class="line"></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/page3.html&quot;</span>)  <span class="comment"># 处理兄弟标签</span></span><br><span class="line">bsObj = BeautifulSoup(html)</span><br><span class="line"><span class="keyword">for</span> sibling <span class="keyword">in</span> bsObj.find(<span class="string">&quot;table&quot;</span>, &#123;<span class="string">&quot;id&quot;</span>: <span class="string">&quot;giftList&quot;</span>&#125;).tr.next_siblings: <span class="comment"># 下面的兄弟标签</span></span><br><span class="line">    <span class="built_in">print</span>(sibling)</span><br><span class="line"></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/page3.html&quot;</span>)  <span class="comment"># 处理父标签</span></span><br><span class="line">bsObj = BeautifulSoup(html, <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(bsObj.find(<span class="string">&quot;img&quot;</span>, &#123;<span class="string">&quot;src&quot;</span>: <span class="string">&quot;../img/gifts/img1.jpg&quot;</span></span><br><span class="line">                         &#125;).parent.previous_sibling.get_text())  <span class="comment"># 父标签的前一个标签</span></span><br><span class="line"></span><br><span class="line">html = urlopen(<span class="string">&quot;http://www.pythonscraping.com/pages/page3.html&quot;</span>)</span><br><span class="line">bsObj = BeautifulSoup(html, <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line">images = bsObj.findAll(<span class="string">&quot;img&quot;</span>, &#123;<span class="string">&quot;src&quot;</span>: re.<span class="built_in">compile</span>(<span class="string">&quot;\.\.\/img\/gifts/img.*\.jpg&quot;</span>)&#125;)  <span class="comment"># 可以同时使用正则表达式</span></span><br><span class="line"><span class="keyword">for</span> image <span class="keyword">in</span> images:</span><br><span class="line">    <span class="built_in">print</span>(image[<span class="string">&quot;src&quot;</span>])  <span class="comment"># 获取属性</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"></span><br><span class="line">images = bsObj.findAll(<span class="string">&quot;img&quot;</span>)  <span class="comment"># 取属性</span></span><br><span class="line"><span class="keyword">for</span> image <span class="keyword">in</span> images:</span><br><span class="line">    <span class="built_in">print</span>(image.attrs[<span class="string">&#x27;src&#x27;</span>])  <span class="comment"># 同样可以获取属性</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="爬虫的异常处理"><a href="#爬虫的异常处理" class="headerlink" title="爬虫的异常处理"></a>爬虫的异常处理</h1><h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><p>爬虫中的异常分为两种，一种是 HTTPError，另一种是 URLError，URLError 是 HTTPError 的父类，URLError不包括异常的状态码及原因而 HTTPError 包括，因此使用以下的方法来输出异常状态码和原因：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.error</span><br><span class="line"><span class="keyword">import</span> urllib.request</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    urllib.request.urlopen(<span class="string">&quot;http://blog.csdn.net&quot;</span>)</span><br><span class="line"><span class="keyword">except</span> urllib.error.URLError  <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">hasattr</span>(e,<span class="string">&quot;code&quot;</span>):</span><br><span class="line">        <span class="built_in">print</span>(e.code)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">hasattr</span>(e,<span class="string">&quot;reason&quot;</span>):</span><br><span class="line">        <span class="built_in">print</span>(e.reason)</span><br></pre></td></tr></table></figure>
+
+<h2 id="异常原因"><a href="#异常原因" class="headerlink" title="异常原因"></a>异常原因</h2><p>产生 URLError 的原因有以下几种：</p>
+<ol>
+<li>连不上服务器</li>
+<li>远程 URL 不存在</li>
+<li>本地没有网络</li>
+<li>触发 HTTPError 子类</li>
+</ol>
+<h2 id="常见异常"><a href="#常见异常" class="headerlink" title="常见异常"></a>常见异常</h2><p>301：重定向到新的 URL，永久性</p>
+<p>302：非永久性的重定向</p>
+<p>304：请求资源未更新</p>
+<p>400：非法请求</p>
+<p>401：请求未授权</p>
+<p>403：禁止访问</p>
+<p>404：找不到页面</p>
+<p>500：服务器内部出错</p>
+<p>501：服务器不支持实现请求所需要的功能</p>
+<h1 id="浏览器伪装技术"><a href="#浏览器伪装技术" class="headerlink" title="浏览器伪装技术"></a>浏览器伪装技术</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.request</span><br><span class="line"></span><br><span class="line">url=<span class="string">&quot;http://blog.csdn.net/weiwei_pig/article/details/52123738&quot;</span></span><br><span class="line"><span class="comment"># 添加浏览器的 User-Agent</span></span><br><span class="line">headers=(<span class="string">&quot;User-Agent&quot;</span>,<span class="string">&quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.22 Safari/537.36 SE 2.X MetaSr 1.0&quot;</span>)</span><br><span class="line">opener=urllib.request.build_opener()  <span class="comment"># 创建对象</span></span><br><span class="line">opener.addheaders=[headers]  <span class="comment"># 添加浏览器头</span></span><br><span class="line"></span><br><span class="line">data=opener.<span class="built_in">open</span>(url).read()</span><br><span class="line">fh=<span class="built_in">open</span>(<span class="string">&quot;F:/天善-Python数据分析与挖掘课程/result/22/4.html&quot;</span>,<span class="string">&quot;wb&quot;</span>)</span><br><span class="line">fh.write(data)</span><br><span class="line">fh.close()</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/02/03/LearningOpenStack-11-neutron-dhcp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/02/03/LearningOpenStack-11-neutron-dhcp/" class="post-title-link" itemprop="url">【学习】十一、Linux Bridge 实现 Neutron 网络</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-02-03 14:39:08" itemprop="dateCreated datePublished" datetime="2018-02-03T14:39:08+08:00">2018-02-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/02/03/LearningOpenStack-11-neutron-dhcp/" class="post-meta-item leancloud_visitors" data-flag-title="【学习】十一、Linux Bridge 实现 Neutron 网络" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/02/03/LearningOpenStack-11-neutron-dhcp/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/02/03/LearningOpenStack-11-neutron-dhcp/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Neutorn ML2 plugin 默认使用的 mechanism driver 是 open vswitch 而不是 linux bridge。但是 linux bridge 技术非常成熟，open vswitch 实现的 Neutron 虚拟网络较为复杂，不易理解；而 linux bridge 方案更直观。先理解 linux bridge 方案后再学习 open vswitch 方案会更容易。</p>
+<h1 id="配置-linux-bridge-mechanism-driver"><a href="#配置-linux-bridge-mechanism-driver" class="headerlink" title="配置 linux-bridge mechanism driver"></a>配置 linux-bridge mechanism driver</h1><p>配置文件位于<code> /etc/neutron/neutron.conf</code></p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqFcicEkEnYUqMz6PSmQFAk2mG9xVLySjsr4uRkiaHnuOyl2E8Tiazb8xY6xEEdV76dnHecCibPOQGexzg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>控制节点和计算节点都需要在各自的 neutron.conf 中配置 core_plugin 选项。然后需要让 ML2 使用 linux-bridge mechanism driver。 ML2 的配置文件位于<code>/etc/neutron/plugins/ml2/ml2_conf.ini</code> 。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqFcicEkEnYUqMz6PSmQFAk2mRKzqVZ1nWJaNwHDllXffiaeyCrpicemS8iaUDJLXibOyHxd5H0OEUeDo9g/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h1 id="Local-Network"><a href="#Local-Network" class="headerlink" title="Local Network"></a>Local Network</h1><h2 id="在-ML2-中-enable-local-network"><a href="#在-ML2-中-enable-local-network" class="headerlink" title="在 ML2 中 enable local network"></a>在 ML2 中 enable local network</h2><p>网络示例：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_jpg/Hia4HVYXRicqHuPEmgHSqDnHEQj1lrpdsZgIkNl8obxcGSakgzkZZYzOBEhI2tYZZzWxhg7icG48AFP2jlGPdltNg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>local network 的特点是不会与宿主机的任何物理网卡相连，也不关联任何的 VLAN ID。对于每个 local netwrok，ML2 linux-bridge 会创建一个 bridge，instance 的 tap 设备会连接到 bridge。位于同一个 local network 的 instance 会连接到相同的 bridge，这样 instance 之间就可以通信了。</p>
+<p>配置文件位于 <code>/etc/neutron/plugins/ml2/ml2_conf.ini</code></p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqHuPEmgHSqDnHEQj1lrpdsZwQrxDqkUIw43Uibl3iamwaN1ibZSFdbutpmsvnBDSCujKx2wA1qOUFOtQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h1 id="Flat-Network"><a href="#Flat-Network" class="headerlink" title="Flat Network"></a>Flat Network</h1><h2 id="原理与配置"><a href="#原理与配置" class="headerlink" title="原理与配置"></a>原理与配置</h2><p>flat network 是不带 tag 的网络，要求宿主机的物理网卡直接与 linux bridge 连接，这意味着：<strong>每个 flat network 都会独占一个物理网卡</strong>。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_jpg/Hia4HVYXRicqFmELScC0PvNekGZ0UKPibZhcXEDica3EWYD8V0HuU2NuYib4A71SGEyB562ubKmXj4p2MkvXkaBs6cA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>在 <code>/etc/neutron/plugins/ml2/ml2_conf.ini</code> 设置 flat network 相关参数。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqFmELScC0PvNekGZ0UKPibZhpiahnMVWSV5ribp47WIEEh6tLh4QZJ1UEUVsKzh0PNEQ7ah3INMLWI7g/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>需要指明 flat 网络与物理网卡的对应关系：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqFmELScC0PvNekGZ0UKPibZhxdj5icV4WsbR2bjJc8icBt0KPJ0MDnibcibgsljTly0o9AJOkX8rTCn71Q/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqFmELScC0PvNekGZ0UKPibZh9siapcR37hGHRtu7BMpuic7dHZv40ibEO0fTvb5PP9ZnpJ3Ricicvrg6aQg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<ul>
+<li>各个节点中 label 与物理网卡的对应关系可以不一样</li>
+<li>如果要创建多个 flat 网络，需要定义多个 label，用逗号隔开，也需要用到多个物理网卡</li>
+</ul>
+<h1 id="DHCP-服务的配置"><a href="#DHCP-服务的配置" class="headerlink" title="DHCP 服务的配置"></a>DHCP 服务的配置</h1><p>Neutron 提供 DHCP 服务的组件是 DHCP agen，默认通过 dnsmasq 实现 DHCP 功能。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqHQtYZib6TkCAy1krj9g5ZpNloXqDXWYGz3D6xlpsodrO9FFUYUrUQIRQxvszRx0muhyIc4kicMwpcg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h2 id="配置-DHCP-agent"><a href="#配置-DHCP-agent" class="headerlink" title="配置 DHCP agent"></a>配置 DHCP agent</h2><p>DHCP agent 的配置文件位于<code>/etc/neutron/dhcp_agent.ini</code> 。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqHQtYZib6TkCAy1krj9g5ZpNqicnTzmn0mD6H7O2Rd1oWcqe8tSzX5UTSVFjFpPn8HWRiabkgMibXYJyQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p><strong>dhcp_driver</strong></p>
+<p>使用 dnsmasq 实现 DHCP</p>
+<p><strong>interface_driver</strong></p>
+<p>使用 linux bridge 连接 DHCP NameSpace interface</p>
+<p>当创建 network 并在 subnet 上 enable DHCP 时，网络节点上的 DHCP agent 会启动一个 dnsmasq 进程为该 network 提供 DHCP 服务。</p>
+<p>dnsmasq 是一个提供 DHCP 和 DNS 服务的开源软件。dnsmasq 与 network 是一对一关系，一个 dnsmasq 进程可以为同一 netowrk 中所有 enable 了 DHCP 的 subnet 提供服务。</p>
+<p>DHCP agent 会为每个 network 创建一个目录 /opt/stack/data/neutron/dhcp/，用于存放该 network 的 dnsmasq 配置文件。</p>
+<h2 id="dnsmasq-重要的启动参数"><a href="#dnsmasq-重要的启动参数" class="headerlink" title="dnsmasq 重要的启动参数"></a>dnsmasq 重要的启动参数</h2><p><strong>–dhcp-hostsfile</strong></p>
+<p>存放 DHCP host 信息的文件，这里的 host 在我们这里实际上就是 instance。dnsmasq 从该文件获取 host 的 IP 与 MAC 的对应关系。每个 host 对应一个条目，信息来源于 Neutron 数据库。</p>
+<p><strong>–interface</strong></p>
+<p>指定提供 DHCP 服务的 interface。dnsmasq 会在该 interface 上监听 instance 的 DHCP 请求。</p>
+<h2 id="用-NameSpace-隔离-DHCP-服务"><a href="#用-NameSpace-隔离-DHCP-服务" class="headerlink" title="用 NameSpace 隔离 DHCP 服务"></a>用 NameSpace 隔离 DHCP 服务</h2><p>Neutron 通过 dnsmasq 提供 DHCP 服务，而 dnsmasq 如何独立的为每个 network 服务呢？答案是通过 Linux Network NameSpace 隔离。</p>
+<p>在二层网络上，VLAN 可以将一个物理交换机分割成几个独立的虚拟交换机。类似地，在三层网络上，Linux network NameSpace 可以将一个物理三层网络分割成几个独立的虚拟三层网络。</p>
+<p>每个 NameSpace 都有自己独立的网络栈，包括 route table，firewall rule，network interface device 等。</p>
+<p>Neutron 通过 NameSpace 为每个 network 提供独立的 DHCP 和路由服务，从而允许租户创建重叠的网络。如果没有 NameSpace，网络就不能重叠。</p>
+<p><strong>NameSpace 是在 Linux 底层上对进程加以隔离的</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip netns list  # 列出所有的 namespace</span><br></pre></td></tr></table></figure>
+
+<p>其实，宿主机本身也有一个 namespace，叫 root namespace，拥有所有物理和虚拟 interface device。物理 interface 只能位于 root namespace。</p>
+<p>新创建的 namespace 默认只有一个 loopback device。管理员可以将虚拟 interface，例如 bridge，tap 等设备添加到某个 namespace。</p>
+<h2 id="veth-pair"><a href="#veth-pair" class="headerlink" title="veth pair"></a>veth pair</h2><p>veth pair 是一种成对出现的特殊网络设备，它们象一根虚拟的网线，可用于连接两个 namespace。向 veth pair 一端输入数据，在另一端就能读到此数据。</p>
+<p>可以通过 <code>ip netns exec &lt;network namespace name&gt; &lt;command&gt;</code>管理 namespace。例如：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqHl6KcnHQiashwQKf17p4cK5zpFSiaIoV7Sw9BZZKMFvxrDkdrV0TE7zjN1C6PepTSsZJ8wLibvNq2Ig/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>详见：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIwMTM5MjUwMg==&mid=2653587599&idx=1&sn=d6172afe9207edeebfe1f9c354cf431b&chksm=8d308096ba47098009461d7e0accf2c8212d703d28f0b750f10a64a29cda1e31c908057ddb3f&scene=21#wechat_redirect">获取 DHCP IP 的过程</a></p>
+<h1 id="Vlan-Network"><a href="#Vlan-Network" class="headerlink" title="Vlan Network"></a>Vlan Network</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p><img src="http://mmbiz.qpic.cn/mmbiz_jpg/Hia4HVYXRicqHz8AovDFSFqn216FJawPla38QSl8N5gqdT5ybpvu16O7r5Ft0biaodECqSStHJatbfs4lDaEqUg6A/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>因为物理网卡 eth1 上面可以走多个 vlan 的数据，那么物理交换机上与 eth1 相连的的 port 要设置成 trunk 模式，而不是 access 模式。</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>在 <code>/etc/neutron/plugins/ml2/ml2_conf.ini</code> 设置 Vlan network 相关参数。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqGp9viaFtOlXepAF0aGHdC3ggcMqwBGtt09ia6VpJyiakrqkUHXe3mE70AyKQPkrIue5D03TCXJXkokQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqGp9viaFtOlXepAF0aGHdC3gJhJhzA3tpiaAwJWl7X9w6icOTaLG6mosPrCFVjzAZSUU2RnpnzGSpDSw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>上面配置定义了 label 为 “default” 的 vlan network，vlan id 的范围是 3001 - 4000。这个范围是针对普通用户在自己的租户里创建 network 的范围。因为普通用户创建 network 时并不能指定 vlan id，Neutron 会按顺序自动从这个范围中取值。</p>
+<p>对于 admin 则没有 vlan id 的限制，admin 可以创建 id 范围为 1-4094 的 vlan network。</p>
+<p>接着需要指明 vlan network 与物理网卡的对应关系：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqGp9viaFtOlXepAF0aGHdC3gRw5w0hOaiaUysr9eww4tq31IAt7IxDBLicQPr8Fc42ibq92JRUWgZBrFQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h1 id="Router"><a href="#Router" class="headerlink" title="Router"></a>Router</h1><h2 id="L3-agent"><a href="#L3-agent" class="headerlink" title="L3 agent"></a>L3 agent</h2><p>Neutron 的路由服务是由 L3 agent 提供的。 除此之外，L3 agent 通过 iptables 提供 firewall 和 floating ip 服务。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqEoyvBR7B1BUYBcEHA4wiaSkUWvCAqMKEwhszzCo3iaTyBxwiba19tUpoznDKRAnXbyIr4I7I7BXMphg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h2 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h2><p>L3 agent 需要正确配置才能工作，配置文件为 <code>/etc/neutron/l3_agent.ini</code>，位于控制节点或网络节点上。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqEoyvBR7B1BUYBcEHA4wiaSkJ5NDZKxrVN9eX8ic9Bfiaib9ayh67TgHv5Scj5Nco9xelFWT3ZdA9IC4Q/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>interface_driver 是最重要的选项，如果 mechanism driver 是 linux bridge，则：</p>
+<blockquote>
+<p>interface_driver = neutron.agent.linux.interface.BridgeInterfaceDriver</p>
+</blockquote>
+<p>如果选用 open vswitch，则：</p>
+<blockquote>
+<p>interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver</p>
+</blockquote>
+<p>L3 agent 运行在控制或网络节点上。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">neutron agent-list</span><br></pre></td></tr></table></figure>
+
+<p>l3 agent 会为每个 router 创建了一个 namespace，通过 veth pair 与 TAP 相连，然后将 Gateway IP 配置在位于 namespace 里面的 veth interface 上，这样就能提供路由了。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqEnZYvHvLmHKaicGPf7nmsDfSod9KAT6vcastgaUBeaOXicfliary6yufbcJQCvoyPg7ickR11ZGtfUJA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h2 id="Floating-IP"><a href="#Floating-IP" class="headerlink" title="Floating IP"></a>Floating IP</h2><p>当租户网络连接到 Neutron router，通常将 router 作为默认网关。当 router 接收到 instance 的数据包，并将其转发到外网时:</p>
+<ol>
+<li>router 会修改包的源地址为自己的外网地址，这样确保数据包转发到外网，并能够从外网返回。</li>
+<li>router 修改返回的数据包，并转发给真正的 instance。</li>
+</ol>
+<p>这个行为被称作 <a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzIwMTM5MjUwMg==&mid=2653587316&idx=1&sn=114abfc48e6984309507e523d1548cad&chksm=8d308f6dba47067b5b206331fdbc2391dc508e50697ea26a4012e11763d391dc1f3e1117ff13&scene=21#wechat_redirect">Source NAT</a>。</p>
+<p>如果需要从外网直接访问 instance，则可以利用 floating IP。下面是关于 floating IP 必须知道的事实：</p>
+<ol>
+<li>floating IP 提供静态 NAT 功能，建立外网 IP 与 instance 租户网络 IP 的一对一映射。</li>
+<li>floating IP 是配置在 router 提供网关的外网 interface 上的，而非 instance 中。</li>
+<li>router 会根据通信的方向修改数据包的源或者目的地址。</li>
+</ol>
+<p>小结一下：</p>
+<ol>
+<li>floating IP 能够让外网直接访问租户网络中的 instance。这是通过在 router 上应用 iptalbes 的 NAT 规则实现的。</li>
+<li>floating IP 是配置在 router 的外网 interface 上的，而非 instance，这一点需要特别注意。</li>
+</ol>
+<h1 id="VXLAN"><a href="#VXLAN" class="headerlink" title="VXLAN"></a>VXLAN</h1><blockquote>
+<p>本质上，VXLAN 和 VLAN 都是提供以太网二层服务的。</p>
+</blockquote>
+<p>overlay network 是指建立在其他网络上的网络。overlay network 中的节点可以看作通过虚拟（或逻辑）链路连接起来的。overlay network 在底层可能由若干物理链路组成，但对于节点，不需要关心这些底层实现。目前 linux bridge 只支持 vxlan，不支持 gre；open vswitch 两者都支持。</p>
+<p>VXLAN 为 Virtual eXtensible Local Area Network。正如名字所描述的，VXLAN 提供与 VLAN 相同的以太网二层服务，但拥有更强的扩展性和灵活性。</p>
+<h2 id="VXLAN-的优势"><a href="#VXLAN-的优势" class="headerlink" title="VXLAN 的优势"></a>VXLAN 的优势</h2><ol>
+<li><p>支持更多的二层网段</p>
+<p>VLAN 使用 12-bit 标记 VLAN ID，最多支持 4094 个 VLAN，这对大型云部署会成为瓶颈。VXLAN 的 ID （VNI 或者 VNID）则用 24-bit 标记，支持 16777216 个二层网段。</p>
+</li>
+<li><p> 能更好地利用已有的网络路径。</p>
+</li>
+</ol>
+<p>   VLAN 使用 Spanning Tree Protocol 避免环路，这会导致有一半的网络路径被 block 掉。VXLAN 的数据包是封装到 UDP 通过三层传输和转发的，可以使用所有的路径。</p>
+<ol start="3">
+<li><p>避免物理交换机 MAC 表耗尽。</p>
+<p>由于采用隧道机制，TOR (Top on Rack) 交换机无需在 MAC 表中记录虚拟机的信息。</p>
+</li>
+</ol>
+<h2 id="VXLAN-封装和包格式"><a href="#VXLAN-封装和包格式" class="headerlink" title="VXLAN 封装和包格式"></a>VXLAN 封装和包格式</h2><p>VXLAN 是一种在现有物理网络设施中支持大规模多租户网络环境的解决方案。VXLAN 的传输协议是 IP + UDP。</p>
+<p>VXLAN 定义了一个 MAC-in-UDP 的封装格式。在原始的 Layer 2 网络包前加上 VXLAN header，然后放到 UDP 和 IP 包中。通过 MAC-in-UDP 封装，VXLAN 能够在 Layer 3 网络上建立起了一条 Layer 2 的隧道。</p>
+<p>包格式：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqEvYIfRUXISJHh3vl6UXnqnaT6MyyVODZlCzKTm3ib2gdaDIJibIMicbOuicz1jZtc3HhgHBfj11iabtLw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h2 id="VXLAN-Tunnel-EndPoint"><a href="#VXLAN-Tunnel-EndPoint" class="headerlink" title="VXLAN Tunnel EndPoint"></a>VXLAN Tunnel EndPoint</h2><p>VXLAN 使用 VXLAN tunnel endpoint (VTEP) 设备处理 VXLAN 的封装和解封。每个 VTEP 有一个 IP interface，配置了一个 IP 地址。VTEP 使用该 IP 封装 Layer 2 frame，并通过该 IP interface 传输和接收封装后的 VXLAN 数据包。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_jpg/Hia4HVYXRicqEvYIfRUXISJHh3vl6UXnqn47ZicyJNP8A2TqHkcToLAgCv793Rpe3thcOw3Tg0lGSmcg2E9nXZGVw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>VXLAN 独立于底层的网络拓扑；反过来，两个 VTEP 之间的底层 IP 网络也独立于 VXLAN。VXLAN 数据包是根据外层的 IP header 路由的，该 header 将两端的 VTEP IP 作为源和目标 IP。</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIwMTM5MjUwMg==&mid=2653587534&idx=1&sn=432430ea6797d72abf02594b3ddcc7ab&chksm=8d308057ba4709419a7ce406d08451ed1abd11341c2624cd61b83d31cdda51e0df35603b3a45&scene=21#wechat_redirect">VXLAN 转发流程</a></p>
+<h2 id="配置-2"><a href="#配置-2" class="headerlink" title="配置"></a>配置</h2><p>在 <code>/etc/neutron/plugins/ml2/ml2_conf.ini</code> 设置 VXLAN network 相关参数。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqF9SVjNl2BGLFMFqKkan39xExoXR1npfEmcNt5NBZDef75q5HflCUiaicdtX4DaMARdGyDeF3lh3m8w/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>然后指定 VXLAN 的范围：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqF9SVjNl2BGLFMFqKkan39xyeCEM9jgrZ0drSuX8bGPclPSIdiccLtburDQWPJOISP5EUNCkztNeag/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>接着需要在 [VXLAN] 中配置 VTEP。</p>
+<h2 id="L2-Population"><a href="#L2-Population" class="headerlink" title="L2 Population"></a>L2 Population</h2><p><strong>L2 Population 是用来提高 VXLAN 网络 Scalability 的</strong>。</p>
+<p>当 VXLAN 网络中的主机想要与其他的主机通信时，就会向网络中进行广播，询问对方主机的 MAC 地址，如果网络很大时，广播的成本就很大，所以 L2 Population 就出现了。</p>
+<p>L2 Population 的作用是在 VTEP 上提供 Porxy ARP 功能，使得 VTEP 能够预先获知 VXLAN 网络中如下信息：</p>
+<p>\1. VM IP – MAC 对应关系</p>
+<p>\2. VM – VTEP 的对应关系</p>
+<p>当 VM A 需要与 VM G 通信时：</p>
+<p>\1. Host 1 上的 VTEP 直接响应 VM A 的 APR 请求，告之 VM G 的 MAC 地址。</p>
+<p>\2. 因为 Host 1 上的 VTEP 知道 VM G 位于 Host 4，会将封装好的 VXLAN 数据包直接发送给 Host 4 的 VTEP。</p>
+<p>这样就解决了 MAC 地址学习和 APR 广播的问题，从而保证了 VXLAN 的 Scalability。</p>
+<p><strong>VTEP 是如何提前获知 IP – MAC – VTEP 相关信息的呢？</strong></p>
+<p>答案是：</p>
+<ol>
+<li>Neutron 知道每一个 port 的状态和信息； port 保存了 IP，MAC 相关数据。</li>
+<li>instance 启动时，其 port 状态变化过程为：down -&gt; build -&gt; active。</li>
+<li>每当 port 状态发生变化时，Neutron 都会通过 RPC 消息通知各节点上的 Neutron agent，使得 VTEP 能够更新 VM 和 port 的相关信息。</li>
+</ol>
+<p>VTEP 可以根据这些信息判断出其他 Host 上都有哪些 VM，以及它们的 MAC 地址，这样就能直接与之通信，从而避免了不必要的隧道连接和广播。</p>
+<h3 id="配置-3"><a href="#配置-3" class="headerlink" title="配置"></a>配置</h3><p>在 <code>/etc/neutron/plugins/ml2/ml2_conf.ini</code> 设置 L2 population mechanism driver。</p>
+<p>同时在 [VXLAN] 中配置 enable L2 Population。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqFZhpiagtHQnYCd9HaWibQ0gjPfRxiaVL1KIibcmL89R85IibD5u37icGHMpcyjKJoqUbOFYewu9yXKQqjg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIwMTM5MjUwMg==&mid=2653587517&idx=1&sn=cd4d8f849c3ba7a17f37d596aa3976f0&chksm=8d308024ba470932069323b5685b7f2e452904f451a50a225111135135eb9591a0b60fc4d6d4&scene=21#wechat_redirect">配置 L2 Population</a></p>
+<h1 id="Securet-Group"><a href="#Securet-Group" class="headerlink" title="Securet Group"></a>Securet Group</h1><p>安全组的原理是通过 iptables 对 instance 所在计算节点的网络流量进行过滤。</p>
+<h2 id="默认安全组"><a href="#默认安全组" class="headerlink" title="默认安全组"></a>默认安全组</h2><p>每个 Project（租户）都有一个命名为 “default” 的默认安全组。</p>
+<p>「default」安全组有四条规则，其作用是：<strong>允许所有外出（Egress）的流量，但禁止所有进入（Ingress）的流量</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables-save 命令查看相关规则</span><br></pre></td></tr></table></figure>
+
+<p>安全组有以下特性：</p>
+<ol>
+<li>通过宿主机上 iptables 规则控制进出 instance 的流量。</li>
+<li>安全组作用在 instance 的 port 上。</li>
+<li>安全组的规则都是 allow，不能定义 deny 的规则。</li>
+<li>instance 可应用多个安全组叠加使用这些安全组中的规则。</li>
+</ol>
+<h1 id="FWaaS"><a href="#FWaaS" class="headerlink" title="FWaaS"></a>FWaaS</h1><p>FWaaS 的原理和传统网络一样，是在 Neutron 虚拟 router 上应用防火墙规则，控制进出租户网络的数据。最根本的实现方式还是 iptables。</p>
+<p>FWaaS 有三个重要概念：Firewall、Policy 和 Rule。</p>
+<p><strong>Firewall</strong></p>
+<p>租户能够创建和管理的逻辑防火墙资源。Firewall 必须关联某个 Policy，因此必须先创建 Policy。</p>
+<p><strong>Firewall Policy</strong></p>
+<p>Policy 是 Rule 的集合，Firewall 会按顺序应用 Policy 中的每一条 Rule。</p>
+<p><strong>Firewall Rule</strong></p>
+<p>Rule 是访问控制规则，由源与目的子网 IP、源与目的端口、协议、allow 或 deny 动作组成。</p>
+<p>安全组的应用对象是虚拟网卡，由 L2 Agent 实现，比如 neutron_openvswitch_agent 和 neutron_linuxbridge_agent。安全组会在计算节点上通过 iptables 规则来控制进出 instance 虚拟网卡的流量。也就是说：<strong>安全组保护的是 instance</strong>。</p>
+<p>FWaaS 的应用对象是 router，可以在安全组之前控制外部过来的流量，但是对于同一个 subnet 内的流量不作限制。也就是说：<strong>FWaaS 保护的是 subnet</strong></p>
+<h2 id="启用-FWaaS"><a href="#启用-FWaaS" class="headerlink" title="启用 FWaaS"></a><strong>启用 FWaaS</strong></h2><p>因为 FWaaS 是在 router 中实现的，所以 FWaaS 没有单独的 agent。已有的 L3 agent 负责提供所有 FWaaS 功能。</p>
+<h3 id="配置-firewall-driver"><a href="#配置-firewall-driver" class="headerlink" title="配置 firewall driver"></a>配置 firewall driver</h3><p>Neutron 在 <code>/etc/neutron/fwaas_driver.ini</code> 文件中设置 FWaaS 使用的 driver。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqFtmicibc0Vyvsl4oWNECkeWCfyv3ueULLsGopoWfDX63otLH8bYQRC4Foia0ISMU7oP9M4icxZ6YWDEw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h3 id="配置-Neutron"><a href="#配置-Neutron" class="headerlink" title="配置 Neutron"></a>配置 Neutron</h3><p>在 Neutron 配置文件 <code>/etc/neutron/neutron.conf</code>  中启用 FWaaS plugin。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqFtmicibc0Vyvsl4oWNECkeWCYCQ0ibJdITYnkkVHEu9Nf5xMWTibXAye6Xuqj2ksgKeHJzxD2wrDq7vw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>无规则的虚拟防火墙，不允许任何流量通过。</p>
+<p>FWaaS 用于加强 Neutron 网络的安全性，与安全组可以配合使用。</p>
+<p>下面将 FWaaS 和安全组做个比较。</p>
+<p>相同点：</p>
+<ol>
+<li>底层都是通过 iptables 实现。</li>
+</ol>
+<p>不同点：</p>
+<ol>
+<li>FWaaS 的 iptables 规则应用在 router 上，保护整个租户网络；安全组则应用在虚拟网卡上，保护单个 instance。</li>
+<li>FWaaS 可以定义 allow 或者 deny 规则；安全组只能定义 allow 规则。</li>
+</ol>
+<h1 id="LBaaS"><a href="#LBaaS" class="headerlink" title="LBaaS"></a>LBaaS</h1><p>Load balancer 可以说是分布式系统中比较基础的组件。它接收前端发来的请求，然后将请求按照某种均衡策略转发给后端资源池中的某个处理单元，以完成处理。Load balancer 可以实现系统高可用和横向扩展。</p>
+<p>LBaaS 有三个主要的概念：</p>
+<p>Pool Member，Pool 和 Virtual IP</p>
+<p><strong>Pool Member</strong></p>
+<p>Pool Member 是 layer 4 的实体，拥有 IP 地址并通过监听端口对外提供服务。</p>
+<p>例如 Pool Member 可以是一个 web server，IP 为 172.16.100.9 并通过 80 端口提供 HTTP 服务。</p>
+<p><strong>Pool</strong></p>
+<p>Pool 由一组 Pool Member 组成。这些 Pool Member 通常提供同一类服务。</p>
+<p>例如一个 web server pool，包含：</p>
+<p>web1：172.16.100.9：80</p>
+<p>web2：172.16.100.10：80</p>
+<p><strong>Virtual IP</strong></p>
+<p>Virtual IP 也称作 VIP，是定义在 load balancer 上的 IP 地址。每个 pool member 都有自己的 IP，但对外服务则是通过 VIP。</p>
+<p>OpenStack Neutron 目前默认通过 HAProxy 软件来实现 LBaaS。HAProxy 是一个流行的开源 load balancer。Neutron 也支持其他一些第三方 Load balancer。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_jpg/Hia4HVYXRicqHS5Y0gRQvzvfWibIydbbYTpMHPhiaAdpmCgOK7qZuzVVWVbIsChcDgrBibiaxiboz7YFtGktUtCmjUmMQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h2 id="配置-LBaaS-agent"><a href="#配置-LBaaS-agent" class="headerlink" title="配置 LBaaS agent"></a>配置 LBaaS agent</h2><p>配置 LBaaS agent 的地方是 <code>/etc/neutron/services/loadbalancer/haproxy/lbaas_agent.ini</code>。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqGujgetPeUicDwic7vmib95M7AZ1JQJEdUx09NRyzUrmas1gicXU7H3O4iaksEBLGmSxRsO51bxmmLX2eA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>interface_driver 的作用是设置 load balancer 的网络接口驱动，可以有两个选项：</p>
+<p>Linux Bridge</p>
+<blockquote>
+<p>interface_driver = neutron.agent.linux.interface.BridgeInterfaceDriver</p>
+</blockquote>
+<p>Open vSwitch</p>
+<blockquote>
+<p>interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIwMTM5MjUwMg==&mid=2653587495&idx=1&sn=38160c95d3fab28005cb5b7201f7d722&chksm=8d30803eba470928f3b30168e6e3658bc918068553195dd35a421800e3d0c06f8f43373dbc86&scene=21#wechat_redirect">配置 LBaaS plugin</a></p>
+<p>接下来需要配置：</p>
+<ul>
+<li>创建 Pool、VIP</li>
+<li>添加 Pool Member</li>
+<li>创建 Monitor 来监控负载均衡的状态</li>
+</ul>
+<h2 id="LBaas-实现机制"><a href="#LBaas-实现机制" class="headerlink" title="LBaas 实现机制"></a>LBaas 实现机制</h2><p> Neutron 是如何用 Haproxy 来实现负责均衡的。</p>
+<p>在控制节点上运行 ip netns，我们发现 Neutron 创建了新的 namespace qlbaas-xxx</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqE27vtJAmVwPHnjjcmZlCX2jVOaBEaYOEuwFd9oicMAOYQtkTbHFv2h0NWIeZ3kcv6IYg51Q3fm6Xw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>该 namespace 对应我们创建的 pool “web servers”。其命名格式为 qlbaas-&lt; pool ID&gt;。可以通过 ip a 查看其设置。</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqE27vtJAmVwPHnjjcmZlCX2l5YLzx8nDZq83Up3ia0j5Om9F2LwnL656uvXKAGyt5qZKCAU0NI027Q/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<h2 id="Load-Balance-Method-以及-Session-Persistence"><a href="#Load-Balance-Method-以及-Session-Persistence" class="headerlink" title="Load Balance Method 以及 Session Persistence"></a>Load Balance Method 以及 Session Persistence</h2><ol>
+<li> Load Balance Method 是为新连接选择 member 的方法</li>
+<li>Session Persistence 是为同一个 client 的后续连接选择 member 的方法</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIwMTM5MjUwMg==&mid=2653587517&idx=1&sn=cd4d8f849c3ba7a17f37d596aa3976f0&chksm=8d308024ba470932069323b5685b7f2e452904f451a50a225111135135eb9591a0b60fc4d6d4&scene=21#wechat_redirect">两种方法介绍</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/01/31/LearningOpenStack-10-neutron-architecture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/01/31/LearningOpenStack-10-neutron-architecture/" class="post-title-link" itemprop="url">【学习】十、Neutron 架构总结</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-01-31 10:21:36" itemprop="dateCreated datePublished" datetime="2018-01-31T10:21:36+08:00">2018-01-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SRE/" itemprop="url" rel="index"><span itemprop="name">SRE</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/01/31/LearningOpenStack-10-neutron-architecture/" class="post-meta-item leancloud_visitors" data-flag-title="【学习】十、Neutron 架构总结" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/01/31/LearningOpenStack-10-neutron-architecture/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/01/31/LearningOpenStack-10-neutron-architecture/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h1><p><img src="http://mmbiz.qpic.cn/mmbiz_png/Hia4HVYXRicqF7dQR9rL1uufLL090HfB6Kk8uXjRY9wicfgHlRJDFAyzjBUkgAS1AibbChA2I6gYPcTAAzOhKayGPw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<p>与 OpenStack 其他服务一样，Neutron 采用的是分布式架构，包括 Neutorn Server、各种 plugin/agent、database 和 message queue。</p>
+<ol>
+<li>Neutron server 接收 api 请求。</li>
+<li>plugin/agent 实现请求。</li>
+<li>database 保存 neutron 网络状态。</li>
+<li>message queue 实现组件之间通信。</li>
+</ol>
+<blockquote>
+<p>metadata-agent </p>
+<p>instance 在启动时需要访问 nova-metadata-api 服务获取 metadata 和 userdata，这些 data 是该 instance 的定制化信息，比如 hostname, ip， public key 等。</p>
+<p>但 instance 启动时并没有 ip，那如何通过网络访问到 nova-metadata-api 服务呢？</p>
+<p>答案就是 neutron-metadata-agent。 该 agent 让 instance 能够通过 dhcp-agent 或者 l3-agent 与 nova-metadata-api 通信。</p>
+</blockquote>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_jpg/Hia4HVYXRicqF7dQR9rL1uufLL090HfB6KWxMKE7spZS3fqlzSribl0fDZJibAXgo17ziavtMpJPUzOibdjPqMMfyticQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1" alt="Neuton 架构总图"></p>
+<ul>
+<li>Neutron 通过 plugin 和 agent 提供网络服务</li>
+<li>plugin 位于 Neutron server，包括 core plugin 和 service plugin</li>
+<li>agent 位于各个节点，负责实现网络服务</li>
+<li>core plugin 提供 L2 功能，ML2 是推荐的 plugin</li>
+<li>使用最广泛的 L2 agent 是 linux bridage 和 open vswitch</li>
+<li>service plugin 和 agent 提供扩展功能，包括 dhcp, routing, load balance, firewall, vpn 等</li>
+</ul>
+<h1 id="实际网络分类"><a href="#实际网络分类" class="headerlink" title="实际网络分类"></a>实际网络分类</h1><p>在实际环境中，通常会有四种网络：</p>
+<ul>
+<li><p>Management 网络</p>
+<p>用于节点之间消息队列的内部通信和访问数据库服务</p>
+</li>
+<li><p>API 网络</p>
+<p>通过 API 网络向用户提供服务，Keystone, Nova, Neutron, Glance, Cinder, Horizon 的 endpoints 均配置在 API 网络上。通常，管理员也通过 API 网络 SSH 管理各个节点</p>
+</li>
+<li><p>VM 网络</p>
+<p>用于实例之间的通信，可以选择的类型包括 local, flat, vlan, vxlan 和 gre</p>
+</li>
+<li><p>External 网络</p>
+<p>External 网络指的是 VM 网络之外的网络，该网络不由 Neutron 管理。 Neutron 可以将 router attach 到 External 网络，为 instance 提供访问外部网络的能力</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/01/29/python-datastr-alg-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/01/29/python-datastr-alg-1/" class="post-title-link" itemprop="url">一、Python 程序的计算代价</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-01-29 17:48:57" itemprop="dateCreated datePublished" datetime="2018-01-29T17:48:57+08:00">2018-01-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/01/29/python-datastr-alg-1/" class="post-meta-item leancloud_visitors" data-flag-title="一、Python 程序的计算代价" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/01/29/python-datastr-alg-1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/01/29/python-datastr-alg-1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>O(1) 称为常量复杂度，O(log n) 称为对数复杂度，O(n) 称为线性复杂度，O(n²) 称为平方复杂度，O(2ⁿ) 称为指数复杂度。</p>
+<ul>
+<li>基本算术运算是常量时间操作，逻辑运算是常量时间运算。</li>
+<li>组合对象有些是常量时间，有些不是。<ul>
+<li>复制和切片通常需要线性时间（与长度有关，是 O(n) 时间操作）。</li>
+<li>list 的元素访问和元素赋值（以及 tuple 的元素访问），是常量时间</li>
+<li>dict 情况比较复杂。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>字符串也应该看做组合对象，许多操作不是常量时间。</li>
+<li>创建对象也需要时间和空间，所需的大小与对象的规模有关，通常应该看做线性时间和线性空间操作。</li>
+<li>构造新的的 list、set 结构，构造空结构（空表、空集合）是常量时间操作，而构造一个包含n个元素的结构，则至少需要 O(n) 时间。</li>
+<li>一些 list 操作的效率：元素访问和元素修改是常量时间操作，一般的加入/删除元素操作（即使只加入一个元素）都是 O(n) 时间操作，在表的最后加入和删除元素的操作效率高，在其他地方加入和删除元素的操作效率低。</li>
+<li>字典操作效率，加入新的键值对，最坏的情况复杂度是 O(n)，但平均复杂度是 O(1)。</li>
+<li>Python 的各种组合数据对象都没有预设的最大元素个数，从空间占用的角度看，其实际开销在存续期间可能变大，但通常不会缩小（即使后来元素变得很少了），比如删除元素。</li>
+<li>如果在程序中建立了一个表，此后一直将其作为全局变量的值，这个对象就会始终存在并占用存储空间。如果将其作为某个函数里局部变量的值，或者虽然作为全局变量的值，但是通过复制将其抛弃，这个对象就可以被回收。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/20/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/22/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

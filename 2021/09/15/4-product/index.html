@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="PRD、UC、原型分不清楚？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="什么是产品文档，产品文档该怎么写">
+<meta property="og:url" content="http://iziyang.github.io/2021/09/15/4-product/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="PRD、UC、原型分不清楚？">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916102018">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210915085217">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916101823">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916102333">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916103028">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/1503654/1631754751649-e416fd8e-ac83-48b6-a99a-cf6bf9ccf1d4.png">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916102935">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210917090049">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210918085638">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210918091326">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210918091704">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210918091859">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210918091916">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202090646">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/1503654/1632139648502-fb3d5fc2-65bf-452e-af6f-d3e55615ecd9.png">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202090710">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091211">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091219">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091243">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091251">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091302">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/1503654/1632145871984-32ccc557-eddb-40e6-9552-b67ef705c054.png">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091538">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091545">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091555">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091606">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091706">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091714">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091722">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091755">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091814">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091825">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/1503654/1633081099664-f15e7c84-6b73-487a-bf54-fcc876a78624.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/1503654/1633082184962-ab93d2c4-d66a-484e-bbc4-0103baef307f.png">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092225">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092232">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092242">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092258">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092311">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092320">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092332">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092344">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092416">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092426">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092439">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092448">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092456">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092505">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092543">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092557">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092606">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092616">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092631">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092645">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092701">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092810">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092819">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092828">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092852">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092919">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092931">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092957">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093028">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093041">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093050">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093135">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093208">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093227">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093240">
+<meta property="article:published_time" content="2021-09-15T00:35:42.000Z">
+<meta property="article:modified_time" content="2024-03-03T09:52:47.604Z">
+<meta property="article:author" content="原少子杨">
+<meta property="article:tag" content="产品经理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916102018">
+
+<link rel="canonical" href="http://iziyang.github.io/2021/09/15/4-product/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>什么是产品文档，产品文档该怎么写 | 原少子杨</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2021/09/15/4-product/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          什么是产品文档，产品文档该怎么写
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-15 08:35:42" itemprop="dateCreated datePublished" datetime="2021-09-15T08:35:42+08:00">2021-09-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-03 17:52:47" itemprop="dateModified" datetime="2024-03-03T17:52:47+08:00">2024-03-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E8%B0%88/" itemprop="url" rel="index"><span itemprop="name">杂谈</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/09/15/4-product/" class="post-meta-item leancloud_visitors" data-flag-title="什么是产品文档，产品文档该怎么写" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/09/15/4-product/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/09/15/4-product/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">PRD、UC、原型分不清楚？</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916102018"></p>
+<ul>
+<li><p>什么是产品文档？</p>
+</li>
+<li><ul>
+<li>包含哪些文档？</li>
+<li>作用是什么，可以用来干什么？</li>
+</ul>
+</li>
+<li><p>怎么写产品文档？</p>
+</li>
+<li><p>什么是好的产品文档？</p>
+</li>
+</ul>
+<h1 id="关于产品文档的思考"><a href="#关于产品文档的思考" class="headerlink" title="关于产品文档的思考"></a>关于产品文档的思考</h1><h2 id="什么是产品文档"><a href="#什么是产品文档" class="headerlink" title="什么是产品文档"></a>什么是产品文档</h2><p>不同人的人对产品文档可能都有不一样的理解，例如可能都有以下这么多类：</p>
+<ul>
+<li>Spec？XRD（MRD/PRD/BRD 等）？原型？User Story？又或者是 Use Case？还是数十页的 Word 文档？</li>
+</ul>
+<p>另外我们前面学过产品思维，产品文档实际上也是我们的产品，我们应该用产品文档解决谁的什么问题？</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210915085217"></p>
+<p>左边是从时间维度来看，产品文档的意义，右边是从人的角度来看产品文档应该解决的问题。</p>
+<p>未来：</p>
+<ul>
+<li><p>回溯：当时的结论和假设是什么</p>
+</li>
+<li><p>证据：一些历史的判断是什么，和其他人沟通的结论是什么，避免扯皮</p>
+</li>
+<li><p>教程：给新人学习最直接的方式</p>
+</li>
+</ul>
+<p>现在：</p>
+<ul>
+<li><p>思考：支撑自己思考</p>
+</li>
+<li><p>沟通：支撑和研发沟通</p>
+</li>
+<li><p>契约：沟通后最终形成沟通结论</p>
+</li>
+</ul>
+<p>过去：</p>
+<ul>
+<li>给过去做的决策一个交代，可能并没有推进好，所以要持续推进下去</li>
+</ul>
+<p>从人的角度来看：</p>
+<p>产品文档可以让自己形成结构化思维，更重要的是让开发知道为什么要做这个，做的东西会怎么用以及要做多久。</p>
+<p>说到底，<strong>文档也是一个产品，那么它的利益相关者是谁？他们的问题是什么</strong>。</p>
+<p>有人会问，我觉得几句话就能说清楚的事情啊，不用写文档吧？这里也有一个判断标准，那就是沟通是不是需要一个人以上的人参与或者是不是需要一天以上的人日才能完成？如果需要的话可能就需要写文档。</p>
+<h2 id="为什么我们需要产品文档"><a href="#为什么我们需要产品文档" class="headerlink" title="为什么我们需要产品文档"></a>为什么我们需要产品文档</h2><p>主要有以下三点：</p>
+<ul>
+<li>提前进行「完整」思考</li>
+<li>高效沟通</li>
+<li>仪式感与责任感</li>
+</ul>
+<p>第一点：写作就是思考本身，产品文档可以让我们把对产品的一切思考都放在前面，这也是避免日后在开发过程中再去更改需求，这个阶段也是代价最小，最容易调整的时候。</p>
+<p>第二点：文档也是很好的一个沟通形式，可以达到一次编写到处沟通、一次编写异步沟通的目的。</p>
+<p>第三点：一份格式良好的文档也会让合作方更加重视，这是一种仪式感和责任感。</p>
+<h2 id="产品文档应当包含什么"><a href="#产品文档应当包含什么" class="headerlink" title="产品文档应当包含什么"></a>产品文档应当包含什么</h2><p>以下的这些步骤可以根据需要来删减。</p>
+<ul>
+<li><p>标题、标签</p>
+</li>
+<li><p>作者、修改历史</p>
+</li>
+<li><p>需求背景、上下⽂ / 问题、现状、⽬标（和⾮⽬标：本期需求不解决的问题）</p>
+</li>
+<li><p>场景化描述：让开发知道这个功能是怎么用的</p>
+</li>
+<li><p>确定达成⽬标的具体标准：怎么知道这件事情做成了？怎么才算是目标达成了？要有一个具体标准</p>
+</li>
+<li><p>具体的解决⽅案：要写清楚解决方案</p>
+</li>
+<li><p>成本和计划：在文档里面要写清楚可能要花费的成本以及计划</p>
+</li>
+<li><p>决议前提/假设/⻛险 (*)：当时做这个需求和决策的前提是什么？</p>
+</li>
+</ul>
+<h2 id="什么是好的产品文档"><a href="#什么是好的产品文档" class="headerlink" title="什么是好的产品文档"></a>什么是好的产品文档</h2><ul>
+<li>有效回答读者问题：「为什么」&amp;「这跟我有什么关系」&amp;「我要做什么」</li>
+</ul>
+<p>一个好的产品文档，要能够不断的回答读产品文档的人的问题，利益相关者的问题，要能够明确的让读文档的人知道，为什么要做这件事，这跟他的关系是什么，要让他做什么。</p>
+<ul>
+<li>清晰、简洁、说⼈话、有故事性</li>
+</ul>
+<p>能做到清晰简洁也是很难的一件事，要让人读起来有画面感。</p>
+<ul>
+<li>结构清晰，能够快速索引定位</li>
+</ul>
+<p>不但要有最基本的目录，目录还必须要有合理性的结构。</p>
+<ul>
+<li>图⽂并茂，有数字</li>
+</ul>
+<p>图片可以让人的大脑产生画面感，能够更加具体化。</p>
+<ul>
+<li>良好的组织结构</li>
+</ul>
+<p>这个和前面的结构清晰类似。</p>
+<ul>
+<li>持续更新</li>
+</ul>
+<p>持续更新同一份文档很难，重要的是，当历史上的特性发生变更后，在新的文档里面把原来的顺延下来，保证用户可以在一篇文档中看到全貌。</p>
+<ul>
+<li>读起来有意思</li>
+</ul>
+<p>读起来有意思也很难，就是前面说的要有故事性，正所谓要「骗」读者读下去。</p>
+<h2 id="产品⽂档的成型过程"><a href="#产品⽂档的成型过程" class="headerlink" title="产品⽂档的成型过程"></a>产品⽂档的成型过程</h2><ul>
+<li><p>从⼀个松散的⾮结构化⼩备忘⽂档开始</p>
+<ul>
+<li>想要完成什么事，目标是什么</li>
+</ul>
+</li>
+<li><p>基于这个备忘，开始进⾏「零售沟通」</p>
+<ul>
+<li>有一本讲政治的书叫《硬球》，这里零售沟通就是与人 1V1 的去沟通</li>
+</ul>
+</li>
+<li><p>基于零售沟通的输⼊，形成完整的⽂档</p>
+</li>
+<li><p>⽂档发酵和修改</p>
+<ul>
+<li>文档完成之后，一定要睡一觉起来再看，让它发酵一下。</li>
+</ul>
+</li>
+<li><p>对完整的⽂档进⾏「零售确认」</p>
+<ul>
+<li>找到相关的人，一对一确认</li>
+<li>不要在会上让大家确认，开会只是一个凯旋的号角，而不是一个冲锋的号角</li>
+</ul>
+</li>
+<li><p>对⽂档进⾏批发讨论和确认</p>
+<ul>
+<li>批发讨论可能是找 ABC 开一个会，但是 DEF 压根不关心，在小范围内进行确认</li>
+</ul>
+</li>
+<li><p>正式需求评审</p>
+</li>
+<li><p>形成最终版本，确定下来，分发存档</p>
+</li>
+<li><p>持续更新（*）</p>
+</li>
+</ul>
+<h2 id="常见的文档类型及含义"><a href="#常见的文档类型及含义" class="headerlink" title="常见的文档类型及含义"></a>常见的文档类型及含义</h2><p>我们最常见的文档其实就是 PRD（产品文档分析），另外还有两种是 MRD（市场需求分析）和 BRD（商业需求分析）。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916101823"></p>
+<h2 id="备忘录的写法"><a href="#备忘录的写法" class="headerlink" title="备忘录的写法"></a>备忘录的写法</h2><ul>
+<li><p>有⼀种叫法是 bulleted brain storm，把你知道和想知道的，全部列出来。 </p>
+</li>
+<li><p>定义问题，把问题范围划清楚：⽐如完课率和 NPS 和复购，可能不是同⼀个问题。</p>
+</li>
+<li><p>定义⽬标，量化⽬标。</p>
+</li>
+<li><p>划定相关⼈员，以及要让他们⼲什么。</p>
+</li>
+<li><p>列出可能的问题，并领起后续的沟通和格式化⽂档写作……</p>
+</li>
+</ul>
+<h1 id="用例文档"><a href="#用例文档" class="headerlink" title="用例文档"></a>用例文档</h1><h2 id="什么是用例"><a href="#什么是用例" class="headerlink" title="什么是用例"></a>什么是用例</h2><ul>
+<li><p>参与者</p>
+<ul>
+<li>以某种⽅式与系统交互的⼈或事。</li>
+</ul>
+</li>
+<li><p>⽤例</p>
+<ul>
+<li>系统为其参与者所执⾏的<strong>有价值</strong>操作。</li>
+</ul>
+</li>
+</ul>
+<p>下面这个就是一个用例图，有一个参与者和一个系统，用例就是执行的有价值的操作。这里的关键是有价值，后面还会再提。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916102333"></p>
+<p>用例最重要的两个元素可能就是用例图和用例文档。但是用例图是整理思路的，真正的内容还是在文档里面，而且用例文档最终可能就是包含在 PRD 中的。</p>
+<p>⽤例不是功能或特性，⽤例包含⼀个对参与者来说有完整意义的过程。</p>
+<ul>
+<li><p>⽤例解释系统如何向利益相关者/参与者提供功能性价值。</p>
+</li>
+<li><p>⽤例通过使⽤者视⻆描述系统与其互动的⽅式，从⽽<strong>观测</strong>出系统实现。</p>
+</li>
+<li><ul>
+<li>特性：⼈们可以取钱 ⽤例：取钱</li>
+<li>特性：系统可以⾃动选择吐钞⾯值组合 ⽤例：取钱</li>
+</ul>
+</li>
+</ul>
+<p>其实简单来说，用例就是参与者与系统之间发生的一系列可以闭环的操作。比如取钱这件事情，就是人和 ATM 机发生的一次完整的交互。</p>
+<p>对于用例来说，<strong>系统、参与者、有价值的操作三者缺一不可</strong>。</p>
+<ul>
+<li><p>⽤例不是⽤例图，⽤例的⼤部分内容会在⽤例⽂档中描述出来。</p>
+</li>
+<li><p>没有⼤量交互的产品很难通过⽤例来表达，⽐如策略型产品、AI 类产品的引擎、业务接⼝描述等等。</p>
+</li>
+<li><p>⽤例缺乏约束性描述，还需要「⾮功能型需求」等描述。</p>
+</li>
+<li><ul>
+<li>性能、安全、业务限制这些非功能性的描述通常会在 PRD 中体现出来。</li>
+<li>用例通常是功能性的需求</li>
+</ul>
+</li>
+<li><p>我们需要⼀个组织 UC 的整体业务⽂档，可以⽤ PRD 来做这件事情。</p>
+</li>
+</ul>
+<h2 id="⽤例的参与者"><a href="#⽤例的参与者" class="headerlink" title="⽤例的参与者"></a>⽤例的参与者</h2><ul>
+<li><p>参与者不会是「⼈」，⽽是「⻆⾊」，⼀个⼈可以有多个身份。</p>
+<ul>
+<li>参与者就是到底谁在用这个系统</li>
+<li>比如拍东西里面的围观者、拍卖者、购买者是可以相互转化的</li>
+</ul>
+</li>
+<li><p>参与者不⼀定是「⼈」，也可能是系统。</p>
+</li>
+<li><p>先写多，再合并和抽象。</p>
+</li>
+<li><p>要抽象，但不要过度泛化。</p>
+<ul>
+<li>不能只有一个用户，太宽泛</li>
+</ul>
+</li>
+<li><p>特殊参与者：系统/时间</p>
+<ul>
+<li>是谁发起的这个用例，可能就是时间，比如有用户可能一个月没有来学习专栏了</li>
+<li>如果把银行当做一个系统，那么银行内部的角色就不会画在外面</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>这里邱岳老师提到，他在做一个新产品的时候，一定会在做 PRD 之前在纸上画一下用例图</p>
+</blockquote>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916103028"></p>
+<h2 id="⽤例的粒度"><a href="#⽤例的粒度" class="headerlink" title="⽤例的粒度"></a>⽤例的粒度</h2><ul>
+<li><p>系统为参与者提供的具备<strong>完整价值</strong>的服务。（关注价值⽽⾮功能）</p>
+<ul>
+<li>「查看商品详情」是不是⼀个⽤例？实际上不是一个标准的用例，但是我们依然会单独列出来，是因为，查看商品详情会有很多交互，用户操作很复杂的时候，也会单独拿出来作为用例</li>
+<li>谁在使用系统，他们的目标是什么？</li>
+</ul>
+</li>
+<li><p>这个⽤例是⼀个完整的具有可销售价值的服务吗？⽼板测试，老板会不会为这个用例付钱？</p>
+<ul>
+<li>⽤例：⽤户管理 vs. 修改⽤户密码</li>
+<li>用户会买单吗？如果添加一个功能，用户愿意支付费用，不添加功能的话不用支付费用，用户能接受的时候，也是一个好的用例</li>
+<li>老板测试？想象一个人，老板问每天在干啥，如果说在出用例的标题，那就是一个好用例，看老板会不会崩溃</li>
+</ul>
+</li>
+<li><p>以主动的逻辑命名</p>
+<ul>
+<li>⻛险评估 vs. 评估⻛险</li>
+</ul>
+</li>
+<li><p>划定系统边界，什么是边界内的？外的？</p>
+</li>
+</ul>
+<p>用例粒度的标准，要根据所做的系统来区分。另外还可以根据用户是否会为了这个用例来付费，或者当老板在询问的时候，会不会认为这一件没有价值的事情。</p>
+<p>比如下图，如果是一个订单系统的话，左边的详细用例就很合适了。而如果是一个电商系统，那么整个订单就可以抽象成为一个「管理订单」的系统。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/1503654/1631754751649-e416fd8e-ac83-48b6-a99a-cf6bf9ccf1d4.png"></p>
+<p>通过划定系统边界，表明哪些角色是边界内的，哪些是边界外的。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210916102935"></p>
+<h2 id="用例文档-1"><a href="#用例文档-1" class="headerlink" title="用例文档"></a>用例文档</h2><p>每一个椭圆的用例，都应该包含一个用例文档。</p>
+<p>用例文档应该包含以下部分：</p>
+<ul>
+<li><p>标题作者修改历史</p>
+</li>
+<li><p>简要描述</p>
+</li>
+<li><p>利益相关者/涉众/参与⼈及其相关利益</p>
+</li>
+<li><p>事件流：基本流程/扩展流程/异常流程</p>
+<ul>
+<li>大部分都在描述扩展流和异常流</li>
+</ul>
+</li>
+<li><p>辅助图例</p>
+<ul>
+<li>实际交互和用例不应该写在一起，但实际上谁会写那么多文档</li>
+</ul>
+</li>
+<li><p>前置条件/后置条件</p>
+</li>
+<li><p>（*）术语表</p>
+</li>
+<li><p>（*）界⾯图例</p>
+</li>
+<li><p>（*）限制条件/特殊需求/策略</p>
+</li>
+</ul>
+<h2 id="⽤例⽂档的核⼼-事件流"><a href="#⽤例⽂档的核⼼-事件流" class="headerlink" title="⽤例⽂档的核⼼ - 事件流"></a>⽤例⽂档的核⼼ - 事件流</h2><ul>
+<li><p>⽤例⽂档中最重要的部分是「事件流」，描述如何通过交互传递由⽤例所承诺的价值。</p>
+</li>
+<li><p>⽤例⽂档是⼀个被严格流程化规范化的故事，它像⼀个「词牌名」。</p>
+<ul>
+<li>⽤例开始（⼊⼝） → {⽤户发起请求 → 系统校验请求 → 系统处理 → 系统反馈} → ⽤例结束</li>
+</ul>
+</li>
+<li><p>基本流/扩展流/异常流</p>
+<ul>
+<li>坐 8 路汽⻋，江⼆村下⻋；确定 6 路汽⻋还营运，坐 6 路汽⻋到地铁 2 号线江陵路站；地铁出来⻔⼝吃点东⻄。</li>
+<li>如果不饿不想吃东⻄，也可以旁边星巴克坐⼀会⼉。</li>
+</ul>
+</li>
+<li><p>如果 6 路汽⻋不运营了，就直接打⻋。</p>
+</li>
+</ul>
+<p>用例文档的核心就是事件流，在事件流里面，要先写出来基本流，然后再写扩展流和异常流。</p>
+<ul>
+<li><p>基本流中没有任何分⽀，没有如果，只有顺序描述，预期会成功的路线。</p>
+</li>
+<li><p>即便啰嗦，也要严格按照 1 2 3 4 步骤编写，可以帮助⾃⼰快速切换视图，注意主语。</p>
+</li>
+<li><p>基本流必须完整，不能引⽤其他扩展流。</p>
+</li>
+<li><p>事件流的故事描述，不应该有交互和界⾯相关的元素（也不⼀定）</p>
+<ul>
+<li>⽤户点击提交按钮 ✕</li>
+<li>⽤户向系统请求提交表单 ✓</li>
+</ul>
+</li>
+<li><p>没有具体技术实现</p>
+<ul>
+<li>系统将销售记录⽣成 SQL 并执⾏，写⼊数据路 ✕</li>
+<li>系统记录销售 ✓</li>
+</ul>
+</li>
+</ul>
+<h3 id="⼀起写⼀个：ATM-机取钱的事件流"><a href="#⼀起写⼀个：ATM-机取钱的事件流" class="headerlink" title="⼀起写⼀个：ATM 机取钱的事件流"></a>⼀起写⼀个：ATM 机取钱的事件流</h3><p><strong>基础流程</strong></p>
+<ol>
+<li>用例开始</li>
+<li>系统展示插卡教程</li>
+<li>用户插入银行卡</li>
+<li>系统校验银行卡合法</li>
+<li>系统展示输入密码组件</li>
+<li>用户输入密码</li>
+<li>系统校验密码正确</li>
+<li>系统展示服务项</li>
+<li>用户选择取款服务</li>
+<li>系统展示取款界面</li>
+<li>用户直接选择预定的取款金额</li>
+<li>用户提交取款申请</li>
+<li>系统校验金额合法</li>
+<li>系统登记取款记录</li>
+<li>系统支付现金</li>
+<li>用户取走现金</li>
+<li>系统确认用户没有其他业务</li>
+<li>系统弹出卡片</li>
+<li>用例结束</li>
+</ol>
+<blockquote>
+<p>有些步骤可以合并，比如合并成一个用户登录，在子流程里面</p>
+</blockquote>
+<p><strong>扩展流程</strong></p>
+<p>4a. 系统无法识别银行卡</p>
+<p>​    4a1. 系统提示用户，银行卡错误</p>
+<p>​    4a2. 系统退出卡片</p>
+<p>​    4a3. 用例结束</p>
+<p>4b. 系统识别到挂失银行卡</p>
+<p>​    4b1. 系统提示用户，银行卡有误</p>
+<p>4b2. 系统发出警报，并录下用户脸庞</p>
+<p>4b3. 系统锁住 ATM 小房间</p>
+<p>​    4b4. 用例结束</p>
+<p>4c. 系统识别卡片插反</p>
+<p>​    4c1. 系统提示用户，银行卡插反</p>
+<p>4c2. 系统退出卡片</p>
+<p>​    4c3. 系统播放正确的卡片插入样式</p>
+<p>​    4c4. 用户重新插入卡片，若未插入卡片，用例结束</p>
+<p>​    4c5. 执行用例 4</p>
+<p>7a. 系统校验密码不正确</p>
+<p>​    7a1. 系统提示用户密码错误，提示用户剩余密码尝试次数</p>
+<p>​    7a2. 系统展示密码输入界面</p>
+<p>​    7a3. 用户输入密码</p>
+<p>​    7a4. 系统扣除密码尝试次数</p>
+<p>​    7a5. 系统校验密码正确</p>
+<p>​        7a5a. 系统校验密码错误</p>
+<p>​            7a5a1. 判断尝试次数用尽</p>
+<p>​            7a5a2. 尝试次数用尽就锁卡</p>
+<h2 id="⽤例⽂档的组成-前后置流程"><a href="#⽤例⽂档的组成-前后置流程" class="headerlink" title="⽤例⽂档的组成 - 前后置流程"></a>⽤例⽂档的组成 - 前后置流程</h2><p>前置的流程是指，在用例开始之前需要保证系统已经准备好了。</p>
+<p>后置流程是指，在用例结束的时候，要保证系统能够正确的结束。</p>
+<ul>
+<li><p>系统能够感知和校验的状态描述</p>
+</li>
+<li><p>前置：确保系统在正确起点（且）</p>
+<ul>
+<li>⽐如：与银⾏系统连接的⽹络是可⽤的；⽤户被授权进⾏此次操作。</li>
+</ul>
+</li>
+<li><p>后置：确保系统正确的结束（或）</p>
+<ul>
+<li>⽐如：ATM 向⽤户返回卡及现⾦，并记录本次提款事务与⽤户账本上；ATM 未向⽤户返回现⾦，本次⽀付 失败事件登记在账本上。</li>
+</ul>
+</li>
+</ul>
+<h2 id="⽤例⽂档的组成-辅助图例-amp-界⾯图例"><a href="#⽤例⽂档的组成-辅助图例-amp-界⾯图例" class="headerlink" title="⽤例⽂档的组成 - 辅助图例 &amp; 界⾯图例"></a>⽤例⽂档的组成 - 辅助图例 &amp; 界⾯图例</h2><p>辅助图例和界面图例如状态机，系统标识图等。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210917090049"></p>
+<h2 id="⽤例⽂档的组成-限制条件-特殊需求-策略"><a href="#⽤例⽂档的组成-限制条件-特殊需求-策略" class="headerlink" title="⽤例⽂档的组成 - 限制条件/特殊需求/策略"></a>⽤例⽂档的组成 - 限制条件/特殊需求/策略</h2><p>一个完整的用例，除了参与者与系统交互的流程之外，还会包含一些策略和限制，以及特殊情况。</p>
+<ul>
+<li><p>策略：向不活跃⽤户发送提醒，时机和⽤户群就是策略。</p>
+</li>
+<li><p>限制：如拍卖，单⽇提现不得超过 5000。</p>
+</li>
+<li><p>特殊：如敏感词审核。</p>
+</li>
+</ul>
+<h2 id="⽤例⽂档的组成-术语表"><a href="#⽤例⽂档的组成-术语表" class="headerlink" title="⽤例⽂档的组成 - 术语表"></a>⽤例⽂档的组成 - 术语表</h2><p>也即文档中提到了哪些术语，需要专门做一个解释说明。</p>
+<h2 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h2><p>上面讲到的是基本的用例文档，在工作中也够用了，再进阶一些的话还有下面这些：</p>
+<ul>
+<li><p>⽤例之间的关系</p>
+</li>
+<li><p>参与者之间的关系</p>
+</li>
+<li><p>⽤例与参与者的关系</p>
+</li>
+</ul>
+<p>推荐一本书叫《用例建模》，里面有很详细的说明。</p>
+<p>但是很多时候我们在写用例文档时，不会严格按照教科书来，而是根据实际情况，灵活取舍。</p>
+<h1 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h1><p>下面这一部分开始讲如何画流程图。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210918085638"></p>
+<p>主要分成下面几个部分：</p>
+<ul>
+<li><p>图的意义</p>
+</li>
+<li><p>快速教学与实践（流程图/活动图/时序图）</p>
+</li>
+<li><p>使⽤原则和经验（流程图/活动图/时序图）</p>
+</li>
+<li><p>快速教学与实践（状态图）</p>
+</li>
+<li><p>图的使⽤场景</p>
+</li>
+</ul>
+<h2 id="图的意义"><a href="#图的意义" class="headerlink" title="图的意义"></a>图的意义</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210918091326"></p>
+<ul>
+<li><p>UML 图分成很多种类型，整体上就分为结构图和行为图。而我们本次聚焦于过程和行为描述。</p>
+</li>
+<li><p>流程图可以达到提效、宏观、点睛的目的，因为图像在视觉上是最能够让人留下深刻印象的，而不像前面用例文档干巴巴的描述。</p>
+</li>
+<li><p>UML 图就类似于面向对象，在描述业务流程的时候，各个业务部门也有他们自己的行为和要完成的事情</p>
+</li>
+<li><p>从另外一点上，画流程图也可以整理自己的思路</p>
+</li>
+<li><p>在写完用例文档之后，再画一个流程图，会描述的更加清晰</p>
+</li>
+<li><p>图片和文字所擅长的各有不同，图片更形象，但是不适合检索，文字更适合检索，所以两者要取长补短</p>
+</li>
+</ul>
+<p>下面就实际看一下，什么流程图和活动图。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210918091704"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210918091859"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20210918091916"></p>
+<ul>
+<li><p>活动就是要执行什么事情：填一个表格、上传一个图片等等</p>
+<ul>
+<li>圆形的矩形：严格描述来说需要是一个无法终止的原子动作</li>
+</ul>
+</li>
+<li><p>菱形是条件分叉，多个条件选择，另一个作用是汇集到一起，表达分支选择</p>
+</li>
+<li><p>横线是并行的，表达并行选择，但是不一定同时发生</p>
+</li>
+</ul>
+<h2 id="一起画"><a href="#一起画" class="headerlink" title="一起画"></a>一起画</h2><ul>
+<li>⼀起画：钉钉开课流程</li>
+<li>⼀起画：新⼈⼊职流程</li>
+<li>⼀起画：极客时间快乐 Push ⼤体验</li>
+</ul>
+<p>第二个新人入职流程：</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202090646"></p>
+<p>子流程究竟要不要画出来，取决于流程图究竟是给谁看的，如果是给 HR、行政、新人等一起看的，那就加上子流程，如果是给新人看的，那就需要去掉。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/1503654/1632139648502-fb3d5fc2-65bf-452e-af6f-d3e55615ecd9.png"></p>
+<p>已经不是一个活动图了，通过流程图来表达一个策略的递进。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202090710"></p>
+<ul>
+<li><p>要看是画给谁看的</p>
+</li>
+<li><p>粒度或粗或细都没问题，关键要看描述的问题</p>
+</li>
+<li><p>流程图的核心是要描述的活动</p>
+</li>
+<li><p>工具不重要</p>
+</li>
+<li><p>注释有时候很重要，可以加一个外框</p>
+</li>
+<li><p>谁在发送短信 push，谁在做这些活动？</p>
+</li>
+</ul>
+<h1 id="时序图"><a href="#时序图" class="headerlink" title="时序图"></a>时序图</h1><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091211"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091219"></p>
+<ul>
+<li><p>实体类</p>
+</li>
+<li><p>边界类</p>
+</li>
+<li><p>控制类</p>
+</li>
+</ul>
+<p>这三种类不用管，用第一个图就行。</p>
+<p>时序图上，箭头上写的是责任。</p>
+<p>时序图最重要的是角色。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091243"></p>
+<p>时序图涉及到多个角色，多个过程的时候，很容易用时序图描述出来。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091251"></p>
+<p>具体由谁来做这件事情，一定要区分清楚。</p>
+<ul>
+<li>流程图表达的是一个活动的流程</li>
+<li>时序图表达的是责任</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091302"></p>
+<ul>
+<li><p>活动图是单个活动之间的流动，时序图是责任分配</p>
+</li>
+<li><p>活动图的细节、表达⼒以及信息密度略逊于时序图</p>
+</li>
+<li><p>⼤部分时候，活动图可能更适合业务流程的描述</p>
+</li>
+<li><p>涉及多个系统时，时序图更适合表达系统边界和责任流动</p>
+</li>
+<li><p>尝试⽤不同的⼯具画同⼀个过程，体会其中的差异</p>
+</li>
+<li><p>⼤部分时候，可能都可以，取决于沟通⻆度</p>
+</li>
+</ul>
+<h2 id="原则与经验"><a href="#原则与经验" class="headerlink" title="原则与经验"></a>原则与经验</h2><p><img src="https://cdn.nlark.com/yuque/0/2021/png/1503654/1632145871984-32ccc557-eddb-40e6-9552-b67ef705c054.png"></p>
+<ul>
+<li><p>活动图？时序图？状态图？（加⼊泳道的活动图）</p>
+</li>
+<li><p>添加更多细节，然后再裁剪它</p>
+</li>
+<li><p>保存源⽂件，⽽不是图⽚</p>
+</li>
+<li><p>留下注释，但图⽆法搜索，关键词可以写到⽂案⾥去</p>
+</li>
+<li><p>不要痴迷于⼯具，画图软件是⼯具，UML 也是</p>
+</li>
+<li><p>循环学习，画⼏张图之后，再去重新学⼀下「如何画」，每次都有新收获</p>
+</li>
+</ul>
+<h2 id="进阶-1"><a href="#进阶-1" class="headerlink" title="进阶"></a>进阶</h2><ul>
+<li><p>真正的 UML 更复杂，可以尝试学习，但很可能没法完全学明⽩，没事</p>
+</li>
+<li><p>⾯向对象思想对于系统分析来说有帮助，可以尝试了解</p>
+</li>
+<li><p>试着给「逛超市」画⼀张流程图 —— 这是我当年的⾯试题</p>
+</li>
+<li><p>有意义的和无共识的要写出来</p>
+</li>
+</ul>
+<h1 id="业务架构与概念模型"><a href="#业务架构与概念模型" class="headerlink" title="业务架构与概念模型"></a>业务架构与概念模型</h1><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091538"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091545"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091555"></p>
+<ul>
+<li>线上的东西是动词，状态是状态词</li>
+</ul>
+<p>用户产品里面通常会做分层，对用户分层之后会变得很复杂，这里简化了。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091606"></p>
+<ul>
+<li>任何需要表达状态变化的业务场景，都应该有⼀张状态图，它⼏乎是可以完全代替⼝头沟通的⼀种图例，百利⽽⽆⼀害。还可以帮助我们发现可能的状态或状态转换缺失。</li>
+</ul>
+<blockquote>
+<p>例：朋友圈状态的转换</p>
+</blockquote>
+<h2 id="什么是概念模型"><a href="#什么是概念模型" class="headerlink" title="什么是概念模型"></a>什么是概念模型</h2><p>概念模型是为真实世界建模的⼯具，它描述问题域内不同概念，以及概念之间的关系。它以直观的⽅式向领域专家和开发⼈员解释系统应当如何组织、如何⼯作、以及如何与⽤户互动。</p>
+<p>不同域之间的桥梁。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091706"></p>
+<p>如果要做一个阅读产品。</p>
+<ul>
+<li><p>桥梁</p>
+</li>
+<li><p>字典</p>
+</li>
+<li><ul>
+<li>药物专论</li>
+</ul>
+</li>
+<li><p>常见问题的回答</p>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091714"></p>
+<h2 id="心智模型"><a href="#心智模型" class="headerlink" title="心智模型"></a>心智模型</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091722"></p>
+<p>概念模型图；业务建模；写文档；</p>
+<p>先跟一堆人沟通，做需求分析，会有概念模型</p>
+<p>给谁看？业务领域专家、技术的人都会看</p>
+<p>中间的是软盘，很长时间内，保存按钮都是软盘的标志。</p>
+<p>有些保存按钮已经变成了右边这个样子，从云端保存到本地。</p>
+<h2 id="什么是概念模型-1"><a href="#什么是概念模型-1" class="headerlink" title="什么是概念模型"></a>什么是概念模型</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091755"></p>
+<ul>
+<li><p>在现实世界中，是⼀段描述</p>
+</li>
+<li><p>在程序世界中，是代码和数据结构</p>
+</li>
+<li><p>在⽤户眼⾥，是⼀堆样式、交互和界⾯</p>
+</li>
+</ul>
+<p>需要⼀个「模型」，帮助我们为现实世界中的描述建⽴结构化的模型，帮助我们了解如何构建和改进产品，澄清复杂性，指导系统结构和界⾯设计。还可以帮我们在不同的背景中建⽴共识，统⼀术语和出发点。</p>
+<p>概念模型需要把这三个东西统一在一起。</p>
+<h2 id="概念模型快速教学"><a href="#概念模型快速教学" class="headerlink" title="概念模型快速教学"></a>概念模型快速教学</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091814"></p>
+<p>左边是一个药品的概念模型，突出的作用就是告诉物品之间的关系等。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202091825"></p>
+<p>用数字表达两个概念之间的关系。</p>
+<h2 id="概念模型设计过程"><a href="#概念模型设计过程" class="headerlink" title="概念模型设计过程"></a>概念模型设计过程</h2><ul>
+<li><p>⽤领域语⾔和⽤户语⾔进⾏「描述」，名词是可能的「实体」，动词是可能的「关系」。</p>
+</li>
+<li><p>在不同的名字空间中，统⼀术语，删减不必要的「实体」。</p>
+</li>
+<li><p>定义每两者之间的关系，并明确「⼀对多」「多对⼀」「⼀对⼀」「多对多」的原则。</p>
+</li>
+<li><p>（*）找到不同实体的⾏为。</p>
+</li>
+</ul>
+<blockquote>
+<p>⼀起画：视频号和微信号的关系</p>
+</blockquote>
+<p>通过这样一段描述来画出来。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/1503654/1633081099664-f15e7c84-6b73-487a-bf54-fcc876a78624.png"></p>
+<ol>
+<li>找名词</li>
+<li>找名词之间的关系</li>
+</ol>
+<ul>
+<li>视频号是否可以脱离微信号独立存在？</li>
+</ul>
+<ol>
+<li><ul>
+<li>离职了怎么办？</li>
+</ul>
+</li>
+</ol>
+<p>这里概念模型的价值就是，要提前预判未来产品的架构。</p>
+<ul>
+<li>视频号是否可以对应多个微信号？</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/1503654/1633082184962-ab93d2c4-d66a-484e-bbc4-0103baef307f.png"></p>
+<ul>
+<li>视频号没有赞</li>
+<li>评论的时候可以切换身份，使用微信号或者视频号评论</li>
+</ul>
+<h2 id="概念模型的价值"><a href="#概念模型的价值" class="headerlink" title="概念模型的价值"></a>概念模型的价值</h2><ul>
+<li><p>有⼀个「完整」的系统视⻆，看到系统内的概念以及关系。</p>
+</li>
+<li><p>帮助思考和澄清⼀些边界性的问题。</p>
+</li>
+<li><p>有⼀个明确的概念关系统⼀沟通，统⼀开发、业务和⽤户视⻆。</p>
+</li>
+</ul>
+<h2 id="概念模型的⻛险和问题"><a href="#概念模型的⻛险和问题" class="headerlink" title="概念模型的⻛险和问题"></a>概念模型的⻛险和问题</h2><ul>
+<li><p>画图⼀时爽，读图 xxx 。</p>
+</li>
+<li><p>要靠⼤量的沟通，很难独⽴读懂。</p>
+</li>
+<li><p>模型和当前⽤例/业务规则之间，可能存在差异（⽐如⼀个微信号关联⼏个视频号？）</p>
+</li>
+</ul>
+<h2 id="⼀点⼩⼩的经验"><a href="#⼀点⼩⼩的经验" class="headerlink" title="⼀点⼩⼩的经验"></a>⼀点⼩⼩的经验</h2><ul>
+<li><p>概念模型图，很多时候，对⾃⼰的意义⼤于对外沟通，是⼀个结构化提问的过程。</p>
+</li>
+<li><p>通常做过开发，设计过表结构的⼈，更容易理解这个东⻄是⼲啥，建议学。</p>
+</li>
+<li><p>可能是需要迭代最多的⼀种图。</p>
+</li>
+<li><p>To B 业务中通常更加需要。</p>
+</li>
+<li><p>规模到⼀定程度，可能就很难读懂了，建议有机拆解。</p>
+</li>
+</ul>
+<blockquote>
+<p>TO B 的业务要尽可能用概念模型图去表达业务</p>
+<p>这些都有可能画到 PRD 里面。</p>
+<p>荐书：《系统化思考》</p>
+</blockquote>
+<h1 id="原型图"><a href="#原型图" class="headerlink" title="原型图"></a>原型图</h1><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092225"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092232"></p>
+<h2 id="手绘原型图"><a href="#手绘原型图" class="headerlink" title="手绘原型图"></a>手绘原型图</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092242"></p>
+<p>左边是 readhub</p>
+<p>画原型图之前建议先用纸笔画一下，但是不一定是落到文档的原型图</p>
+<h2 id="线框图"><a href="#线框图" class="headerlink" title="线框图"></a>线框图</h2><p>有一些基本的布局，元素说明和图例等</p>
+<p>线框图会引导设计师，如何组合图例。</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092258"></p>
+<h2 id="高保真"><a href="#高保真" class="headerlink" title="高保真"></a>高保真</h2><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092311"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092320"></p>
+<ul>
+<li><p>想的时候很完美，但实际上落地的时候不会那么完美</p>
+</li>
+<li><p>想十种白色的东西 vs 在厨房里面想十种白色的东西，后一种更有画面感，自然而然就可以找到</p>
+</li>
+<li><ul>
+<li>实际摸到的感觉和画出来的图形是不一样的</li>
+<li>龙哥都要实际摸到才行</li>
+</ul>
+</li>
+<li><ul>
+<li>沟通的时候一定要有画面感，这样才能沟通下去</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092332"></p>
+<ul>
+<li>同理心</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092344"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092416"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092426"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092439"></p>
+<ul>
+<li><p>信息架构就是把所有的信息和系统框架是什么样子，当前在哪里要规划清楚</p>
+</li>
+<li><p>商品列表页和商品详情页的关系，用户不一定非要从商品列表页进入</p>
+</li>
+<li><p>撞墙页面就是不知道下一步操作到哪里去，微信支付就是一个明显的返回或结束按钮</p>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092448"></p>
+<ul>
+<li>要分析用户进入页面的路径</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092456"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092505"></p>
+<p>规划页面内元素</p>
+<p>在逻辑上的优先级，页面上什么应该优先展示</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092543"></p>
+<ul>
+<li>信息的聚类和优先级要反馈给设计师，但是具体如何设计，由设计师决定</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092557"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092606"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092616"></p>
+<p>列清楚元素行为状态</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092631"></p>
+<p>图上标明1、2、3，然后在下面</p>
+<p>关于动效，取决于实际工作状态</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092645"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092701"></p>
+<h1 id="PRD-与整体文档框架"><a href="#PRD-与整体文档框架" class="headerlink" title="PRD 与整体文档框架"></a>PRD 与整体文档框架</h1><p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092810"></p>
+<p>真正的写好文档是一件很难的事。</p>
+<p>怎么去写总结？</p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092819"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092828"></p>
+<ul>
+<li><p>场景描述，可以让开发和产品站在一起，否则，开发会认为产品和自己是对立的</p>
+</li>
+<li><p>需求背景怎么写？会想象我已经离开公司了，我会给后人留下一个什么东西</p>
+</li>
+<li><p>现状、问题、目标，目标-现状=问题</p>
+</li>
+<li><ul>
+<li>目标一定要被名词化指标化，SMART 原则</li>
+<li>不要把目标当做抓手，要把策略当做抓手，落脚点</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>某产品经理提升页面 PV 的例子，把一个页面拆分成了多个页面来提升 PV</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>根据可行性来评估规模，大概需要多少人日</p>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092852"></p>
+<ul>
+<li><p>用例图，可以让人一眼看出实现了什么功能，用例文档，一系列交互的特性和指示。</p>
+</li>
+<li><ul>
+<li>用例是从用户角度出发</li>
+<li>特性是从系统角度出发，系统要做成什么样子</li>
+</ul>
+</li>
+<li><p>概念模型图是类之间的关系</p>
+</li>
+<li><p>状态图用来描述这些类的状态转换</p>
+</li>
+<li><p>流程图和时序图更加偏向于动态</p>
+</li>
+<li><p>产品原型&amp;线框图&amp;页面结构，可以看到最终看到的是什么样子</p>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092919"></p>
+<ul>
+<li><p>特性描述：描述一件事情的本质</p>
+</li>
+<li><ul>
+<li>微信读书，就是一个安装了一个安卓操作系统的电子设备</li>
+<li>这就是特性和用例之间的区别</li>
+</ul>
+</li>
+<li><p>非功能性需求，RPS、性能、SLA</p>
+</li>
+<li><ul>
+<li>可支持性：三天开奖，可以变成四天或者五天</li>
+<li>安全</li>
+</ul>
+</li>
+<li><ul>
+<li>运行环境：这个可能是非功能性需求中最重要的一点，一定要说清楚运行环境的要求，比如 IE6</li>
+<li>实现</li>
+</ul>
+</li>
+<li><ul>
+<li>授权</li>
+</ul>
+</li>
+<li><p>PRD 也可能会列出来优先级</p>
+</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092931"></p>
+<ul>
+<li>通过介绍产品怎么样工作，来向开发解释说明要做一个什么东西</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202092957"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093028"></p>
+<ul>
+<li>以故事为纲，YouTube 早期以及 instgram 早期，没有产品经理</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093041"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093050"></p>
+<ul>
+<li>PRD 评估中都是一个大概的评估，例如时间要求，但是一定要有</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093135"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093208"></p>
+<ul>
+<li>职业产品经理出发的角度应该是不一样的</li>
+<li>解决谁的问题？解决的就是读这个文档的读者的问题</li>
+</ul>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093227"></p>
+<p><img src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/20211202093240"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86/" rel="tag"># 产品经理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/07/3-product/" rel="prev" title="解决方案设计">
+      <i class="fa fa-chevron-left"></i> 解决方案设计
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/10/24/2021-10-24-offline-share/" rel="next" title="普通人如何快速实现资产进阶？">
+      普通人如何快速实现资产进阶？ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3%E7%9A%84%E6%80%9D%E8%80%83"><span class="nav-text">关于产品文档的思考</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3"><span class="nav-text">什么是产品文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3"><span class="nav-text">为什么我们需要产品文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3%E5%BA%94%E5%BD%93%E5%8C%85%E5%90%AB%E4%BB%80%E4%B9%88"><span class="nav-text">产品文档应当包含什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%A5%BD%E7%9A%84%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3"><span class="nav-text">什么是好的产品文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E2%BD%82%E6%A1%A3%E7%9A%84%E6%88%90%E5%9E%8B%E8%BF%87%E7%A8%8B"><span class="nav-text">产品⽂档的成型过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E6%96%87%E6%A1%A3%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%90%AB%E4%B9%89"><span class="nav-text">常见的文档类型及含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E5%BF%98%E5%BD%95%E7%9A%84%E5%86%99%E6%B3%95"><span class="nav-text">备忘录的写法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E4%BE%8B%E6%96%87%E6%A1%A3"><span class="nav-text">用例文档</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%94%A8%E4%BE%8B"><span class="nav-text">什么是用例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E4%BE%8B%E7%9A%84%E5%8F%82%E4%B8%8E%E8%80%85"><span class="nav-text">⽤例的参与者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E4%BE%8B%E7%9A%84%E7%B2%92%E5%BA%A6"><span class="nav-text">⽤例的粒度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E4%BE%8B%E6%96%87%E6%A1%A3-1"><span class="nav-text">用例文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E4%BE%8B%E2%BD%82%E6%A1%A3%E7%9A%84%E6%A0%B8%E2%BC%BC-%E4%BA%8B%E4%BB%B6%E6%B5%81"><span class="nav-text">⽤例⽂档的核⼼ - 事件流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%BC%80%E8%B5%B7%E5%86%99%E2%BC%80%E4%B8%AA%EF%BC%9AATM-%E6%9C%BA%E5%8F%96%E9%92%B1%E7%9A%84%E4%BA%8B%E4%BB%B6%E6%B5%81"><span class="nav-text">⼀起写⼀个：ATM 机取钱的事件流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E4%BE%8B%E2%BD%82%E6%A1%A3%E7%9A%84%E7%BB%84%E6%88%90-%E5%89%8D%E5%90%8E%E7%BD%AE%E6%B5%81%E7%A8%8B"><span class="nav-text">⽤例⽂档的组成 - 前后置流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E4%BE%8B%E2%BD%82%E6%A1%A3%E7%9A%84%E7%BB%84%E6%88%90-%E8%BE%85%E5%8A%A9%E5%9B%BE%E4%BE%8B-amp-%E7%95%8C%E2%BE%AF%E5%9B%BE%E4%BE%8B"><span class="nav-text">⽤例⽂档的组成 - 辅助图例 &amp; 界⾯图例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E4%BE%8B%E2%BD%82%E6%A1%A3%E7%9A%84%E7%BB%84%E6%88%90-%E9%99%90%E5%88%B6%E6%9D%A1%E4%BB%B6-%E7%89%B9%E6%AE%8A%E9%9C%80%E6%B1%82-%E7%AD%96%E7%95%A5"><span class="nav-text">⽤例⽂档的组成 - 限制条件&#x2F;特殊需求&#x2F;策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%A4%E4%BE%8B%E2%BD%82%E6%A1%A3%E7%9A%84%E7%BB%84%E6%88%90-%E6%9C%AF%E8%AF%AD%E8%A1%A8"><span class="nav-text">⽤例⽂档的组成 - 术语表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6"><span class="nav-text">进阶</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-text">流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%84%8F%E4%B9%89"><span class="nav-text">图的意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%B5%B7%E7%94%BB"><span class="nav-text">一起画</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="nav-text">时序图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%88%99%E4%B8%8E%E7%BB%8F%E9%AA%8C"><span class="nav-text">原则与经验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6-1"><span class="nav-text">进阶</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%A6%82%E5%BF%B5%E6%A8%A1%E5%9E%8B"><span class="nav-text">业务架构与概念模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A6%82%E5%BF%B5%E6%A8%A1%E5%9E%8B"><span class="nav-text">什么是概念模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%83%E6%99%BA%E6%A8%A1%E5%9E%8B"><span class="nav-text">心智模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A6%82%E5%BF%B5%E6%A8%A1%E5%9E%8B-1"><span class="nav-text">什么是概念模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E6%A8%A1%E5%9E%8B%E5%BF%AB%E9%80%9F%E6%95%99%E5%AD%A6"><span class="nav-text">概念模型快速教学</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E6%A8%A1%E5%9E%8B%E8%AE%BE%E8%AE%A1%E8%BF%87%E7%A8%8B"><span class="nav-text">概念模型设计过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-text">概念模型的价值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E6%A8%A1%E5%9E%8B%E7%9A%84%E2%BB%9B%E9%99%A9%E5%92%8C%E9%97%AE%E9%A2%98"><span class="nav-text">概念模型的⻛险和问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BC%80%E7%82%B9%E2%BC%A9%E2%BC%A9%E7%9A%84%E7%BB%8F%E9%AA%8C"><span class="nav-text">⼀点⼩⼩的经验</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E5%9B%BE"><span class="nav-text">原型图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E7%BB%98%E5%8E%9F%E5%9E%8B%E5%9B%BE"><span class="nav-text">手绘原型图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%A1%86%E5%9B%BE"><span class="nav-text">线框图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E4%BF%9D%E7%9C%9F"><span class="nav-text">高保真</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PRD-%E4%B8%8E%E6%95%B4%E4%BD%93%E6%96%87%E6%A1%A3%E6%A1%86%E6%9E%B6"><span class="nav-text">PRD 与整体文档框架</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

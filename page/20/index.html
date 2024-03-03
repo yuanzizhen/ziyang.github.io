@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="2k9N_1AINrpZtRVd2DTmGWusoSitSdkkRTBT7tORVAY">
+  <meta name="baidu-site-verification" content="IFiFMa7Cit">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"iziyang.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="目前是一名 SRE，爱好 Go 和 Python">
+<meta property="og:type" content="website">
+<meta property="og:title" content="原少子杨">
+<meta property="og:url" content="http://iziyang.github.io/page/20/index.html">
+<meta property="og:site_name" content="原少子杨">
+<meta property="og:description" content="目前是一名 SRE，爱好 Go 和 Python">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="原少子杨">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://iziyang.github.io/page/20/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>原少子杨 - 聊聊技术、产品和商业</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">原少子杨</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">聊聊技术、产品和商业</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-所有文章">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>所有文章</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sre">
+
+    <a href="/categories/SRE" rel="section"><i class="fa fa-cloud fa-fw"></i>SRE</a>
+
+  </li>
+        <li class="menu-item menu-item-编程">
+
+    <a href="/categories/%E7%BC%96%E7%A8%8B" rel="section"><i class="fa fa-code fa-fw"></i>编程</a>
+
+  </li>
+        <li class="menu-item menu-item-读书">
+
+    <a href="/categories/%E8%AF%BB%E4%B9%A6" rel="section"><i class="fa fa-book fa-fw"></i>读书</a>
+
+  </li>
+        <li class="menu-item menu-item-杂谈">
+
+    <a href="/categories/%E6%9D%82%E8%B0%88" rel="section"><i class="fa fa-pencil-alt fa-fw"></i>杂谈</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/05/30/text-command/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/05/30/text-command/" class="post-title-link" itemprop="url">文本处理命令</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-30 17:33:07" itemprop="dateCreated datePublished" datetime="2018-05-30T17:33:07+08:00">2018-05-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/05/30/text-command/" class="post-meta-item leancloud_visitors" data-flag-title="文本处理命令" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/05/30/text-command/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/05/30/text-command/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>一些小命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">grep --color=auto &#x27;&#x27;</span><br><span class="line">grep -n &#x27;str&#x27; file # 查找 str -n 表示行号</span><br><span class="line">grep -vn &#x27;str&#x27; file # 查找不包含 str 的字符串</span><br><span class="line">grep -in &#x27;str&#x27; file # 不论大小写</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="正则"><a href="#正则" class="headerlink" title="正则"></a>正则</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">^ # 行首</span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="comment"># 行尾</span></span></span><br><span class="line">. # 表示任意</span><br><span class="line">\w # 字类字符</span><br><span class="line">\W # 非字类字符</span><br><span class="line">\b # 单词分隔</span><br><span class="line">* # 0 个或多个</span><br><span class="line">\&#123;n,m\&#125; # 连续 n 到 m 个前一个字符</span><br><span class="line">+ # 一次或多次</span><br><span class="line">? # 零次或一次</span><br><span class="line">| # 或</span><br></pre></td></tr></table></figure>
+
+<h1 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]# sed [-nefr] [动作]</span><br><span class="line">参数:</span><br><span class="line">    -n # 使用安静(silent)模式。</span><br><span class="line">    -e # 直接在指令列模式上进行 sed 的动作编辑</span><br><span class="line">    -f # 直接将 sed 的动作写在一个文件内，-f filename</span><br><span class="line">    -r # sed 支持延伸型正则表示法</span><br><span class="line">    -i # 直接修改读取的文件内容</span><br><span class="line">动作说明: [n1[,n2]]function</span><br><span class="line">    n1, n2 # 行数</span><br><span class="line">function:</span><br><span class="line">    a # 新增，在后面</span><br><span class="line">    c # 取代，取代 n1,n2 之间的行数</span><br><span class="line">    d # 删除</span><br><span class="line">    i # 插入，在前面</span><br><span class="line">    p # 打印，通常和 sed -n 一起</span><br><span class="line">    s # 取代，例如 1,20s/old/new/g</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sed &#x27;2,5d&#x27;</span><br><span class="line">sed &#x27;2a drink tea&#x27;</span><br><span class="line">sed &#x27;2a Drink tea or ......\</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> drink beer ?<span class="string">&#x27;</span></span></span><br><span class="line">sed &#x27;/^$/d&#x27; # 删除空白行</span><br><span class="line">sed &#x27;s/#.*$//g&#x27; # 删除注释行</span><br><span class="line">sed -i &#x27;s/\.$/\!/g&#x27; regular_express.txt # 直接修改文件内容，将 . 替换为 !</span><br></pre></td></tr></table></figure>
+
+<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">awk [options] &#x27;command&#x27; file</span><br><span class="line">    command:pattern&#123;命令&#125;</span><br><span class="line">    $0 # 当前行</span><br><span class="line">    $1 # 第一个字段，以此类推</span><br><span class="line">    -F &#x27;:&#x27; # 分隔符</span><br><span class="line">    NR # 每行记录号</span><br><span class="line">    NF # 字段数</span><br><span class="line">    逻辑运算符 &gt; &lt; &gt;= &lt;= == !=</span><br><span class="line">    逻辑判断 if...else...</span><br><span class="line">    正则表达式 ~ !~</span><br><span class="line">awk -F &#x27;:&#x27; &#x27;$1~/^m.*/&#123;print $1&#125;&#x27; file # 表示 $1 以 m 开头</span><br><span class="line">扩展格式：</span><br><span class="line">    BEGIN&#123;&#125;pattern&#123;&#125;END&#123;&#125;</span><br><span class="line">awk -F &quot;:&quot; &#x27;BEGIN&#123;print &#x27;line col user&#x27;&#125;&#123;print NR,NF,$1&#125;END&#123;print ...&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/05/17/linux1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/05/17/linux1/" class="post-title-link" itemprop="url">Linux 基础知识</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-17 09:42:35" itemprop="dateCreated datePublished" datetime="2018-05-17T09:42:35+08:00">2018-05-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/05/17/linux1/" class="post-meta-item leancloud_visitors" data-flag-title="Linux 基础知识" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/05/17/linux1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/05/17/linux1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Linux-文件属性代表"><a href="#Linux-文件属性代表" class="headerlink" title="Linux 文件属性代表"></a>Linux 文件属性代表</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# ll</span><br><span class="line">total 171164</span><br><span class="line">-rw-------. 1 root root      1261 Apr 27 06:50 anaconda-ks.cfg</span><br><span class="line">-rw-r--r--. 1 root root      3624 Apr 28 21:50 install.txt</span><br><span class="line">-rw-r--r--. 1 root root 175262413 Apr  3 14:05 jdk-8u171-linux-x64.rpm</span><br><span class="line">drwxr-xr-x. 3 root root       132 May 13 21:47 script</span><br></pre></td></tr></table></figure>
+
+
+
+<p>-：代表普通文件</p>
+<p>d：代表目录</p>
+<p>l：代表链接文件</p>
+<p>b：代表块设备文件</p>
+<p>c：代表字符设备，如鼠标等</p>
+<h2 id="Linux-命令"><a href="#Linux-命令" class="headerlink" title="Linux 命令"></a>Linux 命令</h2><h3 id="开关机"><a href="#开关机" class="headerlink" title="开关机"></a>开关机</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">shutdown -r now # 重启</span><br><span class="line">init 0 # 关机</span><br><span class="line">init 3 # 纯命令行</span><br><span class="line">init 5 # 含有图形界面</span><br><span class="line">init 6 # 重启</span><br></pre></td></tr></table></figure>
+
+<h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chgrp # 改变文件所属用户组</span><br><span class="line">chown # 改变文件所有者 可以用:或.分割所有者与用户组来进行改变，如 root:root</span><br><span class="line">chmod # 改变文件权限 -R 递归改变</span><br></pre></td></tr></table></figure>
+
+<h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pwd -P # 列出链接文件的完整文件名</span><br><span class="line">mkdir</span><br><span class="line">    -p # 多级创建目录</span><br><span class="line">    -m # 给新建目录添加权限 mkdir -m 777 test</span><br><span class="line">cp -s -l -a # 软链接，硬链接，所有属性</span><br><span class="line">ls -l --time= # atime：权限或属性改变的时间</span><br><span class="line">              # ctime：读取文件内容的时间</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看文件"><a href="#查看文件" class="headerlink" title="查看文件"></a>查看文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">cat</span><br><span class="line">    -n # 打印出行号</span><br><span class="line">tac # 从最后一行开始显示</span><br><span class="line">nl # 输出行号</span><br><span class="line">more # 一页一页的显示</span><br><span class="line"><span class="meta">	 #</span><span class="bash"> 空格键：向下翻一页</span></span><br><span class="line"><span class="meta">	 #</span><span class="bash"> enter：向下滚动一行</span></span><br><span class="line"><span class="meta">	 #</span><span class="bash"> /：向下查询</span></span><br><span class="line"><span class="meta">	 #</span><span class="bash"> :f：立刻显示出文件名以及目前显示的行数</span></span><br><span class="line"><span class="meta">	 #</span><span class="bash"> b：往前翻页，对管道不行</span></span><br><span class="line">less # 与 more 类似，但是可以向前翻页</span><br><span class="line"><span class="meta">	 #</span><span class="bash"> 可以向前/或者向后?查询字符串</span></span><br><span class="line">head # 显示头几行</span><br><span class="line">tail # 显示后几行</span><br><span class="line"><span class="meta">	 #</span><span class="bash"> 这两个都是默认显示 10 行，-n 参数指定行数</span></span><br><span class="line">od # 以二进制方式读取</span><br><span class="line">    -t # 后面可以指定文件类型。a：默认字符；c：ascii字符；d：十进制</span><br><span class="line">touch [-acdmt] # 可以修改文件时间</span><br></pre></td></tr></table></figure>
+
+<h3 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">umask # 默认权限管理，文件最大权限666，目录777</span><br><span class="line">chattr +i +a # 设置默认属性。i：设置文件无法被改动／删除／设置链接等；a：只能增加数据，不能删除修改数据</span><br><span class="line">lsattr # -a：列出隐藏属性</span><br><span class="line">SUID # 使得用户暂时获得执行者权限，4</span><br><span class="line">SGID # 使得用户暂时获得用户组权限，2</span><br><span class="line">SBIT # 其他人无法修改别人创建的文件，只能修改自己的文件，1</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file # 可以查看文件类型</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件查找"><a href="#文件查找" class="headerlink" title="文件查找"></a>文件查找</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">which # 查找命令</span><br><span class="line">whereis # 查找文件</span><br><span class="line">locate # 可以按照部分文件名查找文件</span><br><span class="line">    updatedb # 更新数据库</span><br></pre></td></tr></table></figure>
+
+<h3 id="解压缩命令"><a href="#解压缩命令" class="headerlink" title="解压缩命令"></a>解压缩命令</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tar -zcvf filename.tar.gz 要压缩的文档</span><br><span class="line">tar -zxvf filename.tar.gz -C 目录</span><br><span class="line"></span><br><span class="line">    -z 表示.gz</span><br><span class="line">    -j 表示.bz2</span><br><span class="line">    -c|x 表示压缩/解压</span><br><span class="line">    -v 表示显示文件名</span><br><span class="line">    -f 表示指定文件名</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">type # 可以显示命令类型，属于系统自带还是外部</span><br><span class="line">unset 变量名 # 取消变量设置</span><br><span class="line">单引号会让引号内的内容失去转义，而双引号则不会。</span><br><span class="line">引号内如果需要执行命令，则可以采用 $(命令)的形式，或者采用反单引号</span><br><span class="line">locale -a # 可以显示当前系统支持的语系</span><br><span class="line">read variable # 读取输入内容</span><br><span class="line">declare # 声明变量类型</span><br><span class="line">    -a：# 定义为数组</span><br><span class="line">    -i：# 定义成为整数数字</span><br><span class="line">    -x：# 将变量变成环境变量</span><br><span class="line">    -r: # 将变量设置成为 readonly</span><br><span class="line"><span class="meta">	</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 代表删除最短变量</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 代表删除最长变量</span></span></span><br><span class="line">这两个是从前向后删除</span><br><span class="line"><span class="meta">%</span><span class="bash"> %% <span class="comment"># 从后向前</span></span></span><br><span class="line">/ // # 替换字符串</span><br><span class="line">变量测试与内容替换</span><br><span class="line">- 与 = ？</span><br><span class="line">历史命令</span><br><span class="line">!number # 执行第几条命令</span><br><span class="line">!command # 执行上一个以 command 开头的命令</span><br><span class="line">/etc/issue /etc/motd # 可以设置欢迎信息与提示信息</span><br><span class="line">ctrl + c # 终止命令</span><br><span class="line">ctrl + z # 暂停命令</span><br></pre></td></tr></table></figure>
+
+<h4 id="输出重定向"><a href="#输出重定向" class="headerlink" title="输出重定向"></a>输出重定向</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">1&gt;</span><span class="bash"></span></span><br><span class="line"><span class="bash">2&gt;</span></span><br><span class="line">将错误信息与正确信息分别输入到不同的文件中去</span><br><span class="line">find /home -name .bashrc &gt; list_right 2&gt; list_error</span><br><span class="line">将正确与错误信息统统写入同一个文件</span><br><span class="line">find /home -name .bashrc &gt; list 2&gt;&amp;1</span><br><span class="line">tee # 双向重定向</span><br><span class="line">    -a 表示累加</span><br></pre></td></tr></table></figure>
+
+<h4 id="命令的一次执行"><a href="#命令的一次执行" class="headerlink" title="命令的一次执行"></a>命令的一次执行</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">; # 表示下一个命令与上一个命令没有关系</span><br><span class="line">&amp;&amp; # 表示上一个命令执行正确之后才会执行下一个命令（与）</span><br><span class="line">|| # 表示上一个命令执行错误才执行下一个命令（或）</span><br></pre></td></tr></table></figure>
+
+<h3 id="选取命令"><a href="#选取命令" class="headerlink" title="选取命令"></a>选取命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cut -d &#x27;分隔符&#x27; -f 分隔后的区域块</span><br><span class="line">cut -c 字符范围 # 用于排列整齐的信息</span><br><span class="line">last # 可以显示登录者信息</span><br></pre></td></tr></table></figure>
+
+<h3 id="排序命令"><a href="#排序命令" class="headerlink" title="排序命令"></a>排序命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sort # 排序</span><br><span class="line">    -n # 使用纯数字排序</span><br><span class="line">    -t # 分隔符</span><br><span class="line">    -k # 区间 </span><br><span class="line">uniq # 将重复数据只显示一次</span><br><span class="line">    -c # 计数</span><br><span class="line">wc -l -w -m # 行数／字数／字符数</span><br></pre></td></tr></table></figure>
+
+<h3 id="字符转换命令"><a href="#字符转换命令" class="headerlink" title="字符转换命令"></a>字符转换命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">tr str1 str2 # 将 1 替换为 2 </span><br><span class="line">    -d # 删除字符串</span><br><span class="line">    -s # 替换掉重复的字符串</span><br><span class="line">col # 字符转换命令</span><br><span class="line">    -x # 将 tab 键转换成对等的空格键</span><br><span class="line">join # 将有相同字段的连接为一行</span><br><span class="line">    -t # 默认以空格符分隔，并且对比第一个字段的内容</span><br><span class="line">paste # 直接将两行贴在一起</span><br><span class="line">expand # 将tab转换为空格 -t 接数字，表示空格键个数</span><br><span class="line">split # 切割命令</span><br><span class="line">    -b # 按照文件大小切割</span><br><span class="line">    -t # 按照行数切割</span><br><span class="line">xargs # 参数代换，可以将标准输出作为某一个命令的参数</span><br><span class="line">- # 表示标准输入或输出</span><br><span class="line">sed -n # 安静模式</span><br><span class="line">    a # 新增</span><br><span class="line">    c # 替换</span><br><span class="line">    d # 删除</span><br><span class="line">    i # 插入</span><br><span class="line">    p # 打印</span><br><span class="line">    s # 替换</span><br><span class="line">sed &#x27;s/str1/new_str/g&#x27;</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试及判断命令"><a href="#测试及判断命令" class="headerlink" title="测试及判断命令"></a>测试及判断命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">test</span><br><span class="line">    -e # 该文件名是否存在</span><br><span class="line">    -f # 该文件名是否存在且是否为文件</span><br><span class="line">    -d # 目录</span><br><span class="line">    -rwx # 文件权限</span><br><span class="line">    还可以测试文件之间的比较，整数之间的判定，判定字符串的数据等</span><br><span class="line">    -ne # 两数值不等</span><br><span class="line">    -eq # 两数值相等</span><br><span class="line">    -gt # 大于</span><br><span class="line">    -lt # 小于</span><br><span class="line">    -ge #</span><br><span class="line">    -le #</span><br><span class="line">    -n # 判断字符串是否为非空</span><br><span class="line">    -z # 判断字符串是否为空</span><br><span class="line">    -a # 与</span><br><span class="line">    -o # 或</span><br><span class="line">    ! # 非</span><br></pre></td></tr></table></figure>
+
+<h3 id="shell-参数"><a href="#shell-参数" class="headerlink" title="shell 参数"></a>shell 参数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">0 <span class="comment"># 脚本名字</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash">&#123;1..n&#125; <span class="comment"># 第几个参数</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"><span class="comment"># # 参数个数</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash">@ <span class="comment"># 代表&quot;$1&quot;/&quot;$2&quot;...</span></span></span><br><span class="line">shift # 变量的偏移，后面可以接数字，也即删除掉前面的几个参数</span><br></pre></td></tr></table></figure>
+
+<h3 id="条件判断"><a href="#条件判断" class="headerlink" title="条件判断"></a>条件判断</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">if [];then</span><br><span class="line">...</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [];then</span><br><span class="line">...</span><br><span class="line">elif [];then</span><br><span class="line">...</span><br><span class="line">else</span><br><span class="line">...</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">case $variable in</span><br><span class="line">    &quot;name&quot;)</span><br><span class="line">    ...</span><br><span class="line">    ;;</span><br><span class="line">    &quot;&quot;)</span><br><span class="line">    ...</span><br><span class="line">    ;;</span><br><span class="line">    *)</span><br><span class="line">    exit 1</span><br><span class="line">    ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function fname ()</span><br><span class="line">    &#123;...&#125;</span><br><span class="line">    </span><br><span class="line">需要注意，函数中的 $0,$1,$2,与脚本中的参数不同，这个参数指的是函数的形参</span><br></pre></td></tr></table></figure>
+
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">while []</span><br><span class="line">do</span><br><span class="line">    ...</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">until []</span><br><span class="line">do</span><br><span class="line">    ...</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">for var in con1 con2 con3</span><br><span class="line">do</span><br><span class="line">    ...</span><br><span class="line">done</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">$</span><span class="bash">(seq 1 100) <span class="comment"># 1 到 100</span></span></span><br><span class="line"></span><br><span class="line">for ((初始值;限制值;步长))</span><br><span class="line">do</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="语法检查"><a href="#语法检查" class="headerlink" title="语法检查"></a>语法检查</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bash -nvx </span><br><span class="line">    -n # 查询语法问题</span><br><span class="line">    -v # 执行脚本之前，现将内容输出</span><br><span class="line">    -x # 将使用到的脚本内容显示到屏幕上</span><br></pre></td></tr></table></figure>
+
+<h2 id="系统相关"><a href="#系统相关" class="headerlink" title="系统相关"></a>系统相关</h2><h3 id="后台进程"><a href="#后台进程" class="headerlink" title="后台进程"></a>后台进程</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&amp; # 代表把程序放到后台执行</span><br><span class="line">jobs # 可以查看后台程序，默认只显示jobnumber</span><br><span class="line">    -l # 列出 PID 号码</span><br><span class="line">fg %jobnumber # 把程序拿到前台处理</span><br><span class="line">fg - # 把状态为 - 的拿到前台，默认+</span><br><span class="line">bg %jobnumber # 把后台任务状态变为 running</span><br></pre></td></tr></table></figure>
+
+<h3 id="系统资源查看"><a href="#系统资源查看" class="headerlink" title="系统资源查看"></a>系统资源查看</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">free # 查看内存使用情况</span><br><span class="line">uname # 查看系统与内核相关信息</span><br><span class="line">uptime # 查看系统启动时间与工作负载</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询已打开文件或已执行程序打开的文件"><a href="#查询已打开文件或已执行程序打开的文件" class="headerlink" title="查询已打开文件或已执行程序打开的文件"></a>查询已打开文件或已执行程序打开的文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fuser file／dir # </span><br><span class="line">lsof # 显示进程所打开的文件</span><br><span class="line">pidof # 找出某个正在执行的进程的 PID</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/05/11/HTTP-code/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/05/11/HTTP-code/" class="post-title-link" itemprop="url">HTTP 状态码</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-11 16:09:17" itemprop="dateCreated datePublished" datetime="2018-05-11T16:09:17+08:00">2018-05-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/05/11/HTTP-code/" class="post-meta-item leancloud_visitors" data-flag-title="HTTP 状态码" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/05/11/HTTP-code/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/05/11/HTTP-code/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="1xx消息"><a href="#1xx消息" class="headerlink" title="1xx消息"></a>1xx消息</h2><p>这一类型的状态码，代表请求已被接受，需要继续处理。这类响应是临时响应，只包含状态行和某些可选的响应头信息，并以空行结束。由于HTTP/1.0协议中没有定义任何1xx状态码，所以除非在某些试验条件下，服务器禁止向此类客户端发送1xx响应。 这些状态码代表的响应都是信息性的，标示客户应该采取的其他行动。</p>
+<p><strong>100 Continue</strong><br>客户端应当继续发送请求。这个临时响应是用来通知客户端它的部分请求已经被服务器接收，且仍未被拒绝。客户端应当继续发送请求的剩余部分，或者如果请求已经完成，忽略这个响应。服务器必须在请求完成后向客户端发送一个最终响应。</p>
+<p><strong>101 Switching Protocols</strong><br>服务器已经理解了客户端的请求，并将通过Upgrade消息头通知客户端采用不同的协议来完成这个请求。在发送完这个响应最后的空行后，服务器将会切换到在Upgrade消息头中定义的那些协议。<br>只有在切换新的协议更有好处的时候才应该采取类似措施。例如，切换到新的HTTP版本（如HTTP/2）比旧版本更有优势，或者切换到一个实时且同步的协议以传送利用此类特性的资源。</p>
+<p><strong>102 Processing</strong><br>由WebDAV扩展的状态码，代表处理将被继续执行。</p>
+<h2 id="2xx成功"><a href="#2xx成功" class="headerlink" title="2xx成功"></a>2xx成功</h2><p>这一类型的状态码，代表请求已成功被服务器接收、理解、并接受。</p>
+<p><strong>200 OK</strong><br>请求已成功，请求所希望的响应头或数据体将随此响应返回。</p>
+<p><strong>201 Created</strong><br>请求已经被实现，而且有一个新的资源已经依据请求的需要而创建，且其URI已经随Location头信息返回。假如需要的资源无法及时创建的话，应当返回’202 Accepted’。</p>
+<p><strong>202 Accepted</strong><br>服务器已接受请求，但尚未处理。正如它可能被拒绝一样，最终该请求可能会也可能不会被执行。在异步操作的场合下，没有比发送这个状态码更方便的做法了。<br>返回202状态码的响应的目的是允许服务器接受其他过程的请求（例如某个每天只执行一次的基于批处理的操作），而不必让客户端一直保持与服务器的连接直到批处理操作全部完成。在接受请求处理并返回202状态码的响应应当在返回的实体中包含一些指示处理当前状态的信息，以及指向处理状态监视器或状态预测的指针，以便用户能够估计操作是否已经完成。</p>
+<p><strong>203 Non-Authoritative Information</strong><br>服务器已成功处理了请求，但返回的实体头部元信息不是在原始服务器上有效的确定集合，而是来自本地或者第三方的拷贝。当前的信息可能是原始版本的子集或者超集。例如，包含资源的元数据可能导致原始服务器知道元信息的超集。使用此状态码不是必须的，而且只有在响应不使用此状态码便会返回200 OK的情况下才是合适的。</p>
+<p><strong>204 No Content</strong><br>服务器成功处理了请求，但不需要返回任何实体内容，并且希望返回更新了的元信息。响应可能通过实体头部的形式，返回新的或更新后的元信息。如果存在这些头部信息，则应当与所请求的变量相呼应。<br>如果客户端是浏览器的话，那么用户浏览器应保留发送了该请求的页面，而不产生任何文档视图上的变化，即使按照规范新的或更新后的元信息应当被应用到用户浏览器活动视图中的文档。<br>由于204响应被禁止包含任何消息体，因此它始终以消息头后的第一个空行结尾。</p>
+<p><strong>205 Reset Content</strong><br>服务器成功处理了请求，且没有返回任何内容。但是与204响应不同，返回此状态码的响应要求请求者重置文档视图。该响应主要是被用于接受用户输入后，立即重置表单，以便用户能够轻松地开始另一次输入。<br>与204响应一样，该响应也被禁止包含任何消息体，且以消息头后的第一个空行结束。</p>
+<p><strong>206 Partial Content</strong><br>服务器已经成功处理了部分GET请求。类似于FlashGet或者迅雷这类的HTTP 下载工具都是使用此类响应实现断点续传或者将一个大文档分解为多个下载段同时下载。<br>该请求必须包含Range头信息来指示客户端希望得到的内容范围，并且可能包含If-Range来作为请求条件。<br>响应必须包含如下的头部域：</p>
+<ul>
+<li>Content-Range用以指示本次响应中返回的内容的范围；如果是Content-Type为multipart/byteranges的多段下载，则每一multipart段中都应包含Content-Range域用以指示本段的内容范围。假如响应中包含Content-Length，那么它的数值必须匹配它返回的内容范围的真实字节数。</li>
+<li>Date</li>
+<li>ETag和／或Content-Location，假如同样的请求本应该返回200响应。</li>
+<li>Expires, Cache-Control，和／或Vary，假如其值可能与之前相同变量的其他响应对应的值不同的话。<br>假如本响应请求使用了If-Range强缓存验证，那么本次响应不应该包含其他实体头；假如本响应的请求使用了If-Range弱缓存验证，那么本次响应禁止包含其他实体头；这避免了缓存的实体内容和更新了的实体头信息之间的不一致。否则，本响应就应当包含所有本应该返回200响应中应当返回的所有实体头部域。</li>
+</ul>
+<p>假如ETag或Last-Modified头部不能精确匹配的话，则客户端缓存应禁止将206响应返回的内容与之前任何缓存过的内容组合在一起。<br>任何不支持Range以及Content-Range头的缓存都禁止缓存206响应返回的内容。</p>
+<p><strong>207 Multi-Status</strong><br>由WebDAV扩展的状态码，代表之后的消息体将是一个XML消息，并且可能依照之前子请求数量的不同，包含一系列独立的响应代码。</p>
+<h2 id="3xx重定向"><a href="#3xx重定向" class="headerlink" title="3xx重定向"></a>3xx重定向</h2><p>这类状态码代表需要客户端采取进一步的操作才能完成请求。通常，这些状态码用来重定向，后续的请求地址（重定向目标）在本次响应的Location域中指明。<br>当且仅当后续的请求所使用的方法是GET或者HEAD时，用户浏览器才可以在没有用户介入的情况下自动提交所需要的后续请求。客户端应当自动监测无限循环重定向（例如：A→B→C→……→A或A→A），因为这会导致服务器和客户端大量不必要的资源消耗。按照HTTP/1.0版规范的建议，浏览器不应自动访问超过5次的重定向。</p>
+<p><strong>300 Multiple Choices</strong><br>被请求的资源有一系列可供选择的回馈信息，每个都有自己特定的地址和浏览器驱动的商议信息。用户或浏览器能够自行选择一个首选的地址进行重定向。<br>除非这是一个HEAD请求，否则该响应应当包括一个资源特性及地址的列表的实体，以便用户或浏览器从中选择最合适的重定向地址。这个实体的格式由Content-Type定义的格式所决定。浏览器可能根据响应的格式以及浏览器自身能力，自动作出最合适的选择。当然，RFC 2616规范并没有规定这样的自动选择该如何进行。<br>如果服务器本身已经有了首选的回馈选择，那么在Location中应当指明这个回馈的URI；浏览器可能会将这个Location值作为自动重定向的地址。此外，除非额外指定，否则这个响应也是可缓存的。</p>
+<p><strong>301 Moved Permanently</strong><br>被请求的资源已永久移动到新位置，并且将来任何对此资源的引用都应该使用本响应返回的若干个URI之一。如果可能，拥有链接编辑功能的客户端应当自动把请求的地址修改为从服务器反馈回来的地址。除非额外指定，否则这个响应也是可缓存的。<br>新的永久性的URI应当在响应的Location域中返回。除非这是一个HEAD请求，否则响应的实体中应当包含指向新的URI的超链接及简短说明。<br>如果这不是一个GET或者HEAD请求，因此浏览器禁止自动进行重定向，除非得到用户的确认，因为请求的条件可能因此发生变化。<br>注意：对于某些使用HTTP/1.0协议的浏览器，当它们发送的POST请求得到了一个301响应的话，接下来的重定向请求将会变成GET方式。</p>
+<p><strong>302 Found</strong><br>请求的资源现在临时从不同的URI响应请求。由于这样的重定向是临时的，客户端应当继续向原有地址发送以后的请求。只有在Cache-Control或Expires中进行了指定的情况下，这个响应才是可缓存的。<br>新的临时性的URI应当在响应的Location域中返回。除非这是一个HEAD请求，否则响应的实体中应当包含指向新的URI的超链接及简短说明。<br>如果这不是一个GET或者HEAD请求，那么浏览器禁止自动进行重定向，除非得到用户的确认，因为请求的条件可能因此发生变化。<br>注意：虽然RFC 1945和RFC 2068规范不允许客户端在重定向时改变请求的方法，但是很多现存的浏览器将302响应视作为303响应，并且使用GET方式访问在Location中规定的URI，而无视原先请求的方法。状态码303和307被添加了进来，用以明确服务器期待客户端进行何种反应。</p>
+<p><strong>303 See Other</strong><br>对应当前请求的响应可以在另一个URI上被找到，而且客户端应当采用GET的方式访问那个资源。这个方法的存在主要是为了允许由脚本激活的POST请求输出重定向到一个新的资源。这个新的URI不是原始资源的替代引用。同时，303响应禁止被缓存。当然，第二个请求（重定向）可能被缓存。<br>新的URI应当在响应的Location域中返回。除非这是一个HEAD请求，否则响应的实体中应当包含指向新的URI的超链接及简短说明。<br>注意：许多HTTP/1.1版以前的浏览器不能正确理解303状态。如果需要考虑与这些浏览器之间的互动，302状态码应该可以胜任，因为大多数的浏览器处理302响应时的方式恰恰就是上述规范要求客户端处理303响应时应当做的。</p>
+<p><strong>304 Not Modified</strong><br>如果客户端发送了一个带条件的GET请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变，则服务器应当返回这个状态码。304响应禁止包含消息体，因此始终以消息头后的第一个空行结尾。<br>该响应必须包含以下的头信息：</p>
+<ul>
+<li>Date，除非这个服务器没有时钟。假如没有时钟的服务器也遵守这些规则，那么代理服务器以及客户端可以自行将Date字段添加到接收到的响应头中去（正如RFC 2068中规定的一样），缓存机制将会正常工作。</li>
+<li>ETag和／或Content-Location，假如同样的请求本应返回200响应。</li>
+<li>Expires, Cache-Control，和／或Vary，假如其值可能与之前相同变量的其他响应对应的值不同的话。</li>
+</ul>
+<p>假如本响应请求使用了强缓存验证，那么本次响应不应该包含其他实体头；否则（例如，某个带条件的GET请求使用了弱缓存验证），本次响应禁止包含其他实体头；这避免了缓存了的实体内容和更新了的实体头信息之间的不一致。<br>假如某个304响应指明了当前某个实体没有缓存，那么缓存系统必须忽视这个响应，并且重复发送不包含限制条件的请求。<br>假如接收到一个要求更新某个缓存条目的304响应，那么缓存系统必须更新整个条目以反映所有在响应中被更新的字段的值。</p>
+<p><strong>305 Use Proxy</strong><br>被请求的资源必须通过指定的代理才能被访问。Location域中将给出指定的代理所在的URI信息，接收者需要重复发送一个单独的请求，通过这个代理才能访问相应资源。只有原始服务器才能创建305响应。<br>注意：RFC 2068中没有明确305响应是为了重定向一个单独的请求，而且只能被原始服务器建立。忽视这些限制可能导致严重的安全后果。</p>
+<p><strong>306 Switch Proxy</strong><br>在最新版的规范中，306状态码已经不再被使用。</p>
+<p><strong>307 Temporary Redirect</strong><br>请求的资源现在临时从不同的URI响应请求。由于这样的重定向是临时的，客户端应当继续向原有地址发送以后的请求。只有在Cache-Control或Expires中进行了指定的情况下，这个响应才是可缓存的。<br>新的临时性的URI应当在响应的Location域中返回。除非这是一个HEAD请求，否则响应的实体中应当包含指向新的URI的超链接及简短说明。因为部分浏览器不能识别307响应，因此需要添加上述必要信息以便用户能够理解并向新的URI发出访问请求。<br>如果这不是一个GET或者HEAD请求，那么浏览器禁止自动进行重定向，除非得到用户的确认，因为请求的条件可能因此发生变化。</p>
+<h2 id="4xx客户端错误"><a href="#4xx客户端错误" class="headerlink" title="4xx客户端错误"></a>4xx客户端错误</h2><p>这类的状态码代表了客户端看起来可能发生了错误，妨碍了服务器的处理。除非响应的是一个HEAD请求，否则服务器就应该返回一个解释当前错误状况的实体，以及这是临时的还是永久性的状况。这些状态码适用于任何请求方法。浏览器应当向用户显示任何包含在此类错误响应中的实体内容。<br>如果错误发生时客户端正在传送数据，那么使用TCP的服务器实现应当仔细确保在关闭客户端与服务器之间的连接之前，客户端已经收到了包含错误信息的数据包。如果客户端在收到错误信息后继续向服务器发送数据，服务器的TCP栈将向客户端发送一个重置数据包，以清除该客户端所有还未识别的输入缓冲，以免这些数据被服务器上的应用程序读取并干扰后者。</p>
+<p><strong>400 Bad Request</strong><br>由于包含语法错误，当前请求无法被服务器理解。除非进行修改，否则客户端不应该重复提交这个请求。</p>
+<p><strong>401 Unauthorized</strong><br>当前请求需要用户验证。该响应必须包含一个适用于被请求资源的WWW-Authenticate信息头用以询问用户信息。客户端可以重复提交一个包含恰当的Authorization头信息的请求。如果当前请求已经包含了Authorization证书，那么401响应代表着服务器验证已经拒绝了那些证书。如果401响应包含了与前一个响应相同的身份验证询问，且浏览器已经至少尝试了一次验证，那么浏览器应当向用户展示响应中包含的实体信息，因为这个实体信息中可能包含了相关诊断信息。</p>
+<p><strong>402 Payment Required</strong><br>该状态码是为了将来可能的需求而预留的。</p>
+<p><strong>403 Forbidden</strong><br>服务器已经理解请求，但是拒绝执行它。与401响应不同的是，身份验证并不能提供任何帮助，而且这个请求也不应该被重复提交。如果这不是一个HEAD请求，而且服务器希望能够讲清楚为何请求不能被执行，那么就应该在实体内描述拒绝的原因。当然服务器也可以返回一个404响应，假如它不希望让客户端获得任何信息。</p>
+<p><strong>404 Not Found</strong><br>请求失败，请求所希望得到的资源未被在服务器上发现。没有信息能够告诉用户这个状况到底是暂时的还是永久的。假如服务器知道情况的话，应当使用410状态码来告知旧资源因为某些内部的配置机制问题，已经永久的不可用，而且没有任何可以跳转的地址。404这个状态码被广泛应用于当服务器不想揭示到底为何请求被拒绝或者没有其他适合的响应可用的情况下。</p>
+<p><strong>405 Method Not Allowed</strong><br>请求行中指定的请求方法不能被用于请求相应的资源。该响应必须返回一个Allow头信息用以表示出当前资源能够接受的请求方法的列表。<br>鉴于PUT，DELETE方法会对服务器上的资源进行写操作，因而绝大部分的网页服务器都不支持或者在默认配置下不允许上述请求方法，对于此类请求均会返回405错误。</p>
+<p><strong>406 Not Acceptable</strong><br>请求的资源的内容特性无法满足请求头中的条件，因而无法生成响应实体。<br>除非这是一个HEAD请求，否则该响应就应当返回一个包含可以让用户或者浏览器从中选择最合适的实体特性以及地址列表的实体。实体的格式由Content-Type头中定义的媒体类型决定。浏览器可以根据格式及自身能力自行作出最佳选择。但是，规范中并没有定义任何作出此类自动选择的标准。</p>
+<p><strong>407 Proxy Authentication Required</strong><br>与401响应类似，只不过客户端必须在代理服务器上进行身份验证。代理服务器必须返回一个Proxy-Authenticate用以进行身份询问。客户端可以返回一个Proxy-Authorization信息头用以验证。</p>
+<p><strong>408 Request Timeout</strong><br>请求超时。客户端没有在服务器预备等待的时间内完成一个请求的发送。客户端可以随时再次提交这一请求而无需进行任何更改。</p>
+<p><strong>409 Conflict</strong><br>由于和被请求的资源的当前状态之间存在冲突，请求无法完成。这个代码只允许用在这样的情况下才能被使用：用户被认为能够解决冲突，并且会重新提交新的请求。该响应应当包含足够的信息以便用户发现冲突的源头。<br>冲突通常发生于对PUT请求的处理中。例如，在采用版本检查的环境下，某次PUT提交的对特定资源的修改请求所附带的版本信息与之前的某个（第三方）请求向冲突，那么此时服务器就应该返回一个409错误，告知用户请求无法完成。此时，响应实体中很可能会包含两个冲突版本之间的差异比较，以便用户重新提交归并以后的新版本。</p>
+<p><strong>410 Gone</strong><br>被请求的资源在服务器上已经不再可用，而且没有任何已知的转发地址。这样的状况应当被认为是永久性的。如果可能，拥有链接编辑功能的客户端应当在获得用户许可后删除所有指向这个地址的引用。如果服务器不知道或者无法确定这个状况是否是永久的，那么就应该使用404状态码。除非额外说明，否则这个响应是可缓存的。<br>410响应的目的主要是帮助网站管理员维护网站，通知用户该资源已经不再可用，并且服务器拥有者希望所有指向这个资源的远端连接也被删除。这类事件在限时、增值服务中很普遍。同样，410响应也被用于通知客户端在当前服务器站点上，原本属于某个个人的资源已经不再可用。当然，是否需要把所有永久不可用的资源标记为’410 Gone’，以及是否需要保持此标记多长时间，完全取决于服务器拥有者。</p>
+<p><strong>411 Length Required</strong><br>服务器拒绝在没有定义Content-Length头的情况下接受请求。在添加了表明请求消息体长度的有效Content-Length头之后，客户端可以再次提交该请求。</p>
+<p><strong>412 Precondition Failed</strong><br>服务器在验证在请求的头字段中给出先决条件时，没能满足其中的一个或多个。这个状态码允许客户端在获取资源时在请求的元信息（请求头字段数据）中设置先决条件，以此避免该请求方法被应用到其希望的内容以外的资源上。</p>
+<p><strong>413 Request Entity Too Large</strong><br>服务器拒绝处理当前请求，因为该请求提交的实体数据大小超过了服务器愿意或者能够处理的范围。此种情况下，服务器可以关闭连接以免客户端继续发送此请求。<br>如果这个状况是临时的，服务器应当返回一个Retry-After的响应头，以告知客户端可以在多少时间以后重新尝试。</p>
+<p><strong>414 Request-URI Too Long</strong><br>请求的URI长度超过了服务器能够解释的长度，因此服务器拒绝对该请求提供服务。这比较少见，通常的情况包括：</p>
+<p>本应使用POST方法的表单提交变成了GET方法，导致查询字符串（Query String）过长。<br>重定向URI“黑洞”，例如每次重定向把旧的URI作为新的URI的一部分，导致在若干次重定向后URI超长。<br>客户端正在尝试利用某些服务器中存在的安全漏洞攻击服务器。这类服务器使用固定长度的缓冲读取或操作请求的URI，当GET后的参数超过某个数值后，可能会产生缓冲区溢出，导致任意代码被执行[1]。没有此类漏洞的服务器，应当返回414状态码。</p>
+<p><strong>415 Unsupported Media Type</strong><br>对于当前请求的方法和所请求的资源，请求中提交的实体并不是服务器中所支持的格式，因此请求被拒绝。</p>
+<p><strong>416 Requested Range Not Satisfiable</strong><br>如果请求中包含了Range请求头，并且Range中指定的任何数据范围都与当前资源的可用范围不重合，同时请求中又没有定义If-Range请求头，那么服务器就应当返回416状态码。<br>假如Range使用的是字节范围，那么这种情况就是指请求指定的所有数据范围的首字节位置都超过了当前资源的长度。服务器也应当在返回416状态码的同时，包含一个Content-Range实体头，用以指明当前资源的长度。这个响应也被禁止使用multipart/byteranges作为其Content-Type。</p>
+<p><strong>417 Expectation Failed</strong><br>在请求头Expect中指定的预期内容无法被服务器满足，或者这个服务器是一个代理服务器，它有明显的证据证明在当前路由的下一个节点上，Expect的内容无法被满足。</p>
+<p><strong>418 I’m a teapot</strong><br>本操作码是在1998年作为IETF的传统愚人节笑话, 在RFC 2324 超文本咖啡壶控制协议中定义的，并不需要在真实的HTTP服务器中定义。当一个控制茶壶的HTCPCP收到BREW或POST指令要求其煮咖啡时应当回传此错误。</p>
+<p><strong>421 There are too many connections from your internet address</strong><br>从当前客户端所在的IP地址到服务器的连接数超过了服务器许可的最大范围。通常，这里的IP地址指的是从服务器上看到的客户端地址（比如用户的网关或者代理服务器地址）。在这种情况下，连接数的计算可能涉及到不止一个终端用户。</p>
+<p><strong>422 Unprocessable Entity</strong><br>请求格式正确，但是由于含有语义错误，无法响应。</p>
+<p><strong>423 Locked</strong><br>当前资源被锁定。</p>
+<p><strong>424 Failed Dependency</strong><br>由于之前的某个请求发生的错误，导致当前请求失败，例如PROPPATCH。</p>
+<p><strong>425 Unordered Collection</strong><br>在WebDav Advanced Collections草案中定义，但是未出现在《WebDAV顺序集协议》中。</p>
+<p><strong>426 Upgrade Required</strong><br>客户端应当切换到TLS/1.0。</p>
+<p><strong>449 Retry With</strong><br>由微软扩展，代表请求应当在执行完适当的操作后进行重试。</p>
+<p><strong>451 Unavailable For Legal Reasons</strong><br>由IETF核准，代表该访问因法律的要求而被拒绝。</p>
+<h2 id="5xx服务器错误"><a href="#5xx服务器错误" class="headerlink" title="5xx服务器错误"></a><strong>5xx服务器错误</strong></h2><p>这类状态码代表了服务器在处理请求的过程中有错误或者异常状态发生，也有可能是服务器意识到以当前的软硬件资源无法完成对请求的处理。除非这是一个HEAD请求，否则服务器应当包含一个解释当前错误状态以及这个状况是临时的还是永久的解释信息实体。浏览器应当向用户展示任何在当前响应中被包含的实体。<br>这些状态码适用于任何响应方法。</p>
+<p><strong>500 Internal Server Error</strong><br>服务器遇到了一个未曾预料的状况，导致了它无法完成对请求的处理。一般来说，这个问题都会在服务器的程序码出错时出现。</p>
+<p><strong>501 Not Implemented</strong><br>服务器不支持当前请求所需要的某个功能。当服务器无法识别请求的方法，并且无法支持其对任何资源的请求。</p>
+<p><strong>502 Bad Gateway</strong><br>作为网关或者代理工作的服务器尝试执行请求时，从上游服务器接收到无效的响应。</p>
+<p><strong>503 Service Unavailable</strong><br>由于临时的服务器维护或者过载，服务器当前无法处理请求。这个状况是临时的，并且将在一段时间以后恢复。如果能够预计延迟时间，那么响应中可以包含一个Retry-After头用以标明这个延迟时间。如果没有给出这个Retry-After信息，那么客户端应当以处理500响应的方式处理它。</p>
+<p><strong>504 Gateway Timeout</strong><br>作为网关或者代理工作的服务器尝试执行请求时，未能及时从上游服务器（URI标识出的服务器，例如HTTP、FTP、LDAP）或者辅助服务器（例如DNS）收到响应。<br>注意：某些代理服务器在DNS查询超时时会返回400或者500错误。</p>
+<p><strong>505 HTTP Version Not Supported</strong><br>服务器不支持，或者拒绝支持在请求中使用的HTTP版本。这暗示着服务器不能或不愿使用与客户端相同的版本。响应中应当包含一个描述了为何版本不被支持以及服务器支持哪些协议的实体。</p>
+<p><strong>506 Variant Also Negotiates</strong><br>由《透明内容协商协议》扩展，代表服务器存在内部配置错误：被请求的协商变元资源被配置为在透明内容协商中使用自己，因此在一个协商处理中不是一个合适的重点。</p>
+<p><strong>507 Insufficient Storage</strong><br>服务器无法存储完成请求所必须的内容。这个状况被认为是临时的。</p>
+<p><strong>509 Bandwidth Limit Exceeded</strong><br>服务器达到带宽限制。这不是一个官方的状态码，但是仍被广泛使用。</p>
+<p><strong>510 Not Extended</strong><br>获取资源所需要的策略并没有被满足。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/05/03/python-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/05/03/python-nginx/" class="post-title-link" itemprop="url">python-nginx</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-03 10:28:42" itemprop="dateCreated datePublished" datetime="2018-05-03T10:28:42+08:00">2018-05-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/05/03/python-nginx/" class="post-meta-item leancloud_visitors" data-flag-title="python-nginx" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/05/03/python-nginx/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/05/03/python-nginx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="几个小问题"><a href="#几个小问题" class="headerlink" title="几个小问题"></a>几个小问题</h1><h2 id="python-处理-nginx-配置文件"><a href="#python-处理-nginx-配置文件" class="headerlink" title="python 处理 nginx 配置文件"></a>python 处理 nginx 配置文件</h2><p>最近写一个项目脚本，里面涉及到对 nginx 配置文件的操作，在网上找了几个据说可以操作配置文件的 python 库，但遇到一些问题。</p>
+<ul>
+<li><p>python-nginx</p>
+<p>这个库主要是用来生成配置文件的。</p>
+</li>
+<li><p>nginxparser</p>
+<p>这个库可以用来解析配置文件，但是不能通过 pip 安装，否则会无法导入方法，步骤如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> GitHub 地址</span></span><br><span class="line">https://github.com/fatiherikli/nginxparser</span><br><span class="line"><span class="meta">#</span><span class="bash"> 将项目克隆下来之后，通过 setup.py 文件安装</span></span><br><span class="line">python setup.py install</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="命令行安装-python-库的卸载"><a href="#命令行安装-python-库的卸载" class="headerlink" title="命令行安装 python 库的卸载"></a>命令行安装 python 库的卸载</h2><p>stackoverflow链接(<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/1550226/python-setup-py-uninstall">https://stackoverflow.com/questions/1550226/python-setup-py-uninstall</a>)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装</span></span><br><span class="line">python setup.py install --record files.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 卸载</span></span><br><span class="line">cat files.txt | xargs rm -rf</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://iziyang.github.io/2018/04/08/samba/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+      <meta itemprop="name" content="原少子杨">
+      <meta itemprop="description" content="目前是一名 SRE，爱好 Go 和 Python">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="原少子杨">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/08/samba/" class="post-title-link" itemprop="url">Samba 服务器搭建及配置修改</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-08 22:20:57" itemprop="dateCreated datePublished" datetime="2018-04-08T22:20:57+08:00">2018-04-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 19:59:59" itemprop="dateModified" datetime="2021-05-17T19:59:59+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/04/08/samba/" class="post-meta-item leancloud_visitors" data-flag-title="Samba 服务器搭建及配置修改" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/04/08/samba/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/04/08/samba/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>ubuntu server 16.04 下安装 samba：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install samba</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后，可以先修改配置文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/samba/smb.conf</span><br><span class="line"><span class="meta">#</span><span class="bash"> 共享家目录</span></span><br><span class="line">[homes]</span><br><span class="line">   comment = Home Directories</span><br><span class="line">   browseable = ye</span><br><span class="line">   read only = no</span><br><span class="line">   create mask = 0666 # 保证在windows端读写文件时，不会变为可执行文件</span><br><span class="line">   directory mask = 0666</span><br><span class="line">   valid users = %S # 必须是系统用户才行</span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加Samba用户</span></span><br><span class="line">sudo smbpasswd -a user</span><br><span class="line"><span class="meta">#</span><span class="bash"> 启用用户</span></span><br><span class="line">sudo smbpasswd -e user</span><br><span class="line"><span class="meta">#</span><span class="bash"> 修改完成后重启</span></span><br><span class="line">sudo service smbd restart</span><br></pre></td></tr></table></figure>
+
+<p>windows 连接时，只需要输入<code>\\IP 地址\user</code> ，输入凭据即可。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="原少子杨"
+      src="https://s3plus.meituan.net/v1/mss_f32142e8d47149129e9550e929704625/yzz-test-image/qrcode_for_gh_3cfae3cf61d9_1280.jpg">
+  <p class="site-author-name" itemprop="name">原少子杨</p>
+  <div class="site-description" itemprop="description">目前是一名 SRE，爱好 Go 和 Python</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">原少子杨</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '6OsbpvAuMocftjPmQVE5FgOG-gzGzoHsz',
+      appKey     : 'Nzz2gSaPPFT179OKLQwrJB6v',
+      placeholder: "欢迎留言和我交流",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
